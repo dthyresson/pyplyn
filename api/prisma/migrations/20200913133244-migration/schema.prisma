@@ -2,7 +2,7 @@ datasource DS {
   // optionally set multiple providers
   // example: provider = ["sqlite", "postgresql"]
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -11,9 +11,8 @@ generator client {
 }
 
 model Entry {
-  id         String   @id @default(cuid())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
-  documentId String   @unique
-  document   Json
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  document  Json
 }
