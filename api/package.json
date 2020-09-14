@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@redwoodjs/api": "^0.18.1-canary.24",
-    "date-fns": "^2.16.1"
+    "date-fns": "^2.16.1",
+    "got": "^11.6.2"
   }
 }
