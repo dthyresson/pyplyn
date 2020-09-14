@@ -25,6 +25,7 @@ export const tweetEntryParser = (entry) => {
     publishedAt: fromUnixTime(document.published / 1000),
     author: document.author,
     title: document.title,
+    content: document.content?.content || document.title,
     url: document.alternate[0]?.href,
   }
 }

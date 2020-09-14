@@ -8,6 +8,7 @@ export const schema = gql`
     entryId: String!
     author: String!
     title: String!
+    content: String!
     url: String!
   }
 
@@ -28,6 +29,7 @@ export const schema = gql`
     entryId: String!
     author: String!
     title: String!
+    content: String!
     url: String!
   }
 
@@ -36,6 +38,7 @@ export const schema = gql`
     entryId: String
     author: String
     title: String
+    content: String
     url: String
   }
 `

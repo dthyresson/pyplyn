@@ -26,9 +26,15 @@ export const createTweetFromEntry = async ({ entry }) => {
       },
       ...tweetEntryParser(entry),
     },
+    include: { entry: true },
   })
 
-  const data = await nlp({ content: tweet.title, lang: 'en' })
+  console.info(tweet)
+
+  const data = await nlp({
+    content: tweet.content,
+    lang: 'en',
+  })
 
   await db.tweetTextAnalysis.create({
     data: {
