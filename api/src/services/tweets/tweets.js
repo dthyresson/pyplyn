@@ -1,3 +1,4 @@
+import { nlp } from 'src/lib/apiClients/diffbot'
 import { entryParser, tweetEntryParser } from 'src/lib/parsers/entry'
 import { db } from 'src/lib/db'
 
@@ -17,8 +18,8 @@ export const createTweet = ({ tweet }) => {
   })
 }
 
-export const createTweetFromEntry = ({ entry }) => {
-  return db.tweet.create({
+export const createTweetFromEntry = async ({ entry }) => {
+  const tweet = await db.tweet.create({
     data: {
       entry: {
         create: entryParser(entry),
@@ -26,11 +27,24 @@ export const createTweetFromEntry = ({ entry }) => {
       ...tweetEntryParser(entry),
     },
   })
+
+  const data = await nlp({ content: tweet.title, lang: 'en' })
+
+  await db.tweetTextAnalysis.create({
+    data: {
+      tweet: {
+        connect: { id: tweet.id },
+      },
+      nlp: data,
+    },
+  })
+
+  return tweet
 }
 
 export const createTweetsFromFeedlyStreamResponse = ({ response }) => {
   return response.items.map(async (item) => {
-    return createTweetFromEntry({ entry: item })
+    return await createTweetFromEntry({ entry: item })
   })
 }
 

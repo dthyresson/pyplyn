@@ -2,7 +2,7 @@ datasource DS {
   // optionally set multiple providers
   // example: provider = ["sqlite", "postgresql"]
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -33,23 +33,13 @@ model Article {
 }
 
 model Tweet {
-  id                String              @id @default(cuid())
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @default(now())
-  publishedAt       DateTime
-  entry             Entry               @relation(fields: [entryId], references: [id])
-  entryId           String
-  author            String
-  title             String
-  url               String              @unique
-  TweetTextAnalysis TweetTextAnalysis[]
-}
-
-model TweetTextAnalysis {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  tweet     Tweet    @relation(fields: [tweetId], references: [id])
-  nlp       Json
-  tweetId   String
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  publishedAt DateTime
+  entry       Entry    @relation(fields: [entryId], references: [id])
+  entryId     String
+  author      String
+  title       String
+  url         String   @unique
 }

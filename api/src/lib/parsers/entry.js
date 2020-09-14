@@ -10,6 +10,14 @@ export const entryParser = (entry) => {
   }
 }
 
+export const tweetLinkedArticlesParser = (entry) => {
+  return entry
+}
+
+export const articleEntryParser = (entry) => {
+  return entry
+}
+
 export const tweetEntryParser = (entry) => {
   const document = entry.document || entry
 
