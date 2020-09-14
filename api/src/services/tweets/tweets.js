@@ -1,4 +1,4 @@
-import { fromUnixTime } from 'date-fns'
+import { entryParser, tweetEntryParser } from 'src/lib/parsers/entry'
 import { db } from 'src/lib/db'
 
 export const tweets = () => {
@@ -17,34 +17,13 @@ export const createTweet = ({ tweet }) => {
   })
 }
 
-const entryParser = (entry) => {
-  const documentId = entry.document?.id || entry.id
-  const document = entry.document || entry
-
-  return {
-    documentId,
-    document,
-  }
-}
-
-const entryTweetParser = (entry) => {
-  const document = entry.document || entry
-
-  return {
-    publishedAt: fromUnixTime(document.published / 1000),
-    author: document.author,
-    title: document.title,
-    url: document.alternate[0]?.href,
-  }
-}
-
 export const createTweetFromEntry = ({ entry }) => {
   return db.tweet.create({
     data: {
       entry: {
         create: entryParser(entry),
       },
-      ...entryTweetParser(entry),
+      ...tweetEntryParser(entry),
     },
   })
 }
