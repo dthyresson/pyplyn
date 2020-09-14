@@ -3,6 +3,7 @@ export const schema = gql`
     id: String!
     createdAt: DateTime!
     updatedAt: DateTime!
+    documentId: String!
     document: JSON!
   }
 
@@ -11,10 +12,12 @@ export const schema = gql`
   }
 
   input CreateEntryInput {
+    documentId: String!
     document: JSON!
   }
 
   input UpdateEntryInput {
+    documentId: String
     document: JSON
   }
 `
