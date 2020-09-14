@@ -18,11 +18,18 @@ export const createTweet = ({ tweet }) => {
 }
 
 const entryParser = (entry) => {
-  return { documentId: entry.document.id, document: entry.document }
+  const documentId = entry.document?.id || entry.id
+  const document = entry.document || entry
+
+  return {
+    documentId,
+    document,
+  }
 }
 
 const entryTweetParser = (entry) => {
-  const document = entry.document
+  const document = entry.document || entry
+
   return {
     publishedAt: fromUnixTime(document.published / 1000),
     author: document.author,
@@ -42,8 +49,10 @@ export const createTweetFromEntry = ({ entry }) => {
   })
 }
 
-export const createTweetFromEntries = ({ entries }) => {
-  return entries.map(async (entry) => createTweetFromEntry(entry))
+export const createTweetsFromFeedlyStreamResponse = ({ response }) => {
+  return response.items.map(async (item) => {
+    return createTweetFromEntry({ entry: item })
+  })
 }
 
 export const Tweet = {

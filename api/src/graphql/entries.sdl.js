@@ -16,6 +16,17 @@ export const schema = gql`
     document: JSON!
   }
 
+  input FeedlyStreamResponse {
+    id: String!
+    updated: Float!
+    continuation: String
+    items: [JSON]
+  }
+
+  input CreateEntriesInput {
+    entries: [JSON!]!
+  }
+
   input UpdateEntryInput {
     documentId: String
     document: JSON
