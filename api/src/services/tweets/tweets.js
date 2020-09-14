@@ -1,5 +1,5 @@
-import { nlp } from 'src/lib/apiClients/diffbot'
 import { entryParser, tweetEntryParser } from 'src/lib/parsers/entry'
+import { createTextAnalysisForTweet } from 'src/services/tweetTextAnalyses'
 import { db } from 'src/lib/db'
 
 export const tweets = () => {
@@ -29,19 +29,7 @@ export const createTweetFromEntry = async ({ entry }) => {
     include: { entry: true },
   })
 
-  const data = await nlp({
-    content: tweet.content,
-    lang: 'en',
-  })
-
-  await db.tweetTextAnalysis.create({
-    data: {
-      tweet: {
-        connect: { id: tweet.id },
-      },
-      nlp: data,
-    },
-  })
+  await createTextAnalysisForTweet(tweet)
 
   return tweet
 }
