@@ -37,7 +37,6 @@ const post = async ({ endpoint, json }) => {
     json,
   })
   const body = JSON.parse(response.body)
-  console.log(body)
   if (Array.isArray(body) && body.length === 1) {
     return body[0]
   } else {

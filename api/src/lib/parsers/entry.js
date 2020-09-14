@@ -1,4 +1,5 @@
 import { fromUnixTime } from 'date-fns'
+import striptags from 'striptags'
 
 export const entryParser = (entry) => {
   const documentId = entry.document?.id || entry.id
@@ -25,7 +26,7 @@ export const tweetEntryParser = (entry) => {
     publishedAt: fromUnixTime(document.published / 1000),
     author: document.author,
     title: document.title,
-    content: document.content?.content || document.title,
+    content: striptags(document.content?.content || document.title),
     url: document.alternate[0]?.href,
   }
 }

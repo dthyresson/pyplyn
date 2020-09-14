@@ -29,8 +29,6 @@ export const createTweetFromEntry = async ({ entry }) => {
     include: { entry: true },
   })
 
-  console.info(tweet)
-
   const data = await nlp({
     content: tweet.content,
     lang: 'en',
