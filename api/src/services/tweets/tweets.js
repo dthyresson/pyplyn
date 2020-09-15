@@ -1,5 +1,5 @@
 import { entryParser, tweetEntryParser } from 'src/lib/parsers/entry'
-import { createTextAnalysisForTweet } from 'src/services/tweetTextAnalyses'
+import { enrichTweet } from 'src/services/tweetContexts'
 import { db } from 'src/lib/db'
 
 export const tweets = () => {
@@ -9,7 +9,7 @@ export const tweets = () => {
 export const createTweet = ({ tweet }) => {
   return db.tweet.create({
     data: {
-      entry: { connect: { documentId: tweet.entryId } },
+      entry: { connect: { uid: tweet.entryId } },
       publishedAt: tweet.publishedAt,
       author: tweet.author,
       title: tweet.title,
@@ -18,7 +18,7 @@ export const createTweet = ({ tweet }) => {
   })
 }
 
-export const createTweetFromEntry = async ({ entry }) => {
+export const loadTweet = async ({ entry }) => {
   const tweet = await db.tweet.create({
     data: {
       entry: {
@@ -29,14 +29,14 @@ export const createTweetFromEntry = async ({ entry }) => {
     include: { entry: true },
   })
 
-  await createTextAnalysisForTweet(tweet)
+  await enrichTweet(tweet)
 
   return tweet
 }
 
-export const createTweetsFromFeedlyStreamResponse = ({ response }) => {
+export const loadTweets = async ({ response }) => {
   return response.items.map(async (item) => {
-    return await createTweetFromEntry({ entry: item })
+    return await loadTweet({ entry: item })
   })
 }
 

@@ -14,10 +14,8 @@ export const schema = gql`
 
   type Mutation {
     createTweet(tweet: CreateTweetInput!): Tweet!
-    createTweetFromEntry(entry: CreateEntryInput!): Tweet!
-    createTweetsFromFeedlyStreamResponse(
-      response: FeedlyStreamResponse!
-    ): [Tweet!]!
+    loadTweet(entry: CreateEntryInput!): Tweet!
+    loadTweets(response: StreamResponse!): [Tweet!]!
   }
 
   type Query {

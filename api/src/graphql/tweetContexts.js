@@ -1,24 +1,24 @@
 export const schema = gql`
-  type TweetTextAnalysis {
+  type TweetContext {
     id: String!
     createdAt: DateTime!
     updatedAt: DateTime!
     tweet: Tweet!
-    nlp: JSON!
     tweetId: String!
+    content: JSON!
   }
 
   type Query {
-    tweetTextAnalyses: [TweetTextAnalysis!]!
+    TweetContexts: [TweetContext!]!
   }
 
-  input CreateTweetTextAnalysisInput {
-    nlp: JSON!
+  input CreateTweetContextInput {
+    content: JSON!
     tweetId: String!
   }
 
-  input UpdateTweetTextAnalysisInput {
-    nlp: JSON
+  input UpdateTweetContextInput {
+    content: JSON
     tweetId: String
   }
 `

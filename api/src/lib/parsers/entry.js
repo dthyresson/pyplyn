@@ -2,11 +2,11 @@ import { fromUnixTime } from 'date-fns'
 import striptags from 'striptags'
 
 export const entryParser = (entry) => {
-  const documentId = entry.document?.id || entry.id
+  const uid = entry.document?.id || entry.id
   const document = entry.document || entry
 
   return {
-    documentId,
+    uid,
     document,
   }
 }

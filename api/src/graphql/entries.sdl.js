@@ -3,7 +3,7 @@ export const schema = gql`
     id: String!
     createdAt: DateTime!
     updatedAt: DateTime!
-    documentId: String!
+    uid: String!
     document: JSON!
   }
 
@@ -12,15 +12,8 @@ export const schema = gql`
   }
 
   input CreateEntryInput {
-    documentId: String!
+    uid: String!
     document: JSON!
-  }
-
-  input FeedlyStreamResponse {
-    id: String!
-    updated: Float!
-    continuation: String
-    items: [JSON]
   }
 
   input CreateEntriesInput {
@@ -28,7 +21,7 @@ export const schema = gql`
   }
 
   input UpdateEntryInput {
-    documentId: String
+    uid: String
     document: JSON
   }
 `

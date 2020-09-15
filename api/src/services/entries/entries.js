@@ -5,9 +5,9 @@ export const entries = () => {
 }
 
 export const createEntry = ({ entry }) => {
-  return db.post.create({
+  return db.entry.create({
     data: {
-      documentId: entry.id,
+      uid: entry.id,
       document: entry,
     },
   })

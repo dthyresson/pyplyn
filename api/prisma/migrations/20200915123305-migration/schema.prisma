@@ -2,7 +2,7 @@ datasource DS {
   // optionally set multiple providers
   // example: provider = ["sqlite", "postgresql"]
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -59,7 +59,7 @@ model Tweet {
   title         String
   content       String
   url           String          @unique
-  TweetContext  TweetContext?
+  TweetContext  TweetContext
   TweetCategory TweetCategory[]
 }
 
