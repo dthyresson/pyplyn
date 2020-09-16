@@ -7,8 +7,10 @@ export const tweets = () => {
 export const Tweet = {
   entry: (_obj, { root }) =>
     db.tweet.findOne({ where: { id: root.id } }).entry(),
-  tweetContext: (_obj, { root }) =>
+  context: (_obj, { root }) =>
     db.tweet.findOne({ where: { id: root.id } }).tweetContext(),
-  tweetCategory: (_obj, { root }) =>
-    db.tweet.findOne({ where: { id: root.id } }).tweetCategory(),
+  categories: (_obj, { root }) =>
+    db.tweet.findOne({ where: { id: root.id } }).tweetCategories(),
+  priorities: (_obj, { root }) =>
+    db.tweet.findOne({ where: { id: root.id } }).tweetPriorities(),
 }

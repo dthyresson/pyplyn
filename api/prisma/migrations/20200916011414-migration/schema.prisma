@@ -36,7 +36,7 @@ model Article {
   author         String
   title          String
   url            String         @unique
-  ArticleContext ArticleContext
+  articleContext ArticleContext
 }
 
 model ArticleContext {
@@ -49,18 +49,19 @@ model ArticleContext {
 }
 
 model Tweet {
-  id            String          @id @default(cuid())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @default(now())
-  publishedAt   DateTime
-  entry         Entry           @relation(fields: [entryId], references: [id])
-  entryId       String
-  author        String
-  title         String
-  content       String
-  url           String          @unique
-  TweetContext  TweetContext
-  TweetCategory TweetCategory[]
+  id              String          @id @default(cuid())
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @default(now())
+  publishedAt     DateTime
+  entry           Entry           @relation(fields: [entryId], references: [id])
+  entryId         String
+  author          String
+  title           String
+  content         String
+  url             String          @unique
+  tweetContext    TweetContext?
+  tweetCategories TweetCategory[]
+  tweetPriorities TweetPriority[]
 }
 
 model TweetCategory {
@@ -80,4 +81,25 @@ model TweetContext {
   tweet     Tweet    @relation(fields: [tweetId], references: [id])
   tweetId   String
   content   Json
+}
+
+model TweetPriority {
+  id                 String              @id @default(cuid())
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @default(now())
+  tweet              Tweet               @relation(fields: [tweetId], references: [id])
+  tweetId            String
+  uid                String
+  label              String
+  tweetPriorityTerms TweetPriorityTerm[]
+}
+
+model TweetPriorityTerm {
+  id              String         @id @default(cuid())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @default(now())
+  tweetPriority   TweetPriority? @relation(fields: [tweetPriorityId], references: [id])
+  tweetPriorityId String?
+  uid             String
+  label           String
 }

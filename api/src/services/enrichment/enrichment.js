@@ -3,6 +3,7 @@ import { db } from 'src/lib/db'
 import { extractArticleUrl, extractText } from 'src/lib/apiClients/diffbot'
 import { entryParser, tweetEntryParser } from 'src/lib/parsers/entry'
 import { createTweetCategories } from 'src/services/tweetCategories'
+import { createTweetPriorities } from 'src/services/tweetPriorities'
 
 export const loadTweet = async ({ entry }) => {
   const tweet = await db.tweet.create({
@@ -16,6 +17,8 @@ export const loadTweet = async ({ entry }) => {
   })
 
   await createTweetCategories(tweet)
+
+  await createTweetPriorities(tweet)
 
   await enrichTweet(tweet)
 

@@ -10,8 +10,9 @@ export const schema = gql`
     title: String!
     content: String!
     url: String!
-    TweetContext: TweetContext
-    TweetCategory: [TweetCategory]!
+    context: TweetContext
+    categories: [TweetCategory]
+    priorities: [TweetPriority]
   }
 
   type Query {
