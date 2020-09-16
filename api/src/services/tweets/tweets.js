@@ -5,7 +5,7 @@ export const tweets = () => {
 }
 
 export const tweetExists = ({ url }) => {
-  return db.tweet.findMany({ where: { url } }).length > 0
+  return db.tweet.findMany({ where: { url } }).length === 0
 }
 
 export const tweetForUrl = ({ url }) => {

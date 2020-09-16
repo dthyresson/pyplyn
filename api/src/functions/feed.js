@@ -1,5 +1,5 @@
 import { streamContents } from 'src/lib/apiClients/feedly'
-import { loadTweets } from 'src/services/enrichment'
+import { loadTweets } from 'src/services/tweetJobs'
 
 export const handler = async (event, _context) => {
   const { streamId, count, continuation } = event.queryStringParameters
