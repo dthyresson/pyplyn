@@ -27,19 +27,18 @@ export const createTweetPriorities = async (tweet) => {
       label: priority.label,
     })
 
-    priority.searchTerms?.parts?.map(
-      async (term) =>
-        await db.tweetPriorityTerm.create({
-          data: {
-            tweetPriority: {
-              connect: { id: tweetPriority.id },
-            },
-            uid: term.id,
-            label: term.label,
+    priority.searchTerms?.parts?.map(async (term) => {
+      await db.tweetPriorityTerm.create({
+        data: {
+          tweetPriority: {
+            connect: { id: tweetPriority.id },
           },
-          include: { tweetPriority: true },
-        })
-    )
+          uid: term.id || 'nlp/f/entity/unknown',
+          label: term.label || term.text,
+        },
+        include: { tweetPriority: true },
+      })
+    })
 
     return tweetPriority
   })
@@ -51,19 +50,3 @@ export const TweetPriority = {
   terms: (_obj, { root }) =>
     db.tweetPriority.findOne({ where: { id: root.id } }).tweetPriorityTerms(),
 }
-
-// "priorities": [
-//   {
-//     "id": "enterprise/dthyressondt/priority/37f42e7d-521c-41d7-849b-d26c35cbb092",
-//     "label": "Wine",
-//     "searchTerms": {
-//       "parts": [
-//         {
-//           "id": "nlp/f/entity/wd:282",
-//           "label": "Wine"
-//         }
-//       ]
-//     },
-//     "actionTimestamp": 1600217778830
-//   }
-// ],

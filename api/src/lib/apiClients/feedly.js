@@ -15,6 +15,7 @@ export const streamContents = async ({
   streamId,
   importantOnly = true,
   count = 20,
+  continuation,
 }) => {
   if (streamId === undefined) {
     throw Error('Missing streamId')
@@ -22,7 +23,7 @@ export const streamContents = async ({
 
   return await query({
     endpoint: '/streams/contents',
-    searchParams: { streamId, importantOnly, count },
+    searchParams: { streamId, importantOnly, count, continuation },
   })
 }
 

@@ -1,11 +1,11 @@
 import { streamContents } from 'src/lib/apiClients/feedly'
-import { createTweetsFromStreamResponse } from 'src/services/tweets'
+import { loadTweets } from 'src/services/enrichment'
 
 export const handler = async (event, _context) => {
-  const { streamId, count } = event.queryStringParameters
-  const data = await streamContents({ streamId, count })
+  const { streamId, count, continuation } = event.queryStringParameters
+  const data = await streamContents({ streamId, count, continuation })
 
-  await createTweetsFromStreamResponse({ response: data })
+  await loadTweets({ response: data })
 
   return {
     statusCode: 200,
