@@ -10,16 +10,18 @@ export const schema = gql`
     title: String!
     content: String!
     url: String!
+    TweetContext: TweetContext
+    TweetCategory: [TweetCategory]!
+  }
+
+  type Query {
+    tweets: [Tweet!]!
   }
 
   type Mutation {
     createTweet(tweet: CreateTweetInput!): Tweet!
     loadTweet(entry: CreateEntryInput!): Tweet!
     loadTweets(response: StreamResponse!): [Tweet!]!
-  }
-
-  type Query {
-    tweets: [Tweet!]!
   }
 
   input CreateTweetInput {

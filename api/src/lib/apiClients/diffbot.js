@@ -1,6 +1,6 @@
 import got from 'got'
 
-export const article = async ({
+export const extractArticle = async ({
   discussion = false,
   fields = 'meta,sentiment,quotes',
   maxTags = 30,
@@ -21,7 +21,7 @@ export const article = async ({
   return JSON.parse(response.body)
 }
 
-export const nlp = async ({ content, lang }) => {
+export const extractText = async ({ content, lang }) => {
   const endpoint = `${process.env.DIFFBOT_NLP_API_BASE_URL}/`
   const response = await got.post(endpoint, {
     json: { content, lang },

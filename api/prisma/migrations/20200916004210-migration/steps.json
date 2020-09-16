@@ -1,0 +1,29 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "Tweet",
+      "field": "tweetContext",
+      "type": "TweetContext",
+      "arity": "Optional"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Tweet",
+      "field": "tweetCategory",
+      "type": "TweetCategory",
+      "arity": "List"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Tweet",
+      "field": "TweetContext"
+    },
+    {
+      "tag": "DeleteField",
+      "model": "Tweet",
+      "field": "TweetCategory"
+    }
+  ]
+}
