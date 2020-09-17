@@ -1,7 +1,12 @@
-import { entryParser, tweetEntryParser } from 'src/lib/parsers/entry'
+import {
+  entryParser,
+  tweetEntryParser,
+  linkedArticleParser,
+} from 'src/lib/parsers/entry'
 import { createTweetCategories } from 'src/services/tweetCategories'
 import { createTweetPriorities } from 'src/services/tweetPriorities'
-import { enrichTweet } from 'src/services/enrichment'
+import { enrichArticle, enrichTweet } from 'src/services/enrichment'
+import { fromUnixTime } from 'date-fns'
 
 import { db } from 'src/lib/db'
 
@@ -23,6 +28,38 @@ export const loadTweet = async ({ entry }) => {
   await createTweetPriorities(tweet)
 
   await enrichTweet(tweet)
+
+  const entries = linkedArticleParser(entry)
+
+  entries.forEach(async (linkedEntry) => {
+    const publishedAt = fromUnixTime(
+      (linkedEntry.published || linkedEntry.updated || linkedEntry.crawled) /
+        1000
+    )
+
+    const url = linkedEntry.canonical[0]?.href || linkedEntry.alternate[0]?.href
+
+    const article = await db.article.create({
+      data: {
+        entry: {
+          create: {
+            uid: linkedEntry.id,
+            documentType: 'ARTICLE',
+            document: linkedEntry,
+          },
+        },
+        author:
+          linkedEntry.authorDetails?.fullname ||
+          linkedEntry.author ||
+          'unknown',
+        publishedAt,
+        title: linkedEntry.title || 'unknown',
+        url,
+      },
+    })
+
+    await enrichArticle(article)
+  })
 
   return tweet
 }

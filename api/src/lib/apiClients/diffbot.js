@@ -7,7 +7,7 @@ export const extractArticle = async ({
   tagConfidence = 0.3,
   url,
 }) => {
-  const endpoint = `${process.env.DIFFBOT_API_BASE_UR}/v3/article`
+  const endpoint = `${process.env.DIFFBOT_API_BASE_URL}/v3/article`
   const response = await got(endpoint, {
     searchParams: {
       discussion,

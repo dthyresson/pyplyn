@@ -30,3 +30,18 @@ export const tweetEntryParser = (entry) => {
     url: document.alternate[0]?.href,
   }
 }
+
+export const linkedArticleParser = (entry) => {
+  const document = entry.document || entry
+  // return (
+  //   document.linked?.map((item) => {
+  //     return item.id
+  //   }) || []
+  // )
+
+  return (
+    document.linked?.map((item) => {
+      return item
+    }) || []
+  )
+}

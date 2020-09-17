@@ -1,9 +1,9 @@
 import { db } from 'src/lib/db'
 
-import { extractArticleUrl, extractText } from 'src/lib/apiClients/diffbot'
+import { extractArticle, extractText } from 'src/lib/apiClients/diffbot'
 
 export const enrichArticle = async (article) => {
-  const content = await extractArticleUrl({
+  const content = await extractArticle({
     url: article.url,
   })
 
