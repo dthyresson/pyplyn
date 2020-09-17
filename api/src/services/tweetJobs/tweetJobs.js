@@ -8,6 +8,8 @@ import { createTweetPriorities } from 'src/services/tweetPriorities'
 import { enrichArticle, enrichTweet } from 'src/services/enrichment'
 import { fromUnixTime } from 'date-fns'
 
+import { DocumentType } from '@prisma/client'
+
 import { db } from 'src/lib/db'
 
 export const loadTweet = async ({ entry }) => {
@@ -44,7 +46,7 @@ export const loadTweet = async ({ entry }) => {
         entry: {
           create: {
             uid: linkedEntry.id,
-            documentType: 'ARTICLE',
+            documentType: DocumentType.ARTICLE,
             document: linkedEntry,
           },
         },
