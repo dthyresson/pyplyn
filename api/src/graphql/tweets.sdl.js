@@ -16,6 +16,9 @@ export const schema = gql`
   }
 
   type Query {
+    tweet(id: String!): Tweet
+    tweetByEntryId(entryId: String!): Tweet
+    tweetByDocumentId(documentId: String!): Tweet
     tweets: [Tweet!]!
   }
 

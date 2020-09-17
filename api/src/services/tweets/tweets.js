@@ -1,5 +1,17 @@
 import { db } from 'src/lib/db'
 
+export const tweet = ({ id }) => {
+  return db.tweet.findOne({ where: { id: id } })
+}
+
+export const tweetByEntryId = ({ entryId }) => {
+  return db.tweet.findOne({ where: { entryId: entryId } })
+}
+
+export const tweetByDocumentId = ({ documentId }) => {
+  return db.entry.findOne({ where: { uid: documentId } }).tweet()
+}
+
 export const tweets = () => {
   return db.tweet.findMany()
 }
