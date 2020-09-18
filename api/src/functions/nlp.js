@@ -1,9 +1,9 @@
-import { nlp } from 'src/lib/apiClients/diffbot'
+import { extractText } from 'src/lib/apiClients/diffbot'
 
 export const handler = async (event, _context) => {
   const body = JSON.parse(event.body)
   const { content, lang } = body
-  const data = await nlp({ content, lang })
+  const data = await extractText({ content, lang })
 
   return {
     statusCode: 200,

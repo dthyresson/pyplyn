@@ -1,9 +1,9 @@
-import { article } from 'src/lib/apiClients/diffbot'
+import { extractArticle } from 'src/lib/apiClients/diffbot'
 
 export const handler = async (event, _context) => {
   const { url } = event.queryStringParameters
 
-  const data = await article({ url })
+  const data = await extractArticle({ url })
 
   return {
     statusCode: 200,
