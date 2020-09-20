@@ -2,7 +2,7 @@ import got from 'got'
 
 export const extractArticle = async ({
   discussion = false,
-  fields = 'meta,sentiment,quotes',
+  fields = 'meta,sentiment,quotes,tags,humanLanguage,diffbotUri,estimatedDate',
   maxTags = 30,
   tagConfidence = 0.3,
   timeout = 60000,
@@ -10,6 +10,7 @@ export const extractArticle = async ({
 }) => {
   try {
     const endpoint = `${process.env.DIFFBOT_API_BASE_URL}/v3/article`
+
     const response = await got(endpoint, {
       searchParams: {
         discussion,
@@ -20,15 +21,13 @@ export const extractArticle = async ({
         timeout,
         token: process.env.DIFFBOT_API_TOKEN,
       },
-    })
+    }).json()
 
-    const body = JSON.parse(response.body)
-
-    if (body.errorCode) {
-      throw new Error(body.error)
+    if (response.errorCode) {
+      throw new Error(response.error)
     }
 
-    return body
+    return response.objects?.[0] || null
   } catch (e) {
     console.error(e)
     return null

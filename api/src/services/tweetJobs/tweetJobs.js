@@ -93,9 +93,7 @@ export const loadArticle = async (linkedEntry) => {
     },
   })
 
-  const enrichedArticle = await enrichArticle(article)
-
-  console.info(enrichedArticle)
+  await enrichArticle(article)
 
   return article
 }

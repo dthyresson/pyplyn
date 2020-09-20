@@ -21,14 +21,15 @@ export const enrichArticle = async (article) => {
 
     const data = articleData(content)
 
-    console.info(data)
-
     await db.article.update({
       where: { id: article.id },
       data: {
         articleText: data.articleText,
         author: data.author,
         description: data.description,
+        language: data.language,
+        sentiment: data.sentiment,
+        siteName: data.siteName,
         tags: { set: data.tags },
       },
     })

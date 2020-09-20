@@ -7,9 +7,12 @@ export const schema = gql`
     entry: Entry!
     entryId: String!
     author: String!
+    siteName: String
     title: String!
     description: String
     articleText: String
+    language: String
+    sentiment: Float!
     tags: [String]!
     url: String!
     articleContext: ArticleContext
@@ -23,9 +26,12 @@ export const schema = gql`
     publishedAt: DateTime!
     entryId: String!
     author: String!
+    siteName: String
     title: String!
     description: String
     articleText: String
+    language: String
+    sentiment: Float!
     tags: [String]!
     url: String!
   }
@@ -34,9 +40,12 @@ export const schema = gql`
     publishedAt: DateTime
     entryId: String
     author: String
+    siteName: String
     title: String
     description: String
     articleText: String
+    language: String
+    sentiment: Float
     tags: [String]!
     url: String
   }
