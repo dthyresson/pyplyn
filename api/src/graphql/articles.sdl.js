@@ -8,6 +8,9 @@ export const schema = gql`
     entryId: String!
     author: String!
     title: String!
+    description: String
+    articleText: String
+    tags: [String]!
     url: String!
     articleContext: ArticleContext
   }
@@ -21,6 +24,9 @@ export const schema = gql`
     entryId: String!
     author: String!
     title: String!
+    description: String
+    articleText: String
+    tags: [String]!
     url: String!
   }
 
@@ -29,6 +35,9 @@ export const schema = gql`
     entryId: String
     author: String
     title: String
+    description: String
+    articleText: String
+    tags: [String]!
     url: String
   }
 `

@@ -1,13 +1,11 @@
+import { DocumentType } from '@prisma/client'
+
 import {
   entryParser,
   tweetEntryParser,
   linkedArticleParser,
-} from 'src/lib/parsers/entry'
-
+} from 'src/lib/parsers/entryParser'
 import { enrichArticle, enrichTweet } from 'src/services/enrichment'
-import { fromUnixTime } from 'date-fns'
-
-import { DocumentType } from '@prisma/client'
 
 import { db } from 'src/lib/db'
 
@@ -76,6 +74,38 @@ export const createTweetPriorities = async (tweet) => {
   })
 }
 
+export const loadArticle = async (linkedEntry) => {
+  const article = await db.article.create({
+    data: {
+      entry: {
+        create: {
+          uid: linkedEntry.id,
+          documentType: DocumentType.ARTICLE,
+          document: linkedEntry,
+        },
+      },
+      author: linkedEntry.articleAuthor,
+      description: linkedEntry.description,
+      publishedAt: linkedEntry.articlePublishedAt,
+      title: linkedEntry.articleTitle,
+      url: linkedEntry.articleUrl,
+      tags: { set: [''] },
+    },
+  })
+
+  const enrichedArticle = await enrichArticle(article)
+
+  console.info(enrichedArticle)
+
+  return article
+}
+
+export const loadLinkedArticles = async (entry) => {
+  linkedArticleParser(entry).forEach(async (linkedEntry) => {
+    await loadArticle(linkedEntry)
+  })
+}
+
 export const loadTweet = async ({ entry }) => {
   const parsedTweet = tweetEntryParser(entry)
 
@@ -95,43 +125,14 @@ export const loadTweet = async ({ entry }) => {
 
   await enrichTweet(tweet)
 
-  const entries = linkedArticleParser(entry)
-
-  entries.forEach(async (linkedEntry) => {
-    const publishedAt = fromUnixTime(
-      (linkedEntry.published || linkedEntry.updated || linkedEntry.crawled) /
-        1000
-    )
-
-    const url = linkedEntry.canonical[0]?.href || linkedEntry.alternate[0]?.href
-
-    const article = await db.article.create({
-      data: {
-        entry: {
-          create: {
-            uid: linkedEntry.id,
-            documentType: DocumentType.ARTICLE,
-            document: linkedEntry,
-          },
-        },
-        author:
-          linkedEntry.authorDetails?.fullname ||
-          linkedEntry.author ||
-          'unknown',
-        publishedAt,
-        title: linkedEntry.title || 'unknown',
-        url,
-      },
-    })
-
-    await enrichArticle(article)
-  })
+  await loadLinkedArticles(entry)
 
   return tweet
 }
 
 export const loadTweets = async ({ response }) => {
   return response.items.map(async (item) => {
-    return await loadTweet({ entry: item })
+    const tweet = await loadTweet({ entry: item })
+    return tweet
   })
 }

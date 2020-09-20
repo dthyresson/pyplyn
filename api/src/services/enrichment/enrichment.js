@@ -2,6 +2,8 @@ import { db } from 'src/lib/db'
 
 import { extractArticle, extractText } from 'src/lib/apiClients/diffbot'
 
+import { articleData } from 'src/lib/parsers/articleParser'
+
 export const enrichArticle = async (article) => {
   const content = await extractArticle({
     url: article.url,
@@ -16,9 +18,26 @@ export const enrichArticle = async (article) => {
         content,
       },
     })
+
+    const data = articleData(content)
+
+    console.info(data)
+
+    await db.article.update({
+      where: { id: article.id },
+      data: {
+        articleText: data.articleText,
+        author: data.author,
+        description: data.description,
+        tags: { set: data.tags },
+      },
+    })
   }
 
-  return article
+  return db.article.findOne({
+    where: { id: article.id },
+    include: { articleContext: true },
+  })
 }
 
 export const enrichTweet = async (tweet) => {
