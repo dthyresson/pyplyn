@@ -10,22 +10,14 @@ export const schema = gql`
     title: String!
     content: String!
     url: String!
-    context: TweetContext
-    categories: [TweetCategory]
-    priorities: [TweetPriority]
+    sentiment: Float!
+    tweetContext: TweetContext
+    tweetCategories: [TweetCategory]!
+    tweetPriorities: [TweetPriority]!
   }
 
   type Query {
-    tweet(id: String!): Tweet
-    tweetByEntryId(entryId: String!): Tweet
-    tweetByDocumentId(documentId: String!): Tweet
     tweets: [Tweet!]!
-  }
-
-  type Mutation {
-    createTweet(tweet: CreateTweetInput!): Tweet!
-    loadTweet(entry: CreateEntryInput!): Tweet!
-    loadTweets(response: StreamResponse!): [Tweet!]!
   }
 
   input CreateTweetInput {
@@ -35,6 +27,7 @@ export const schema = gql`
     title: String!
     content: String!
     url: String!
+    sentiment: Float!
   }
 
   input UpdateTweetInput {
@@ -44,5 +37,6 @@ export const schema = gql`
     title: String
     content: String
     url: String
+    sentiment: Float
   }
 `

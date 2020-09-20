@@ -7,7 +7,7 @@ export const schema = gql`
     tweetId: String!
     uid: String!
     label: String!
-    terms: [TweetPriorityTerm]
+    tweetPriorityTerms: [TweetPriorityTerm]
   }
 
   type Query {

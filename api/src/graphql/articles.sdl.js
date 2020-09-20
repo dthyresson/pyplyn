@@ -9,12 +9,10 @@ export const schema = gql`
     author: String!
     title: String!
     url: String!
+    articleContext: ArticleContext
   }
 
   type Query {
-    article(id: String!): Article
-    articleByEntryId(entryId: String!): Article
-    articleByDocumentId(documentId: String!): Article
     articles: [Article!]!
   }
 
