@@ -58,13 +58,15 @@ export const createTweetPriorities = async (tweet) => {
     })
 
     priority.searchTerms?.parts?.map(async (term) => {
+      const label = term.label || term.text || term.id?.split('/').pop()
+
       await db.tweetPriorityTerm.create({
         data: {
           tweetPriority: {
             connect: { id: tweetPriority.id },
           },
           uid: term.id || 'nlp/f/entity/unknown',
-          label: term.label || term.text,
+          label: label,
         },
         include: { tweetPriority: true },
       })
