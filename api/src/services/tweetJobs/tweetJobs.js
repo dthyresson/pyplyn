@@ -89,7 +89,7 @@ export const loadArticle = async (linkedEntry) => {
       publishedAt: linkedEntry.articlePublishedAt,
       title: linkedEntry.articleTitle,
       url: linkedEntry.articleUrl,
-      tags: { set: [''] },
+      tagLabels: { set: [''] },
     },
   })
 

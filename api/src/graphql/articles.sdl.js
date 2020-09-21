@@ -13,9 +13,10 @@ export const schema = gql`
     articleText: String
     language: String
     sentiment: Float!
-    tags: [String]!
+    tagLabels: [String]!
     url: String!
     articleContext: ArticleContext
+    articleTags: [ArticleTag]!
   }
 
   type Query {
@@ -32,7 +33,7 @@ export const schema = gql`
     articleText: String
     language: String
     sentiment: Float!
-    tags: [String]!
+    tagLabels: [String]!
     url: String!
   }
 
@@ -46,7 +47,7 @@ export const schema = gql`
     articleText: String
     language: String
     sentiment: Float
-    tags: [String]!
+    tagLabels: [String]!
     url: String
   }
 `

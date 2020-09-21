@@ -8,7 +8,8 @@ export const articleData = (extractedArticle) => {
   const language = extractedArticle.humanLanguage
   const sentiment = extractedArticle.sentiment || 0
   const siteName = extractedArticle.siteName
-  const tags = (extractedArticle.tags || []).map((tag) => tag.label)
+  const tags = extractedArticle.tags
+  const tagLabels = (extractedArticle.tags || []).map((tag) => tag.label)
   const url = extractedArticle.pageUrl
 
   const data = {
@@ -19,6 +20,7 @@ export const articleData = (extractedArticle) => {
     sentiment,
     siteName,
     tags,
+    tagLabels,
     url,
   }
 

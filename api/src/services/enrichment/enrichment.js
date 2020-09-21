@@ -30,14 +30,28 @@ export const enrichArticle = async (article) => {
         language: data.language,
         sentiment: data.sentiment,
         siteName: data.siteName,
-        tags: { set: data.tags },
+        tagLabels: { set: data.tagLabels },
       },
+    })
+
+    data.tags?.forEach(async (tag) => {
+      await db.articleTag.create({
+        data: {
+          article: { connect: { id: article.id } },
+          label: tag.label,
+          uri: tag.uri || tag.label,
+          count: tag.count,
+          score: tag.score,
+          rdfTypes: { set: tag.rdfTypes || [''] },
+          sentiment: tag.sentiment,
+        },
+      })
     })
   }
 
   return db.article.findOne({
     where: { id: article.id },
-    include: { articleContext: true },
+    include: { articleContext: true, articleTags: true },
   })
 }
 

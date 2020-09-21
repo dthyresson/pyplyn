@@ -2,7 +2,7 @@ datasource DS {
   // optionally set multiple providers
   // example: provider = ["sqlite", "postgresql"]
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -41,7 +41,7 @@ model Article {
   articleText    String?
   language       String?
   sentiment      Float           @default(0)
-  tagLabels      String[]
+  tags           String[]
   url            String          @unique
   articleContext ArticleContext?
   articleTags    ArticleTag[]
@@ -60,7 +60,7 @@ model ArticleTag {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-  article   Article? @relation(fields: [articleId], references: [id])
+  Article   Article? @relation(fields: [articleId], references: [id])
   articleId String?
   label     String
   uri       String
