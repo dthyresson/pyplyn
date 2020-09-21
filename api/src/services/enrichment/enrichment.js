@@ -37,6 +37,12 @@ export const enrichArticle = async (article) => {
     })
 
     data.tags?.forEach(async (tag) => {
+      const entityTypes = tag.rdfTypes
+        ?.map((t) => {
+          return t.split('/').pop().toLowerCase()
+        })
+        .filter((x) => x !== undefined)
+
       await db.tag.create({
         data: {
           article: { connect: { id: article.id } },
@@ -45,7 +51,9 @@ export const enrichArticle = async (article) => {
           uri: tag.uri || tag.label,
           mentions: tag.count,
           confidence: tag.score,
-          rdfTypes: { set: tag.rdfTypes || [''] },
+          dbpediaUris: { set: tag.rdfTypes || [] },
+          rdfTypes: { set: tag.rdfTypes || [] },
+          entityTypes: { set: entityTypes || [] },
           sentiment: tag.sentiment,
         },
       })
@@ -89,10 +97,10 @@ export const enrichTweet = async (tweet) => {
 
           label: tag.label,
           uri: tag.uri,
-          diffbotUris: { set: tag.diffbotUris || [''] },
-          dbpediaUris: { set: tag.dbpediaUris || [''] },
-          rdfTypes: { set: tag.rdfTypes || [''] },
-          entityTypes: { set: tag.entityTypes || [''] },
+          diffbotUris: { set: tag.diffbotUris || [] },
+          dbpediaUris: { set: tag.dbpediaUris || [] },
+          rdfTypes: { set: tag.rdfTypes || [] },
+          entityTypes: { set: tag.entityTypes || [] },
           mentions: tag.mentions,
           confidence: tag.confidence,
           salience: tag.salience,

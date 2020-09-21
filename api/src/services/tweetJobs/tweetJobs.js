@@ -77,27 +77,32 @@ export const createTweetPriorities = async (tweet) => {
 }
 
 export const loadArticle = async (linkedEntry) => {
-  const article = await db.article.create({
-    data: {
-      entry: {
-        create: {
-          uid: linkedEntry.id,
-          documentType: DocumentType.ARTICLE,
-          document: linkedEntry,
+  try {
+    const article = await db.article.create({
+      data: {
+        entry: {
+          create: {
+            uid: linkedEntry.id,
+            documentType: DocumentType.ARTICLE,
+            document: linkedEntry,
+          },
         },
+        author: linkedEntry.articleAuthor,
+        description: linkedEntry.description,
+        publishedAt: linkedEntry.articlePublishedAt,
+        title: linkedEntry.articleTitle,
+        url: linkedEntry.articleUrl,
+        tagLabels: { set: [''] },
       },
-      author: linkedEntry.articleAuthor,
-      description: linkedEntry.description,
-      publishedAt: linkedEntry.articlePublishedAt,
-      title: linkedEntry.articleTitle,
-      url: linkedEntry.articleUrl,
-      tagLabels: { set: [''] },
-    },
-  })
+    })
 
-  await enrichArticle(article)
+    await enrichArticle(article)
 
-  return article
+    return article
+  } catch (e) {
+    console.error(e)
+    return
+  }
 }
 
 export const loadLinkedArticles = async (entry) => {
@@ -109,25 +114,30 @@ export const loadLinkedArticles = async (entry) => {
 export const loadTweet = async ({ entry }) => {
   const parsedTweet = tweetEntryParser(entry)
 
-  const tweet = await db.tweet.create({
-    data: {
-      entry: {
-        create: entryParser(entry),
+  try {
+    const tweet = await db.tweet.create({
+      data: {
+        entry: {
+          create: entryParser(entry),
+        },
+        ...parsedTweet,
       },
-      ...parsedTweet,
-    },
-    include: { entry: true },
-  })
+      include: { entry: true },
+    })
 
-  await createTweetCategories(tweet)
+    await createTweetCategories(tweet)
 
-  await createTweetPriorities(tweet)
+    await createTweetPriorities(tweet)
 
-  await enrichTweet(tweet)
+    await enrichTweet(tweet)
 
-  await loadLinkedArticles(entry)
+    await loadLinkedArticles(entry)
 
-  return tweet
+    return tweet
+  } catch (e) {
+    console.error(e)
+    return
+  }
 }
 
 export const loadTweets = async ({ response }) => {
