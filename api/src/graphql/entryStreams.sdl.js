@@ -17,6 +17,7 @@ export const schema = gql`
     FEEDLY
   }
   enum StreamType {
+    CATEGORY
     BOARD
     PRIORITY
   }

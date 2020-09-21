@@ -1,0 +1,62 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateEnum",
+      "enum": "StreamType",
+      "createdValues": [
+        "CATEGORY"
+      ]
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "EntryStream",
+          "field": "streamSource"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "EntryStream",
+          "field": "streamSource"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "FEEDLY"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "EntryStream",
+          "field": "streamType"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "EntryStream",
+          "field": "streamType"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "CATEGORY"
+    }
+  ]
+}
