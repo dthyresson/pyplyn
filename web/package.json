@@ -9,6 +9,8 @@
     "@redwoodjs/forms": "^0.19.0",
     "@redwoodjs/router": "^0.19.0",
     "@redwoodjs/web": "^0.19.0",
+    "@tailwindcss/ui": "^0.6.2",
+    "@tailwindui/react": "^0.1.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
