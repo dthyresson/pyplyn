@@ -1,38 +1,37 @@
 export const schema = gql`
-  enum DocumentType {
-    ARTICLE
-    TWEET
-  }
-
   type Entry {
     id: String!
     createdAt: DateTime!
     updatedAt: DateTime!
     uid: String!
-    document: JSON!
     documentType: DocumentType!
+    document: JSON!
+    tweet: Tweet
+    article: Article
+    entryStream: EntryStream
+    entryStreamId: String
+  }
+
+  enum DocumentType {
+    ARTICLE
+    TWEET
   }
 
   type Query {
-    entry(id: String!): Entry
-    entryByDocumentId(documentId: String!): Entry
-    entryByUid(uid: String!): Entry
     entries: [Entry!]!
   }
 
   input CreateEntryInput {
     uid: String!
+    documentType: DocumentType!
     document: JSON!
-    documentType: String
-  }
-
-  input CreateEntriesInput {
-    entries: [JSON!]!
+    entryStreamId: String
   }
 
   input UpdateEntryInput {
     uid: String
+    documentType: DocumentType
     document: JSON
-    documentType: String
+    entryStreamId: String
   }
 `

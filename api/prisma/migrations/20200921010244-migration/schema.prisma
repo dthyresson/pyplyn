@@ -2,7 +2,7 @@ datasource DS {
   // optionally set multiple providers
   // example: provider = ["sqlite", "postgresql"]
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -17,16 +17,14 @@ enum DocumentType {
 }
 
 model Entry {
-  id            String       @id @default(cuid())
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @default(now())
-  uid           String       @unique
-  documentType  DocumentType @default(TWEET)
-  document      Json
-  tweet         Tweet?
-  article       Article?
-  entryStream   EntryStream? @relation(fields: [entryStreamId], references: [id])
-  entryStreamId String?
+  id           String       @id @default(cuid())
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now())
+  uid          String       @unique
+  documentType DocumentType @default(TWEET)
+  document     Json
+  tweet        Tweet?
+  article      Article?
 }
 
 model Article {
@@ -85,14 +83,13 @@ model EntryStream {
   id               String       @id @default(cuid())
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @default(now())
-  lastAccessedAt   DateTime?
+  lastAccessedAt   DateTime
   streamSource     StreamSource
   streamType       StreamType
   name             String
-  description      String?
+  description      String
   streamIdentifier String
-  continuation     String?
-  entries          Entry[]
+  continuation     String
 }
 
 model Tweet {
