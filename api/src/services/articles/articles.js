@@ -9,6 +9,6 @@ export const Article = {
     db.article.findOne({ where: { id: root.id } }).entry(),
   articleContext: (_obj, { root }) =>
     db.article.findOne({ where: { id: root.id } }).articleContext(),
-  articleTags: (_obj, { root }) =>
-    db.article.findOne({ where: { id: root.id } }).articleTags(),
+  tags: (_obj, { root }) =>
+    db.article.findOne({ where: { id: root.id } }).tags(),
 }

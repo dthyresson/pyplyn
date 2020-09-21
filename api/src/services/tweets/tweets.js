@@ -13,4 +13,5 @@ export const Tweet = {
     db.tweet.findOne({ where: { id: root.id } }).tweetCategories(),
   tweetPriorities: (_obj, { root }) =>
     db.tweet.findOne({ where: { id: root.id } }).tweetPriorities(),
+  tags: (_obj, { root }) => db.tweet.findOne({ where: { id: root.id } }).tags(),
 }

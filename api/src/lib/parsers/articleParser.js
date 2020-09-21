@@ -1,4 +1,4 @@
-export const articleData = (extractedArticle) => {
+export const articleDataBuilder = (extractedArticle) => {
   const description =
     extractedArticle.meta?.description ||
     extractedArticle.meta?.microdata?.description ||

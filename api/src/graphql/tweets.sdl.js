@@ -14,6 +14,7 @@ export const schema = gql`
     tweetContext: TweetContext
     tweetCategories: [TweetCategory]!
     tweetPriorities: [TweetPriority]!
+    tags: [Tag]!
   }
 
   type Query {

@@ -1,8 +1,10 @@
 import { db } from 'src/lib/db'
+import { DocumentType } from '@prisma/client'
 
 import { extractArticle, extractText } from 'src/lib/apiClients/diffbot'
 
-import { articleData } from 'src/lib/parsers/articleParser'
+import { articleDataBuilder } from 'src/lib/parsers/articleParser'
+import { tweetContextDataBuilder } from 'src/lib/parsers/tweetParser'
 
 export const enrichArticle = async (article) => {
   const content = await extractArticle({
@@ -19,7 +21,7 @@ export const enrichArticle = async (article) => {
       },
     })
 
-    const data = articleData(content)
+    const data = articleDataBuilder(content)
 
     await db.article.update({
       where: { id: article.id },
@@ -35,13 +37,14 @@ export const enrichArticle = async (article) => {
     })
 
     data.tags?.forEach(async (tag) => {
-      await db.articleTag.create({
+      await db.tag.create({
         data: {
           article: { connect: { id: article.id } },
+          documentType: DocumentType.ARTICLE,
           label: tag.label,
           uri: tag.uri || tag.label,
-          count: tag.count,
-          score: tag.score,
+          mentions: tag.count,
+          confidence: tag.score,
           rdfTypes: { set: tag.rdfTypes || [''] },
           sentiment: tag.sentiment,
         },
@@ -51,7 +54,7 @@ export const enrichArticle = async (article) => {
 
   return db.article.findOne({
     where: { id: article.id },
-    include: { articleContext: true, articleTags: true },
+    include: { articleContext: true, tags: true },
   })
 }
 
@@ -74,6 +77,32 @@ export const enrichTweet = async (tweet) => {
         },
         content,
       },
+    })
+
+    const data = tweetContextDataBuilder(content)
+
+    data?.tags?.forEach(async (tag) => {
+      await db.tag.create({
+        data: {
+          tweet: { connect: { id: tweet.id } },
+          documentType: DocumentType.TWEET,
+
+          label: tag.label,
+          uri: tag.uri,
+          diffbotUris: { set: tag.diffbotUris || [''] },
+          dbpediaUris: { set: tag.dbpediaUris || [''] },
+          rdfTypes: { set: tag.rdfTypes || [''] },
+          entityTypes: { set: tag.entityTypes || [''] },
+          mentions: tag.mentions,
+          confidence: tag.confidence,
+          salience: tag.salience,
+          sentiment: tag.sentiment,
+          hasLocation: tag.hasLocation,
+          latitude: tag.latitude,
+          longitude: tag.longitude,
+          precision: tag.precision,
+        },
+      })
     })
   }
 

@@ -2,7 +2,7 @@ datasource DS {
   // optionally set multiple providers
   // example: provider = ["sqlite", "postgresql"]
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -95,6 +95,7 @@ model Tag {
   uri          String
   diffbotUris  String[]
   dbpediaUris  String[]
+  allTypes     String[]
   rdfTypes     String[]
   entityTypes  String[]
   mentions     Int          @default(0)

@@ -16,7 +16,7 @@ export const schema = gql`
     tagLabels: [String]!
     url: String!
     articleContext: ArticleContext
-    articleTags: [ArticleTag]!
+    tags: [Tag]!
   }
 
   type Query {
