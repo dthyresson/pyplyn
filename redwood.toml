@@ -9,6 +9,14 @@
   port = 8910
   apiProxyPath = "/.redwood/functions"
 [api]
+  name = "foo"
   port = 8911
+  [api.log]
+    [api.log.development]
+      file = "./logs/app.log"
+      level = "error"
+    [api.log.production]
+      file = "./logs/app.log"
+      level = "warn"
 [browser]
   open = false

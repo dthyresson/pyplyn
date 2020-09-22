@@ -6,7 +6,7 @@ import {
   linkedArticleParser,
 } from 'src/lib/parsers/entryParser'
 import { enrichArticle, enrichTweet } from 'src/services/enrichment'
-
+import { fileLogger } from 'src/lib/logger/logger'
 import { db } from 'src/lib/db'
 
 export const createTweetCategory = async ({ tweetId, uid, label }) => {
@@ -100,7 +100,8 @@ export const loadArticle = async (linkedEntry) => {
 
     return article
   } catch (e) {
-    console.error(e)
+    fileLogger.error(e.message)
+    fileLogger.debug(e.stack)
     return
   }
 }
@@ -135,14 +136,15 @@ export const loadTweet = async ({ entry }) => {
 
     return tweet
   } catch (e) {
-    console.error(e)
+    fileLogger.error(e.message)
+    fileLogger.debug(e.stack)
     return
   }
 }
 
 export const loadTweets = async ({ response }) => {
-  return response.items.map(async (item) => {
-    const tweet = await loadTweet({ entry: item })
-    return tweet
+  response.items.forEach(async (item) => {
+    await loadTweet({ entry: item })
   })
+  return
 }
