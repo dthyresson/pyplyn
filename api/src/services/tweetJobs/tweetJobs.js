@@ -3,7 +3,7 @@ import { DocumentType } from '@prisma/client'
 import {
   entryParser,
   tweetEntryParser,
-  linkedArticleParser,
+  linkedEntriesParser,
 } from 'src/lib/parsers/entryParser'
 import { enrichArticle, enrichTweet } from 'src/services/enrichment'
 import { logger } from 'src/lib/logger/logger'
@@ -76,7 +76,7 @@ export const createTweetPriorities = async (tweet) => {
   })
 }
 
-export const loadArticle = async (linkedEntry) => {
+export const persistArticle = async (linkedEntry) => {
   try {
     const article = await db.article.create({
       data: {
@@ -109,16 +109,16 @@ export const loadArticle = async (linkedEntry) => {
   }
 }
 
-export const loadLinkedArticles = async (entry) => {
-  linkedArticleParser(entry).forEach(async (linkedEntry) => {
-    await loadArticle(linkedEntry)
+export const persistLinkedArticles = async (entry) => {
+  linkedEntriesParser(entry).forEach(async (linkedEntry) => {
+    await persistArticle(linkedEntry)
   })
 }
 
-export const loadTweet = async ({ entry }) => {
+export const persistTweet = async ({ entry }) => {
   logger.debug(
     { entryId: entry.id, documumentType: entry.DocumentType },
-    `loadTweet dfor entry: ${entry.id}`
+    `persistTweet dfor entry: ${entry.id}`
   )
 
   const parsedTweet = tweetEntryParser(entry)
@@ -140,22 +140,22 @@ export const loadTweet = async ({ entry }) => {
 
     await enrichTweet(tweet)
 
-    await loadLinkedArticles(entry)
+    await persistLinkedArticles(entry)
 
     return tweet
   } catch (e) {
     logger.error(e.message)
     logger.debug(e.stack)
 
-    logger.error(e, `loadTweet error: ${e.message}`)
-    logger.debug(e.stack, 'loadTweet error stack')
+    logger.error(e, `persistTweet error: ${e.message}`)
+    logger.debug(e.stack, 'persistTweet error stack')
     return
   }
 }
 
-export const loadTweets = async ({ response }) => {
+export const persistTweets = async ({ response }) => {
   response.items.forEach(async (item) => {
-    await loadTweet({ entry: item })
+    await persistTweet({ entry: item })
   })
   return
 }

@@ -1,5 +1,5 @@
 import { streamContents } from 'src/lib/apiClients/feedly'
-import { loadTweets } from 'src/services/tweetJobs'
+import { persistTweets } from 'src/services/tweetJobs'
 
 export const handler = async (event, _context) => {
   const { streamId, count } = event.queryStringParameters
@@ -12,7 +12,7 @@ export const handler = async (event, _context) => {
     console.info(continuation)
     data = await streamContents({ streamId, count, continuation })
     continuation = data.continuation
-    await loadTweets({ response: data })
+    await persistTweets({ response: data })
     hasMore = continuation && continuation.length > 0
   }
 

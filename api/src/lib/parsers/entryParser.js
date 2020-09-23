@@ -33,46 +33,44 @@ export const tweetEntryParser = (entry) => {
   }
 }
 
-export const linkedArticleParser = (entry) => {
+export const linkedEntriesParser = (entry) => {
   const document = entry.document || entry
 
   try {
     return (
-      document.linked?.map((linkedEntry) => {
-        linkedEntry.articleUrl =
-          (linkedEntry.canonical && linkedEntry.canonical[0])?.href ||
-          (linkedEntry.alternate && linkedEntry.alternate[0])?.href
+      document.linked?.map((article) => {
+        article.articleUrl =
+          (article.canonical && article.canonical[0])?.href ||
+          (article.alternate && article.alternate[0])?.href
 
-        linkedEntry.articleAuthor =
-          linkedEntry.author ||
-          linkedEntry.authorDetails?.fullname ||
-          linkedEntry.meta?.microdata?.author ||
+        article.articleAuthor =
+          article.author ||
+          article.authorDetails?.fullname ||
+          article.meta?.microdata?.author ||
           'unknown'
 
-        linkedEntry.articlePublishedAt = fromUnixTime(
-          (linkedEntry.published ||
-            linkedEntry.updated ||
-            linkedEntry.crawled) / 1000
+        article.articlePublishedAt = fromUnixTime(
+          (article.published || article.updated || article.crawled) / 1000
         )
 
-        linkedEntry.articleTitle = linkedEntry.title || 'unknown'
+        article.articleTitle = article.title || 'unknown'
 
-        linkedEntry.description =
-          linkedEntry.meta?.description ||
-          linkedEntry.meta?.microdata?.description ||
-          linkedEntry.meta?.microdata?.['itemprop:description']
+        article.description =
+          article.meta?.description ||
+          article.meta?.microdata?.description ||
+          article.meta?.microdata?.['itemprop:description']
 
-        linkedEntry.articleAuthor =
-          linkedEntry.author ||
-          linkedEntry.authorDetails?.fullname ||
-          linkedEntry.meta?.microdata?.author ||
+        article.articleAuthor =
+          article.author ||
+          article.authorDetails?.fullname ||
+          article.meta?.microdata?.author ||
           'unknown'
 
-        return linkedEntry
+        return article
       }) || []
     )
   } catch (e) {
-    logger.error(e, `Error parsing linkedEntry ${entry.id}`)
+    logger.error(e, `Error parsing article for entry ${entry.id}`)
 
     return []
   }

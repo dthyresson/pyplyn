@@ -116,27 +116,36 @@ export const enrichTweet = async (tweet) => {
         `Adding tag ${tag.label} to tweet`
       )
 
-      await db.tag.create({
-        data: {
-          tweet: { connect: { id: tweet.id } },
-          documentType: DocumentType.TWEET,
+      try {
+        const t = await db.tag.create({
+          data: {
+            tweet: { connect: { id: tweet.id } },
+            documentType: DocumentType.TWEET,
 
-          label: tag.label,
-          uri: tag.uri,
-          diffbotUris: { set: tag.diffbotUris || [] },
-          dbpediaUris: { set: tag.dbpediaUris || [] },
-          rdfTypes: { set: tag.rdfTypes || [] },
-          entityTypes: { set: tag.entityTypes || [] },
-          mentions: tag.mentions,
-          confidence: tag.confidence,
-          salience: tag.salience,
-          sentiment: tag.sentiment,
-          hasLocation: tag.hasLocation,
-          latitude: tag.latitude,
-          longitude: tag.longitude,
-          precision: tag.precision,
-        },
-      })
+            label: tag.label,
+            uri: tag.uri,
+            diffbotUris: { set: tag.diffbotUris || [] },
+            dbpediaUris: { set: tag.dbpediaUris || [] },
+            rdfTypes: { set: tag.rdfTypes || [] },
+            entityTypes: { set: tag.entityTypes || [] },
+            mentions: tag.mentions,
+            confidence: tag.confidence,
+            salience: tag.salience,
+            sentiment: tag.sentiment,
+            hasLocation: tag.hasLocation,
+            latitude: tag.latitude,
+            longitude: tag.longitude,
+            precision: tag.precision,
+          },
+        })
+
+        logger.debug(t, `Created tag ${t.label} for tweetId ${tweet.id} `)
+      } catch (e) {
+        logger.error(
+          e,
+          `Error creating tag ${tag.label} for tweetId ${tweet.id} `
+        )
+      }
     })
   }
 

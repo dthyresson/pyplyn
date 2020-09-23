@@ -7,7 +7,7 @@ export const schema = gql`
 
   type Mutation {
     createTweet(tweet: CreateTweetInput!): Tweet!
-    loadTweet(entry: CreateEntryInput!): Tweet!
-    loadTweets(response: StreamResponse!): [Tweet!]!
+    persistTweet(entry: CreateEntryInput!): Tweet!
+    persistTweets(response: StreamResponse!): [Tweet!]!
   }
 `
