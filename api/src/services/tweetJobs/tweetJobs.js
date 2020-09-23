@@ -6,7 +6,7 @@ import {
   linkedArticleParser,
 } from 'src/lib/parsers/entryParser'
 import { enrichArticle, enrichTweet } from 'src/services/enrichment'
-import { fileLogger } from 'src/lib/logger/logger'
+import { logger } from 'src/lib/logger/logger'
 import { db } from 'src/lib/db'
 
 export const createTweetCategory = async ({ tweetId, uid, label }) => {
@@ -100,8 +100,11 @@ export const loadArticle = async (linkedEntry) => {
 
     return article
   } catch (e) {
-    fileLogger.error(e.message)
-    fileLogger.debug(e.stack)
+    logger.error(e.message)
+    logger.debug(e.stack)
+
+    logger.error(e, e.message)
+    logger.debug(e, e.stack)
     return
   }
 }
@@ -113,6 +116,11 @@ export const loadLinkedArticles = async (entry) => {
 }
 
 export const loadTweet = async ({ entry }) => {
+  logger.debug(
+    { entryId: entry.id, documumentType: entry.DocumentType },
+    `loadTweet dfor entry: ${entry.id}`
+  )
+
   const parsedTweet = tweetEntryParser(entry)
 
   try {
@@ -136,8 +144,11 @@ export const loadTweet = async ({ entry }) => {
 
     return tweet
   } catch (e) {
-    fileLogger.error(e.message)
-    fileLogger.debug(e.stack)
+    logger.error(e.message)
+    logger.debug(e.stack)
+
+    logger.error(e, `loadTweet error: ${e.message}`)
+    logger.debug(e.stack, 'loadTweet error stack')
     return
   }
 }

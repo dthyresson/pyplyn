@@ -1,3 +1,5 @@
+import { logger } from 'src/lib/logger/logger'
+
 import { db } from 'src/lib/db'
 import { DocumentType } from '@prisma/client'
 
@@ -7,6 +9,14 @@ import { articleDataBuilder } from 'src/lib/parsers/articleParser'
 import { tweetContextDataBuilder } from 'src/lib/parsers/tweetParser'
 
 export const enrichArticle = async (article) => {
+  logger.info(
+    {
+      articleId: article.id,
+      articleUrl: article.url,
+    },
+    'Enriching article'
+  )
+
   const content = await extractArticle({
     url: article.url,
   })
@@ -67,6 +77,14 @@ export const enrichArticle = async (article) => {
 }
 
 export const enrichTweet = async (tweet) => {
+  logger.info(
+    {
+      tweetId: tweet.id,
+      tweetContent: tweet.content,
+    },
+    'Enriching tweet'
+  )
+
   const content = await extractText({
     content: tweet.content,
     lang: 'en',
@@ -90,6 +108,14 @@ export const enrichTweet = async (tweet) => {
     const data = tweetContextDataBuilder(content)
 
     data?.tags?.forEach(async (tag) => {
+      logger.info(
+        {
+          tag: tag.label,
+          tweetId: tweet.id,
+        },
+        `Adding tag ${tag.label} to tweet`
+      )
+
       await db.tag.create({
         data: {
           tweet: { connect: { id: tweet.id } },

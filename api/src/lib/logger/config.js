@@ -20,7 +20,7 @@ const dbLogOptions = {
 }
 
 const DEFAULT_LOG_CONFIG = {
-  file: './logs/app2.log',
+  file: './logs/app.log',
   level: 'debug',
   dbLogOptions,
 }
@@ -29,5 +29,3 @@ export const config = merge(
   DEFAULT_LOG_CONFIG,
   getConfig().api?.log?.development || {}
 )
-
-console.log(config)
