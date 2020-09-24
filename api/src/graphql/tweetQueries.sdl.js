@@ -1,6 +1,6 @@
 export const schema = gql`
   type Query {
-    tweet(id: String!): Tweet
+    tweetById(id: String!): Tweet
     tweetByEntryId(entryId: String!): Tweet
     tweetByDocumentId(documentId: String!): Tweet
   }

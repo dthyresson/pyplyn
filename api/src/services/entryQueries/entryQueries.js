@@ -1,6 +1,6 @@
 import { db } from 'src/lib/db'
 
-export const entry = ({ id }) => {
+export const entryById = ({ id }) => {
   return db.entry.findOne({ where: { id: id } })
 }
 

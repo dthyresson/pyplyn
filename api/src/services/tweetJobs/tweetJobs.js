@@ -1,11 +1,14 @@
 import { DocumentType } from '@prisma/client'
 
+import { entryById } from 'src/services/entryQueries'
+import { tweetById } from 'src/services/tweetQueries'
+
 import {
   entryParser,
   tweetEntryParser,
   linkedEntriesParser,
 } from 'src/lib/parsers/entryParser'
-import { enrichArticle, enrichTweet } from 'src/services/enrichment'
+import { enrichArticleId, enrichTweetId } from 'src/services/enrichment'
 import { logger } from 'src/lib/logger/logger'
 import { db } from 'src/lib/db'
 
@@ -24,7 +27,36 @@ export const createTweetCategory = async ({ tweetId, uid, label }) => {
   return tweetCategory
 }
 
+export const persistTweetCategories = async ({ id }) => {
+  logger.debug({ tweetId: id }, `persistTweetCategories for tweetId: ${id}`)
+
+  const tweet = await tweetById({ id: id })
+
+  if (tweet == undefined) {
+    logger.warn(`persistTweetCategories has undefined tweet for id ${id}`)
+  }
+
+  return await createTweetCategories(tweet)
+}
+
 export const createTweetCategories = async (tweet) => {
+  if (tweet == undefined) {
+    logger.error(`createTweetCategories has undefined tweet`)
+    return
+  }
+
+  logger.debug(
+    { tweetId: tweet.id },
+    `createTweetCategories for tweet: ${tweet.id}`
+  )
+
+  if (tweet.entry?.document?.categories === undefined) {
+    logger.warn(
+      { tweetId: tweet.id },
+      `createTweetCategories missing categories for tweet: ${tweet.id}`
+    )
+  }
+
   return tweet.entry?.document?.categories?.map(async (category) => {
     return await createTweetCategory({
       tweetId: tweet.id,
@@ -34,22 +66,36 @@ export const createTweetCategories = async (tweet) => {
   })
 }
 
-export const createTweetPriority = async ({ tweetId, uid, label }) => {
-  const tweetPriority = await db.tweetPriority.create({
-    data: {
-      tweet: {
-        connect: { id: tweetId },
-      },
-      uid,
-      label,
-    },
-    include: { tweet: true },
-  })
+export const persistTweetPriorities = async ({ id }) => {
+  logger.debug({ tweetId: id }, `persistTweetPriorities for tweetId: ${id}`)
 
-  return tweetPriority
+  const tweet = await tweetById({ id: id })
+
+  if (tweet == undefined) {
+    logger.warn(`persistTweetPriorities has undefined tweet for id ${id}`)
+  }
+
+  return await createTweetPriorities(tweet)
 }
 
 export const createTweetPriorities = async (tweet) => {
+  if (tweet == undefined) {
+    logger.error(`createTweetPriorities has undefined tweet`)
+    return
+  }
+
+  logger.debug(
+    { tweetId: tweet.id },
+    `createTweetPriorities for tweet: ${tweet.id}`
+  )
+
+  if (tweet.entry?.document?.priorities === undefined) {
+    logger.warn(
+      { tweetId: tweet.id },
+      `createTweetPriorities missing priorities for tweet: ${tweet.id}`
+    )
+  }
+
   return tweet.entry?.document?.priorities?.map(async (priority) => {
     const tweetPriority = await createTweetPriority({
       tweetId: tweet.id,
@@ -76,27 +122,43 @@ export const createTweetPriorities = async (tweet) => {
   })
 }
 
-export const persistArticle = async (linkedEntry) => {
+export const createTweetPriority = async ({ tweetId, uid, label }) => {
+  const tweetPriority = await db.tweetPriority.create({
+    data: {
+      tweet: {
+        connect: { id: tweetId },
+      },
+      uid,
+      label,
+    },
+    include: { tweet: true },
+  })
+
+  return tweetPriority
+}
+
+export const persistLinkedArticle = async (linkedArticle) => {
   try {
     const article = await db.article.create({
       data: {
         entry: {
           create: {
-            uid: linkedEntry.id,
+            uid: linkedArticle.id,
             documentType: DocumentType.ARTICLE,
-            document: linkedEntry,
+            document: linkedArticle,
           },
         },
-        author: linkedEntry.articleAuthor,
-        description: linkedEntry.description,
-        publishedAt: linkedEntry.articlePublishedAt,
-        title: linkedEntry.articleTitle,
-        url: linkedEntry.articleUrl,
+        author: linkedArticle.articleAuthor,
+        description: linkedArticle.description,
+        publishedAt: linkedArticle.articlePublishedAt,
+        title: linkedArticle.articleTitle,
+        url: linkedArticle.articleUrl,
         tagLabels: { set: [''] },
       },
     })
 
-    await enrichArticle(article)
+    // await enrichArticle(article)
+    await enrichArticleId({ id: article.id })
 
     return article
   } catch (e) {
@@ -109,16 +171,28 @@ export const persistArticle = async (linkedEntry) => {
   }
 }
 
+export const persistLinkedArticlesForEntryId = async ({ id }) => {
+  const entry = await entryById({ id: id })
+
+  if (entry === undefined) {
+    logger.error(`persistLinkedArticlesForEntryId entry ${id} not found!`)
+  }
+
+  linkedEntriesParser(entry).forEach(async (linkedArticle) => {
+    await persistLinkedArticle(linkedArticle)
+  })
+}
+
 export const persistLinkedArticles = async (entry) => {
-  linkedEntriesParser(entry).forEach(async (linkedEntry) => {
-    await persistArticle(linkedEntry)
+  linkedEntriesParser(entry).forEach(async (linkedArticle) => {
+    await persistLinkedArticle(linkedArticle)
   })
 }
 
 export const persistTweet = async ({ entry }) => {
   logger.debug(
     { entryId: entry.id, documumentType: entry.DocumentType },
-    `persistTweet dfor entry: ${entry.id}`
+    `persistTweet for entry: ${entry.id}`
   )
 
   const parsedTweet = tweetEntryParser(entry)
@@ -134,13 +208,18 @@ export const persistTweet = async ({ entry }) => {
       include: { entry: true },
     })
 
-    await createTweetCategories(tweet)
+    // TODO: replace all with scheduler repeater tasks
+    await persistTweetCategories({ id: tweet.id })
+    // await createTweetCategories(tweet)
 
-    await createTweetPriorities(tweet)
+    await persistTweetPriorities({ id: tweet.id })
+    // await createTweetPriorities(tweet)
 
-    await enrichTweet(tweet)
+    // await enrichTweet(tweet)
+    await enrichTweetId({ id: tweet.id })
 
-    await persistLinkedArticles(entry)
+    // await persistLinkedArticles(entry)
+    persistLinkedArticlesForEntryId({ id: tweet.entryId })
 
     return tweet
   } catch (e) {

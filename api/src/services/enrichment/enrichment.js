@@ -3,10 +3,19 @@ import { logger } from 'src/lib/logger/logger'
 import { db } from 'src/lib/db'
 import { DocumentType } from '@prisma/client'
 
+import { articleById } from 'src/services/articleQueries'
+
+import { tweetById } from 'src/services/tweetQueries'
+
 import { extractArticle, extractText } from 'src/lib/apiClients/diffbot'
 
 import { articleDataBuilder } from 'src/lib/parsers/articleParser'
 import { tweetContextDataBuilder } from 'src/lib/parsers/tweetParser'
+
+export const enrichArticleId = async ({ id }) => {
+  const article = await articleById({ id: id })
+  return await enrichArticle(article)
+}
 
 export const enrichArticle = async (article) => {
   logger.info(
@@ -17,6 +26,7 @@ export const enrichArticle = async (article) => {
     'Enriching article'
   )
 
+  // TODO: This is the super long running task
   const content = await extractArticle({
     url: article.url,
   })
@@ -76,6 +86,11 @@ export const enrichArticle = async (article) => {
   })
 }
 
+export const enrichTweetId = async ({ id }) => {
+  const tweet = await tweetById({ id: id })
+  return await enrichTweet(tweet)
+}
+
 export const enrichTweet = async (tweet) => {
   logger.info(
     {
@@ -96,7 +111,7 @@ export const enrichTweet = async (tweet) => {
       data: { sentiment: content.sentiment },
     })
 
-    await db.tweetContext.create({
+    const tweetContext = await db.tweetContext.create({
       data: {
         tweet: {
           connect: { id: tweet.id },
@@ -104,50 +119,70 @@ export const enrichTweet = async (tweet) => {
         content,
       },
     })
-
-    const data = tweetContextDataBuilder(content)
-
-    data?.tags?.forEach(async (tag) => {
-      logger.info(
-        {
-          tag: tag.label,
-          tweetId: tweet.id,
-        },
-        `Adding tag ${tag.label} to tweet`
-      )
-
-      try {
-        const t = await db.tag.create({
-          data: {
-            tweet: { connect: { id: tweet.id } },
-            documentType: DocumentType.TWEET,
-
-            label: tag.label,
-            uri: tag.uri,
-            diffbotUris: { set: tag.diffbotUris || [] },
-            dbpediaUris: { set: tag.dbpediaUris || [] },
-            rdfTypes: { set: tag.rdfTypes || [] },
-            entityTypes: { set: tag.entityTypes || [] },
-            mentions: tag.mentions,
-            confidence: tag.confidence,
-            salience: tag.salience,
-            sentiment: tag.sentiment,
-            hasLocation: tag.hasLocation,
-            latitude: tag.latitude,
-            longitude: tag.longitude,
-            precision: tag.precision,
-          },
-        })
-
-        logger.debug(t, `Created tag ${t.label} for tweetId ${tweet.id} `)
-      } catch (e) {
-        logger.error(
-          e,
-          `Error creating tag ${tag.label} for tweetId ${tweet.id} `
-        )
-      }
-    })
+    await enrichTweetContext({ tweetContextId: tweetContext.id })
   }
 
-  return tweet
+  return
+}
+
+export const enrichTweetContext = async ({ tweetContextId }) => {
+  if (tweetContextId == undefined) {
+    logger.error('enrichTweetContext missing tweetContextId')
+    return
+  }
+
+  const tweetContext = await db.tweetContext.findOne({
+    where: { id: tweetContextId },
+  })
+
+  if (tweetContext == undefined) {
+    logger.error('enrichTweetContext missing tweetContext')
+    return
+  }
+
+  const data = tweetContextDataBuilder(tweetContext.content)
+
+  data?.tags?.forEach(async (tag) => {
+    logger.info(
+      {
+        tag: tag.label,
+        tweetId: tweetContext.tweetId,
+      },
+      `Adding tag ${tag.label} to tweet`
+    )
+
+    try {
+      const t = await db.tag.create({
+        data: {
+          tweet: { connect: { id: tweetContext.tweetId } },
+          documentType: DocumentType.TWEET,
+
+          label: tag.label,
+          uri: tag.uri,
+          diffbotUris: { set: tag.diffbotUris || [] },
+          dbpediaUris: { set: tag.dbpediaUris || [] },
+          rdfTypes: { set: tag.rdfTypes || [] },
+          entityTypes: { set: tag.entityTypes || [] },
+          mentions: tag.mentions,
+          confidence: tag.confidence,
+          salience: tag.salience,
+          sentiment: tag.sentiment,
+          hasLocation: tag.hasLocation,
+          latitude: tag.latitude,
+          longitude: tag.longitude,
+          precision: tag.precision,
+        },
+      })
+
+      logger.debug(
+        t,
+        `Created tag ${t.label} for tweetId ${tweetContext.tweetId} `
+      )
+    } catch (e) {
+      logger.error(
+        e,
+        `Error creating tag ${tag.label} for tweetId ${tweetContext.tweetId} `
+      )
+    }
+  })
 }
