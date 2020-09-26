@@ -13,18 +13,24 @@ import { logger } from 'src/lib/logger/logger'
 import { db } from 'src/lib/db'
 
 export const createTweetCategory = async ({ tweetId, uid, label }) => {
-  const tweetCategory = await db.tweetCategory.create({
-    data: {
-      tweet: {
-        connect: { id: tweetId },
+  try {
+    const tweetCategory = await db.tweetCategory.create({
+      data: {
+        tweet: {
+          connect: { id: tweetId },
+        },
+        uid,
+        label,
       },
-      uid,
-      label,
-    },
-    include: { tweet: true },
-  })
+      include: { tweet: true },
+    })
 
-  return tweetCategory
+    return tweetCategory
+  } catch (e) {
+    logger.error(e, `createTweetCategory error: ${e.message}`)
+    logger.warn(e.stack, 'createTweetCategory error stack')
+    return null
+  }
 }
 
 export const persistTweetCategories = async ({ id }) => {
@@ -36,7 +42,9 @@ export const persistTweetCategories = async ({ id }) => {
     logger.warn(`persistTweetCategories has undefined tweet for id ${id}`)
   }
 
-  return await createTweetCategories(tweet)
+  await createTweetCategories(tweet)
+
+  return
 }
 
 export const createTweetCategories = async (tweet) => {
@@ -57,13 +65,20 @@ export const createTweetCategories = async (tweet) => {
     )
   }
 
-  return tweet.entry?.document?.categories?.map(async (category) => {
-    return await createTweetCategory({
-      tweetId: tweet.id,
-      uid: category.id,
-      label: category.label,
-    })
+  tweet.entry?.document?.categories?.map(async (category) => {
+    try {
+      await createTweetCategory({
+        tweetId: tweet.id,
+        uid: category.id,
+        label: category.label,
+      })
+    } catch (e) {
+      logger.error(e, `createTweetCategory error: ${e.message}`)
+      logger.warn(e.stack, 'createTweetCategory error stack')
+    }
   })
+
+  return
 }
 
 export const persistTweetPriorities = async ({ id }) => {
@@ -75,7 +90,9 @@ export const persistTweetPriorities = async ({ id }) => {
     logger.warn(`persistTweetPriorities has undefined tweet for id ${id}`)
   }
 
-  return await createTweetPriorities(tweet)
+  await createTweetPriorities(tweet)
+
+  return
 }
 
 export const createTweetPriorities = async (tweet) => {
@@ -96,45 +113,56 @@ export const createTweetPriorities = async (tweet) => {
     )
   }
 
-  return tweet.entry?.document?.priorities?.map(async (priority) => {
-    const tweetPriority = await createTweetPriority({
-      tweetId: tweet.id,
-      uid: priority.id,
-      label: priority.label,
-    })
-
-    priority.searchTerms?.parts?.map(async (term) => {
-      const label = term.label || term.text || term.id?.split('/').pop()
-
-      await db.tweetPriorityTerm.create({
-        data: {
-          tweetPriority: {
-            connect: { id: tweetPriority.id },
-          },
-          uid: term.id || 'nlp/f/entity/unknown',
-          label: label,
-        },
-        include: { tweetPriority: true },
+  tweet.entry?.document?.priorities?.map(async (priority) => {
+    try {
+      const tweetPriority = await createTweetPriority({
+        tweetId: tweet.id,
+        uid: priority.id,
+        label: priority.label,
       })
-    })
 
-    return tweetPriority
+      priority.searchTerms?.parts?.forEach(async (term) => {
+        const label = term.label || term.text || term.id?.split('/').pop()
+
+        await db.tweetPriorityTerm.create({
+          data: {
+            tweetPriority: {
+              connect: { id: tweetPriority.id },
+            },
+            uid: term.id || 'nlp/f/entity/unknown',
+            label: label,
+          },
+          include: { tweetPriority: true },
+        })
+      })
+    } catch (e) {
+      logger.error(e, `createTweetPriority error: ${e.message}`)
+      logger.warn(e.stack, 'createTweetPriority error stack')
+    }
   })
+
+  return
 }
 
 export const createTweetPriority = async ({ tweetId, uid, label }) => {
-  const tweetPriority = await db.tweetPriority.create({
-    data: {
-      tweet: {
-        connect: { id: tweetId },
+  try {
+    const tweetPriority = await db.tweetPriority.create({
+      data: {
+        tweet: {
+          connect: { id: tweetId },
+        },
+        uid,
+        label,
       },
-      uid,
-      label,
-    },
-    include: { tweet: true },
-  })
+      include: { tweet: true },
+    })
 
-  return tweetPriority
+    return tweetPriority
+  } catch (e) {
+    logger.error(e, `createTweetPriority error: ${e.message}`)
+    logger.warn(e.stack, 'createTweetPriority error stack')
+    return
+  }
 }
 
 export const persistLinkedArticle = async (linkedArticle) => {
@@ -164,9 +192,6 @@ export const persistLinkedArticle = async (linkedArticle) => {
   } catch (e) {
     logger.error(e.message)
     logger.debug(e.stack)
-
-    logger.error(e, e.message)
-    logger.debug(e, e.stack)
     return
   }
 }
@@ -196,12 +221,18 @@ export const persistTweet = async ({ entry }) => {
   )
 
   const parsedTweet = tweetEntryParser(entry)
+  const parsedEntry = entryParser(entry)
+
+  logger.debug({ uid: parsedEntry.uid }, `parsedEntry entry: ${entry.id}`)
 
   try {
     const tweet = await db.tweet.create({
       data: {
         entry: {
-          create: entryParser(entry),
+          connectOrCreate: {
+            where: { uid: parsedEntry.uid },
+            create: parsedEntry,
+          },
         },
         ...parsedTweet,
       },
@@ -219,22 +250,25 @@ export const persistTweet = async ({ entry }) => {
     await enrichTweetId({ id: tweet.id })
 
     // await persistLinkedArticles(entry)
-    persistLinkedArticlesForEntryId({ id: tweet.entryId })
+    await persistLinkedArticlesForEntryId({ id: tweet.entryId })
 
-    return tweet
+    logger.debug(
+      { tweet: { id: tweet.id, title: tweet.title } },
+      `Successfully persistTweet: ${tweet.id}`
+    )
   } catch (e) {
-    logger.error(e.message)
-    logger.debug(e.stack)
-
     logger.error(e, `persistTweet error: ${e.message}`)
-    logger.debug(e.stack, 'persistTweet error stack')
-    return
+    logger.warn(e.stack, 'persistTweet error stack')
   }
 }
 
 export const persistTweets = async ({ response }) => {
   response.items.forEach(async (item) => {
-    await persistTweet({ entry: item })
+    try {
+      await persistTweet({ entry: item })
+    } catch (e) {
+      logger.error(e, `persistTweets error: ${e.message}`)
+      logger.warn(e.stack, 'persistTweets error stack')
+    }
   })
-  return
 }

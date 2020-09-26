@@ -2,7 +2,7 @@ datasource DS {
   // optionally set multiple providers
   // example: provider = ["sqlite", "postgresql"]
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -113,7 +113,7 @@ model Tweet {
   updatedAt       DateTime        @default(now())
   publishedAt     DateTime
   entry           Entry           @relation(fields: [entryId], references: [id])
-  entryId         String          @unique
+  entryId         String
   author          String
   title           String
   content         String

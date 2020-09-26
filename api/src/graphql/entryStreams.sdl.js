@@ -24,6 +24,7 @@ export const schema = gql`
 
   type Query {
     entryStreams: [EntryStream!]!
+    entryStream(id: String!): EntryStream
   }
 
   input CreateEntryStreamInput {
@@ -44,5 +45,11 @@ export const schema = gql`
     description: String
     streamIdentifier: String
     continuation: String
+  }
+
+  type Mutation {
+    createEntryStream(input: CreateEntryStreamInput!): EntryStream!
+    updateEntryStream(id: String!, input: UpdateEntryStreamInput!): EntryStream!
+    deleteEntryStream(id: String!): EntryStream!
   }
 `

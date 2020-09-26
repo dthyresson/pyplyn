@@ -1,32 +1,29 @@
 /* eslint-disable no-console */
 
-const { PrismaClient } = require('@prisma/client')
+const { PrismaClient, StreamSource, StreamType } = require('@prisma/client')
 const dotenv = require('dotenv')
-const fromUnixTime = require('date-fns/fromUnixTime')
+var subHours = require('date-fns/subHours')
 
 dotenv.config()
 const db = new PrismaClient()
 
-const tweets = require('../../data/feedly/tweets.json')
-
-async function createTweet(entry) {
-  console.log(`Creating Tweet for Entry ${entry.id}`)
-  await db.tweet.create({
-    data: {
-      entry: { create: { documentId: entry.id, document: entry } },
-      publishedAt: fromUnixTime(entry.published / 1000),
-      author: entry.author,
-      title: entry.title,
-      url: entry.alternate[0]?.href,
-    },
-  })
-}
-
 async function main() {
-  const existing = await db.entry.count()
+  const existing = await db.entryStream.count()
   if (!existing) {
-    console.log('Creating Entries and Tweets ...')
-    tweets.items.forEach(async (tweet) => createTweet(tweet))
+    console.log('Creating EntryStreams ...')
+
+    await db.entryStream.create({
+      data: {
+        streamSource: StreamSource.FEEDLY,
+        streamType: StreamType.PRIORITY,
+        name: 'Ingest Wine Influencer Priority Feed',
+        description:
+          'Feed prioritized wine related feeds from a set of twitter influencer sources.',
+        streamIdentifier:
+          'enterprise/dthyressondt/category/e959ead4-c6ce-450e-909a-311de88cd762',
+        lastAccessedAt: subHours(Date.now(), 3),
+      },
+    })
     console.log('... done!')
   } else {
     console.info(

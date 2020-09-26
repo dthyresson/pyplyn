@@ -1,4 +1,5 @@
 import got from 'got'
+import { logger } from 'src/lib/logger/logger'
 
 export const entry = async (entryId) => {
   return await entries([entryId])
@@ -16,14 +17,30 @@ export const streamContents = async ({
   importantOnly = true,
   count = 20,
   continuation,
+  newerThan,
 }) => {
   if (streamId === undefined) {
     throw Error('Missing streamId')
   }
 
+  logger.debug(`feedly > streamContents > newerThan ${newerThan}`)
+
+  const searchParams = {
+    streamId,
+    importantOnly,
+    count,
+    continuation,
+    newerThan,
+  }
+
+  logger.debug(
+    searchParams,
+    `feedly > streamContents > searchParams - continuation: ${continuation} newerThan: ${newerThan}`
+  )
+
   return await query({
     endpoint: '/streams/contents',
-    searchParams: { streamId, importantOnly, count, continuation },
+    searchParams: searchParams,
   })
 }
 
