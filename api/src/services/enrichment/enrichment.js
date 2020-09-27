@@ -23,7 +23,7 @@ export const enrichArticle = async (article) => {
       articleId: article.id,
       articleUrl: article.url,
     },
-    'Enriching article'
+    `Enriching article ${article.url}`
   )
 
   // TODO: This is the super long running task
@@ -32,6 +32,13 @@ export const enrichArticle = async (article) => {
   })
 
   if (content !== undefined) {
+    logger.debug(
+      {
+        articleId: article.id,
+        articleUrl: article.url,
+      },
+      `Enriching article articleContext`
+    )
     await db.articleContext.create({
       data: {
         article: {
@@ -43,6 +50,13 @@ export const enrichArticle = async (article) => {
 
     const data = articleDataBuilder(content)
 
+    logger.debug(
+      {
+        articleId: article.id,
+        articleUrl: article.url,
+      },
+      `Updating article with enriched info`
+    )
     await db.article.update({
       where: { id: article.id },
       data: {
@@ -56,6 +70,14 @@ export const enrichArticle = async (article) => {
       },
     })
 
+    logger.debug(
+      {
+        articleId: article.id,
+        articleUrl: article.url,
+      },
+      `Enriching article tags`
+    )
+
     data.tags?.forEach(async (tag) => {
       const entityTypes = tag.rdfTypes
         ?.map((t) => {
@@ -63,7 +85,16 @@ export const enrichArticle = async (article) => {
         })
         .filter((x) => x !== undefined)
 
-      await db.tag.create({
+      logger.debug(
+        {
+          articleId: article.id,
+          articleUrl: article.url,
+          tag,
+        },
+        `Enriching tag {tag.label} to article ${article.id}`
+      )
+
+      const t = await db.tag.create({
         data: {
           article: { connect: { id: article.id } },
           documentType: DocumentType.ARTICLE,
@@ -77,6 +108,8 @@ export const enrichArticle = async (article) => {
           sentiment: tag.sentiment,
         },
       })
+
+      logger.info(t, `Created tag ${t.label} for articleId ${article.id} `)
     })
   }
 

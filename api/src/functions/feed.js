@@ -26,6 +26,11 @@ export const handler = async (event, _context) => {
         continuation,
         newerThan,
       })
+    } else {
+      logger.info(
+        { streamId: streamId },
+        `Reached end of streamId: ${streamId}`
+      )
     }
 
     return {
