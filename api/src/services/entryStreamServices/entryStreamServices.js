@@ -1,8 +1,43 @@
+import { toDate } from 'date-fns'
+
 import { logger } from 'src/lib/logger'
 
 import { streamContents } from 'src/lib/apiClients/feedly'
 import { scheduleEntryStreamJob } from 'src/schedulers/entryStreamScheduler'
 import { persistTweets } from 'src/services/tweetServices'
+
+import { updateEntryStream } from 'src/services/entryStreams'
+import { entryStreamByIdentifier } from 'src/services/entryStreamQueries'
+
+const updateEntryStreamStatus = async ({
+  streamIdentifier,
+  continuation,
+  newerThan,
+}) => {
+  const entryStream = await entryStreamByIdentifier({
+    streamIdentifier,
+    continuation,
+    newerThan,
+  })
+  if (entryStream) {
+    await updateEntryStream({
+      id: entryStream.id,
+      input: {
+        continuation: continuation,
+        lastAccessedAt: toDate(Date.now()),
+      },
+    })
+
+    logger.info(
+      {
+        id: entryStream.id,
+        continuation: continuation,
+        lastAccessedAt: newerThan,
+      },
+      `Updated entryStream ${entryStream.name}`
+    )
+  }
+}
 
 export const traverseFeedlyEntryStream = async ({
   streamId,
@@ -28,6 +63,12 @@ export const traverseFeedlyEntryStream = async ({
         continuation,
         newerThan,
       })
+
+      // await updateEntryStreamStatus({
+      //   streamIdentifier: streamId,
+      //   continuation,
+      //   newerThan,
+      // })
 
       return { response: { id, updated, continuation, newerThan } }
     } else {

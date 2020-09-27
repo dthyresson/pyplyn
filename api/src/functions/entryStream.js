@@ -1,75 +1,51 @@
 import { logger } from 'src/lib/logger'
-import { streamContents } from 'src/lib/apiClients/feedly'
-import { persistTweets } from 'src/services/tweetServices'
-import { entryStream } from 'src/services/entryStreams'
-
-import { Repeater } from 'repeaterdev-js'
-import { addSeconds } from 'date-fns'
-
-const scheduleJob = async ({
-  streamId,
-  count,
-  continuation,
-  lastAccessedAt,
-}) => {
-  const repeater = new Repeater(process.env.REPEATER_API_KEY)
-
-  const runAt = addSeconds(Date.now(), Math.ceil(Math.log10(count) * 10))
-
-  // TODO: newerThan: last_accessed_at.to_i }
-  const job = await repeater.enqueueOrUpdate({
-    name: `load-feed-paginated-${streamId}`,
-    runAt: runAt,
-    endpoint: 'https://dthyresson.ngrok.io/feed',
-    verb: 'POST',
-    json: {
-      streamId: streamId,
-      count: count,
-      continuation: continuation,
-      lastAccessedAt: lastAccessedAt,
-    },
-    headers: { 'Content-Type': ' application/json' },
-  })
-
-  logger.debug(job, `Scheduled job for ${continuation}`)
-
-  return
-}
+import { traverseFeedlyEntryStream } from 'src/services/entryStreamServices'
+import { entryStreamByName } from 'src/services/entryStreamQueries'
 
 export const handler = async (event, _context) => {
-  const { id } = JSON.parse(event.body)
-  logger.info(id)
-
-  const entryStream = await entryStream({ id })
-  const params = {
-    streamId: entryStream.streamIdentifier,
-    count: entryStream.count,
-    continuation: entryStream.continuation,
-    lastAccessedAt: entryStream.lastAccessedAt,
-  }
-
-  logger.info(params)
-
-  const data = await streamContents(...params)
-
   try {
-    const { id, updated, continuation } = data
-    const itemsCount = data?.items?.length || 0
+    const { name, count } = JSON.parse(event.body)
 
-    logger.info({ streamId, count, continuation, itemsCount })
+    if (name === undefined) {
+      logger.error({ name }, `No entryStream name specified: ${name}`)
 
-    await scheduleJob({ streamId, count, continuation })
+      return {
+        statusCode: 500,
+      }
+    }
 
-    await persistTweets({ response: data })
+    const entryStream = await entryStreamByName({ name: name })
+
+    if (entryStream === undefined) {
+      logger.warn({ name }, `Could not find entryStream for name: ${name}`)
+
+      return {
+        statusCode: 204,
+      }
+    }
+
+    logger.info(entryStream, `Processing entryStream ${entryStream.name}`)
+
+    const response = traverseFeedlyEntryStream({
+      streamId: entryStream.streamIdentifier,
+      count: count || 3,
+      continuation: entryStream.continuation,
+      newerThan: entryStream.lastAccessedAt,
+    })
 
     return {
       statusCode: 202,
       body: JSON.stringify({
-        data: { id, updated, continuation, itemsCount },
+        data: {
+          id: response.id,
+          updated: response.updated,
+          continuation: response.continuation,
+          newerThan: response.newerThan,
+        },
       }),
     }
   } catch (e) {
-    logger.error(e)
+    logger.error({ e, functionName: 'entryStream' }, 'Function Handler Error')
     return {
       statusCode: 400,
       body: JSON.stringify({

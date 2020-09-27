@@ -13,7 +13,7 @@ export const handler = async (event, _context) => {
     })
 
     return {
-      statusCode: 200,
+      statusCode: 202,
       body: JSON.stringify({
         data: {
           id: response.id,

@@ -91,7 +91,7 @@ export const enrichArticle = async (article) => {
           articleUrl: article.url,
           tag,
         },
-        `Enriching tag {tag.label} to article ${article.id}`
+        `Enriching tag ${tag.label} to article ${article.id}`
       )
 
       const t = await db.tag.create({

@@ -21,9 +21,12 @@ const setDefaultNewerThan = (newerThan) => {
     { newerThan: newerThan },
     `setDefaultNewerThan inits newerThan: ${newerThan}`
   )
-
-  if (newerThan && isNaN(newerThan)) {
+  if (newerThan !== undefined && !RegExp(/^\d+$/).test(newerThan)) {
     try {
+      logger.debug(
+        { newerThan: newerThan },
+        `Parsing newerThan of ${newerThan}`
+      )
       newerThan = getTime(Date.parse(newerThan))
     } catch (e) {
       newerThan = getTime(Date.now())
@@ -36,6 +39,8 @@ const setDefaultNewerThan = (newerThan) => {
       { newerThan: newerThan },
       `Setting newerThan to ${NEWER_THAN_HOURS_AGO} hours ago`
     )
+  } else {
+    logger.debug({ newerThan: newerThan }, `Using newerThan of ${newerThan}`)
   }
 
   return newerThan
@@ -67,6 +72,8 @@ export const streamContents = async ({
       ranked,
     }
 
+    logger.debug(searchParams, `feedly > streamContents > searchParams`)
+
     const response = await query({
       endpoint: '/streams/contents',
       searchParams: searchParams,
@@ -77,7 +84,10 @@ export const streamContents = async ({
       searchParams: { ...searchParams, continuation: response.continuation },
     }
   } catch (e) {
-    logger.error(e, 'Feedly API client streamContents errror')
+    logger.error(
+      { e, streamId, importantOnly, count, continuation, newerThan, ranked },
+      'Feedly API client streamContents error'
+    )
   }
 }
 
