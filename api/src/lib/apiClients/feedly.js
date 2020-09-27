@@ -47,6 +47,7 @@ export const streamContents = async ({
   count = 20,
   continuation,
   newerThan,
+  ranked = 'oldest',
 }) => {
   try {
     if (streamId === undefined) {
@@ -63,6 +64,7 @@ export const streamContents = async ({
       count,
       continuation,
       newerThan,
+      ranked,
     }
 
     const response = await query({

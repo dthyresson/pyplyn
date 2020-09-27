@@ -1,46 +1,25 @@
 import { logger } from 'src/lib/logger'
-
-import { streamContents } from 'src/lib/apiClients/feedly'
-import { scheduleEntryStreamJob } from 'src/schedulers/entryStreamScheduler'
-import { persistTweets } from 'src/services/tweetServices'
+import { traverseFeedlyEntryStream } from 'src/services/entryStreamServices'
 
 export const handler = async (event, _context) => {
-  let { streamId, count, continuation, newerThan } = JSON.parse(event.body)
-
-  const { response, searchParams } = await streamContents({
-    streamId,
-    count,
-    continuation,
-    newerThan,
-  })
-
   try {
-    await persistTweets({ data: response })
+    let { streamId, count, continuation, newerThan } = JSON.parse(event.body)
 
-    const { id, updated, continuation, newerThan } = searchParams
-
-    if (continuation) {
-      await scheduleEntryStreamJob({
-        streamId,
-        count,
-        continuation,
-        newerThan,
-      })
-    } else {
-      logger.info(
-        { streamId: streamId },
-        `Reached end of streamId: ${streamId}`
-      )
-    }
+    const response = traverseFeedlyEntryStream({
+      streamId,
+      count,
+      continuation,
+      newerThan,
+    })
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         data: {
-          id,
-          updated,
-          continuation,
-          newerThan,
+          id: response.id,
+          updated: response.updated,
+          continuation: response.continuation,
+          newerThan: response.newerThan,
         },
       }),
     }
