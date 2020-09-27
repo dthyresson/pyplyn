@@ -1,6 +1,6 @@
-import { logger } from 'src/lib/logger/logger'
+import { logger } from 'src/lib/logger'
 import { streamContents } from 'src/lib/apiClients/feedly'
-import { persistTweets } from 'src/services/tweetJobs'
+import { persistTweets } from 'src/services/tweetServices'
 import { entryStream } from 'src/services/entryStreams'
 
 import { Repeater } from 'repeaterdev-js'

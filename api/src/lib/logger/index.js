@@ -24,26 +24,30 @@ export const logger = pino(
   isDevEnv ? pino.destination(config.file) : logflareStream
 )
 
-db.$on('info', (e) => {
-  e.timestamp
-  e.message
-  e.target
-  logger.info(e)
-})
+const setupPrismaLoggingEvents = () => {
+  db.$on('info', (e) => {
+    e.timestamp
+    e.message
+    e.target
+    logger.info(e)
+  })
 
-db.$on('query', (e) => {
-  e.query
-  e.timestamp
-  e.query
-  e.params
-  e.duration
-  e.target
-  logger.debug(e)
-})
+  db.$on('query', (e) => {
+    e.query
+    e.timestamp
+    e.query
+    e.params
+    e.duration
+    e.target
+    logger.debug(e)
+  })
 
-db.$on('warn', (e) => {
-  e.timestamp
-  e.message
-  e.target
-  logger.warn(e)
-})
+  db.$on('warn', (e) => {
+    e.timestamp
+    e.message
+    e.target
+    logger.warn(e)
+  })
+}
+
+setupPrismaLoggingEvents()

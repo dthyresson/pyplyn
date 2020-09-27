@@ -1,5 +1,7 @@
 import got from 'got'
-import { logger } from 'src/lib/logger/logger'
+import { getTime, subHours } from 'date-fns'
+
+import { logger } from 'src/lib/logger'
 
 export const entry = async (entryId) => {
   return await entries([entryId])
@@ -12,6 +14,33 @@ export const entries = async (ids) => {
   })
 }
 
+const setDefaultNewerThan = (newerThan) => {
+  const NEWER_THAN_HOURS_AGO = 12
+
+  logger.debug(
+    { newerThan: newerThan },
+    `setDefaultNewerThan inits newerThan: ${newerThan}`
+  )
+
+  if (newerThan && isNaN(newerThan)) {
+    try {
+      newerThan = getTime(Date.parse(newerThan))
+    } catch (e) {
+      newerThan = getTime(Date.now())
+      logger.error({ newerThan: newerThan }, 'Error converting newerThan')
+    }
+  } else if (newerThan === undefined) {
+    newerThan = getTime(subHours(Date.now(), NEWER_THAN_HOURS_AGO))
+
+    logger.warn(
+      { newerThan: newerThan },
+      `Setting newerThan to ${NEWER_THAN_HOURS_AGO} hours ago`
+    )
+  }
+
+  return newerThan
+}
+
 export const streamContents = async ({
   streamId,
   importantOnly = true,
@@ -19,29 +48,35 @@ export const streamContents = async ({
   continuation,
   newerThan,
 }) => {
-  if (streamId === undefined) {
-    throw Error('Missing streamId')
+  try {
+    if (streamId === undefined) {
+      throw Error('Missing streamId')
+    }
+
+    logger.debug(`feedly > streamContents > newerThan ${newerThan}`)
+
+    newerThan = setDefaultNewerThan(newerThan)
+
+    const searchParams = {
+      streamId,
+      importantOnly,
+      count,
+      continuation,
+      newerThan,
+    }
+
+    const response = await query({
+      endpoint: '/streams/contents',
+      searchParams: searchParams,
+    })
+
+    return {
+      response,
+      searchParams: { ...searchParams, continuation: response.continuation },
+    }
+  } catch (e) {
+    logger.error(e, 'Feedly API client streamContents errror')
   }
-
-  logger.debug(`feedly > streamContents > newerThan ${newerThan}`)
-
-  const searchParams = {
-    streamId,
-    importantOnly,
-    count,
-    continuation,
-    newerThan,
-  }
-
-  logger.debug(
-    searchParams,
-    `feedly > streamContents > searchParams - continuation: ${continuation} newerThan: ${newerThan}`
-  )
-
-  return await query({
-    endpoint: '/streams/contents',
-    searchParams: searchParams,
-  })
 }
 
 const post = async ({ endpoint, json }) => {

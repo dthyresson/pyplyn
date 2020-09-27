@@ -9,7 +9,7 @@ import {
   linkedEntriesParser,
 } from 'src/lib/parsers/entryParser'
 import { enrichArticleId, enrichTweetId } from 'src/services/enrichment'
-import { logger } from 'src/lib/logger/logger'
+import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
 
 export const createTweetCategory = async ({ tweetId, uid, label }) => {
@@ -87,7 +87,10 @@ export const persistTweetPriorities = async ({ id }) => {
   const tweet = await tweetById({ id: id })
 
   if (tweet == undefined) {
-    logger.warn(`persistTweetPriorities has undefined tweet for id ${id}`)
+    logger.warn(
+      { tweetId: id },
+      `persistTweetPriorities has undefined tweet for id ${id}`
+    )
   }
 
   await createTweetPriorities(tweet)
@@ -97,7 +100,9 @@ export const persistTweetPriorities = async ({ id }) => {
 
 export const createTweetPriorities = async (tweet) => {
   if (tweet == undefined) {
-    logger.error(`createTweetPriorities has undefined tweet`)
+    logger.error(
+      { tweetId: undefined }`createTweetPriorities has undefined tweet`
+    )
     return
   }
 
@@ -262,13 +267,18 @@ export const persistTweet = async ({ entry }) => {
   }
 }
 
-export const persistTweets = async ({ response }) => {
-  response.items.forEach(async (item) => {
-    try {
-      await persistTweet({ entry: item })
-    } catch (e) {
-      logger.error(e, `persistTweets error: ${e.message}`)
-      logger.warn(e.stack, 'persistTweets error stack')
-    }
-  })
+export const persistTweets = async ({ data }) => {
+  try {
+    data?.items.forEach(async (item) => {
+      try {
+        await persistTweet({ entry: item })
+      } catch (e) {
+        logger.error(e, `persistTweets persistTweet error: ${e.message}`)
+        logger.warn(e.stack, 'persistTweets persistTweet error stack')
+      }
+    })
+  } catch (e) {
+    logger.error(e, `persistTweets error: ${e.message}`)
+    logger.warn(e.stack, 'persistTweets  error stack')
+  }
 }

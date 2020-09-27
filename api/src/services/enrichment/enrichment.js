@@ -1,4 +1,4 @@
-import { logger } from 'src/lib/logger/logger'
+import { logger } from 'src/lib/logger'
 
 import { db } from 'src/lib/db'
 import { DocumentType } from '@prisma/client'
