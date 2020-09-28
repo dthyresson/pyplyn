@@ -32,7 +32,8 @@ const updateEntryStreamStatus = async ({
       {
         id: entryStream.id,
         continuation: continuation,
-        lastAccessedAt: newerThan,
+        newerThan: newerThan,
+        lastAccessedAt: toDate(Date.now()),
       },
       `Updated entryStream ${entryStream.name}`
     )
@@ -64,11 +65,11 @@ export const traverseFeedlyEntryStream = async ({
         newerThan,
       })
 
-      // await updateEntryStreamStatus({
-      //   streamIdentifier: streamId,
-      //   continuation,
-      //   newerThan,
-      // })
+      await updateEntryStreamStatus({
+        streamIdentifier: streamId,
+        continuation,
+        newerThan,
+      })
 
       return { response: { id, updated, continuation, newerThan } }
     } else {

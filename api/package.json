@@ -7,6 +7,8 @@
     "date-fns": "^2.16.1",
     "exponential-backoff": "^3.1.0",
     "got": "^11.6.2",
+    "graphql-middleware": "^4.0.2",
+    "graphql-shield": "^7.3.6",
     "jws": "^4.0.0",
     "pino": "^6.6.1",
     "pino-logflare": "^0.3.5",
