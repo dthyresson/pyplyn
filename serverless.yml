@@ -2,8 +2,8 @@
 service: app
 
 # Uncomment org and app if you want to integrate your deployment with the serverless dashboard. See https://www.serverless.com/framework/docs/dashboard/ for more details.
-# org: your-org
-# app: your-app
+org: dthyresson
+app: pyplyn
 
 plugins:
   - serverless-dotenv-plugin
@@ -86,6 +86,25 @@ functions:
           method: GET
       - httpApi:
           path: /.redwood/functions/entry
+          method: POST
+  entryStream:
+    description: entryStream function deployed on AWS Lambda
+    package:
+      artifact: api/dist/zipball/entryStream.zip # This is the default location of the zip file generated during the deploy command.
+    memorySize: 1024 # mb
+    timeout: 25 # seconds (max: 29)
+    tags: # Tags for this specific lambda function
+      endpoint: /.redwood/functions/entryStream
+    # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
+    # environment:
+    #   YOUR_FIRST_ENV_VARIABLE: ${env:YOUR_FIRST_ENV_VARIABLE}
+    handler: entryStream.handler
+    events:
+      - httpApi:
+          path: /.redwood/functions/entryStream
+          method: GET
+      - httpApi:
+          path: /.redwood/functions/entryStream
           method: POST
   feed:
     description: feed function deployed on AWS Lambda

@@ -21,7 +21,14 @@ const setDefaultNewerThan = (newerThan) => {
     { newerThan: newerThan },
     `setDefaultNewerThan inits newerThan: ${newerThan}`
   )
-  if (newerThan !== undefined && !RegExp(/^\d+$/).test(newerThan)) {
+  if (newerThan === undefined || newerThan === null) {
+    newerThan = getTime(subHours(Date.now(), NEWER_THAN_HOURS_AGO))
+
+    logger.warn(
+      { newerThan: newerThan },
+      `Setting newerThan to ${NEWER_THAN_HOURS_AGO} hours ago`
+    )
+  } else if (newerThan !== undefined && !RegExp(/^\d+$/).test(newerThan)) {
     try {
       logger.debug(
         { newerThan: newerThan },
@@ -32,13 +39,6 @@ const setDefaultNewerThan = (newerThan) => {
       newerThan = getTime(Date.now())
       logger.error({ newerThan: newerThan }, 'Error converting newerThan')
     }
-  } else if (newerThan === undefined) {
-    newerThan = getTime(subHours(Date.now(), NEWER_THAN_HOURS_AGO))
-
-    logger.warn(
-      { newerThan: newerThan },
-      `Setting newerThan to ${NEWER_THAN_HOURS_AGO} hours ago`
-    )
   } else {
     logger.debug({ newerThan: newerThan }, `Using newerThan of ${newerThan}`)
   }
@@ -81,7 +81,11 @@ export const streamContents = async ({
 
     return {
       response,
-      searchParams: { ...searchParams, continuation: response.continuation },
+      searchParams: {
+        ...searchParams,
+        continuation: response.continuation,
+        updated: response.updated,
+      },
     }
   } catch (e) {
     logger.error(

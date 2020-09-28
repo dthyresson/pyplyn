@@ -14,8 +14,13 @@ web/public/mockServiceWorker.js
 docs/**/*
 
 # Logs
+/logs/**/*
 api/logs/**/*
 
 # Deployment
 .serverless
 
+
+
+# Deployment
+.serverless

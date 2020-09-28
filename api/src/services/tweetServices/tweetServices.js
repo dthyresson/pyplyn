@@ -8,7 +8,7 @@ import {
   tweetEntryParser,
   linkedEntriesParser,
 } from 'src/lib/parsers/entryParser'
-import { enrichArticleId, enrichTweetId } from 'src/services/enrichment'
+import { enrichArticleId, enrichTweet } from 'src/services/enrichment'
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
 
@@ -245,17 +245,17 @@ export const persistTweet = async ({ entry }) => {
     })
 
     // TODO: replace all with scheduler repeater tasks
-    await persistTweetCategories({ id: tweet.id })
-    // await createTweetCategories(tweet)
+    // await persistTweetCategories({ id: tweet.id })
+    await createTweetCategories(tweet)
 
-    await persistTweetPriorities({ id: tweet.id })
-    // await createTweetPriorities(tweet)
+    // await persistTweetPriorities({ id: tweet.id })
+    await createTweetPriorities(tweet)
 
-    // await enrichTweet(tweet)
-    await enrichTweetId({ id: tweet.id })
+    await enrichTweet(tweet)
+    // await enrichTweetId({ id: tweet.id })
 
-    // await persistLinkedArticles(entry)
-    await persistLinkedArticlesForEntryId({ id: tweet.entryId })
+    await persistLinkedArticles(entry)
+    // await persistLinkedArticlesForEntryId({ id: tweet.entryId })
 
     logger.debug(
       { tweet: { id: tweet.id, title: tweet.title } },

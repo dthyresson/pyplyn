@@ -13,10 +13,10 @@
   port = 8911
   [api.log]
     [api.log.development]
-      file = "./logs/app.log"
+      file = "../logs/api-dev.log"
       level = "debug"
     [api.log.production]
-      file = "./logs/app.log"
+      file = "../logs/api.log"
       level = "debug"
 [browser]
   open = false

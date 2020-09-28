@@ -1,4 +1,4 @@
-import { toDate } from 'date-fns'
+import { min, toDate } from 'date-fns'
 
 import { logger } from 'src/lib/logger'
 
@@ -13,18 +13,19 @@ const updateEntryStreamStatus = async ({
   streamIdentifier,
   continuation,
   newerThan,
+  updated,
 }) => {
   const entryStream = await entryStreamByIdentifier({
     streamIdentifier,
-    continuation,
-    newerThan,
   })
   if (entryStream) {
+    const lastAccessedAt = min([toDate(Date.now()), toDate(updated)])
     await updateEntryStream({
       id: entryStream.id,
       input: {
         continuation: continuation,
-        lastAccessedAt: toDate(Date.now()),
+        lastAccessedAt: lastAccessedAt,
+        updatedAt: Date.now(),
       },
     })
 
@@ -33,9 +34,20 @@ const updateEntryStreamStatus = async ({
         id: entryStream.id,
         continuation: continuation,
         newerThan: newerThan,
-        lastAccessedAt: toDate(Date.now()),
+        lastAccessedAt: lastAccessedAt,
+        updatedAt: updated,
       },
       `Updated entryStream ${entryStream.name}`
+    )
+  } else {
+    logger.warn(
+      {
+        id: entryStream.id,
+        continuation: continuation,
+        newerThan: newerThan,
+        updatedAt: updated,
+      },
+      `No entryStream ${entryStream.name} found to update`
     )
   }
 }
@@ -69,6 +81,7 @@ export const traverseFeedlyEntryStream = async ({
         streamIdentifier: streamId,
         continuation,
         newerThan,
+        updated,
       })
 
       return { response: { id, updated, continuation, newerThan } }
