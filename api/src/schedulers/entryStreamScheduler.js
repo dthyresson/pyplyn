@@ -60,7 +60,7 @@ export const scheduleEntryStreamJob = async ({
     const job = await repeater.enqueueOrUpdate({
       name: 'load-feed-paginated',
       runAt: runAt(count),
-      endpoint: 'https://dthyresson.ngrok.io/feed',
+      endpoint: process.env.FEEB_JOB_ENDPOINT,
       verb: 'POST',
       json: payload,
       headers: {
