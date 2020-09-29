@@ -1,14 +1,57 @@
+import jwt from 'jsonwebtoken'
+
 import { db } from 'src/lib/db'
 
 import { logger } from 'src/lib/logger'
 import { traverseFeedlyEntryStream } from 'src/services/entryStreamServices'
 import { entryStreamByName } from 'src/services/entryStreamQueries'
 
+export const parseAuthorizationHeader = (event) => {
+  const [schema, token] = event.headers?.authorization?.split(' ')
+
+  logger.debug(
+    { schema: schema, token: token },
+    'parseAuthorizationHeader schema and token'
+  )
+
+  if (!schema.length || !token.length) {
+    throw new Error('The `Authorization` header is not valid.')
+  }
+
+  return { schema, token }
+}
+
+const verifyToken = (token) => {
+  logger.debug({ token: token }, 'verifyToken token')
+  const decoded = jwt.verify(token, process.env.FEED_JOB_SECRET)
+
+  logger.debug({ verified: decoded }, 'Decoded signed payload')
+
+  return decoded
+}
+
+const requireAuthorization = (event) => {
+  const { token } = parseAuthorizationHeader(event)
+  return verifyToken(token)
+}
+
 export const handler = async (event, _context) => {
   try {
-    await db.$connect
+    const isAuthorized = requireAuthorization(event)
 
-    logger.debug(event.headers, 'these are the entryStream headers')
+    logger.debug(
+      { isAuthorized: isAuthorized },
+      'isAuthorized Decoded signed payload'
+    )
+  } catch (e) {
+    logger.error({ e, functionName: 'feed' }, 'Function Handler unauthorized')
+    return {
+      statusCode: 401,
+    }
+  }
+
+  try {
+    await db.$connect
 
     const { name, count } = JSON.parse(event.body)
 
@@ -26,7 +69,7 @@ export const handler = async (event, _context) => {
       logger.warn({ name }, `Could not find entryStream for name: ${name}`)
 
       return {
-        statusCode: 204,
+        statusCode: 404,
       }
     }
 

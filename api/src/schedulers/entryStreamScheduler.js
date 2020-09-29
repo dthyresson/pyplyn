@@ -1,13 +1,40 @@
 import { createHash } from 'crypto'
 
 import { addSeconds } from 'date-fns'
-import jws from 'jws'
+import jwt from 'jsonwebtoken'
 import { Repeater } from 'repeaterdev-js'
 
 import { logger } from 'src/lib/logger'
 
 const runAt = (count = 10) => {
   return addSeconds(Date.now(), Math.ceil(Math.log10(count) * 10))
+}
+
+const signPayload = ({ payload }) => {
+  logger.debug(payload, 'signPayload init payload')
+
+  const digest = createHash('md5')
+    .update(JSON.stringify(payload))
+    .digest('base64')
+
+  logger.debug(digest, 'signPayload digest')
+
+  const token = jwt.sign(
+    {
+      data: digest,
+    },
+    process.env.FEED_JOB_SECRET,
+    {
+      subject: payload.streamId,
+      audience: 'repeater-dev',
+      issuer: 'pyplyn',
+      expiresIn: '1h',
+    }
+  )
+
+  logger.debug(token, 'signPayload token')
+
+  return token
 }
 
 export const scheduleEntryStreamJob = async ({
@@ -25,16 +52,9 @@ export const scheduleEntryStreamJob = async ({
     newerThan,
   }
 
-  const digest = createHash('md5')
-    .update(JSON.stringify(payload))
-    .digest('base64')
-  const secret = process.env.FEED_JOB_SECRET
+  logger.info({ payload }, 'Scheduled Entry Stream Job payload')
 
-  const signature = jws.sign({
-    header: { alg: 'HS256' },
-    payload: digest,
-    secret,
-  })
+  const token = signPayload({ payload })
 
   try {
     const job = await repeater.enqueueOrUpdate({
@@ -44,13 +64,9 @@ export const scheduleEntryStreamJob = async ({
       verb: 'POST',
       json: payload,
       headers: {
-        Authorization: `Bearer ${signature}`,
+        Authorization: `Bearer ${token}`,
       },
     })
-
-    const decoded = jws.verify(signature, 'HS256', secret)
-
-    logger.debug({ verified: decoded }, 'Decoded signed payload')
 
     logger.info(job, 'Scheduled Entry Stream Job')
   } catch (e) {

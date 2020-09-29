@@ -19,7 +19,7 @@ export const logger = pino(
       env: process.env.ENV || 'development',
       name: config.name,
     },
-    nestedKey: 'payload',
+    nestedKey: 'logPayload',
   },
   isDevEnv ? pino.destination(config.file) : logflareStream
 )
