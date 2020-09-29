@@ -24,8 +24,8 @@ const updateEntryStreamStatus = async ({
       id: entryStream.id,
       input: {
         continuation: continuation,
-        lastAccessedAt: lastAccessedAt,
-        updatedAt: Date.now(),
+        lastAccessedAt: toDate(lastAccessedAt),
+        updatedAt: toDate(Date.now()),
       },
     })
 
@@ -70,6 +70,7 @@ export const traverseFeedlyEntryStream = async ({
     const { id, updated, continuation, newerThan } = searchParams
 
     if (continuation) {
+      logger.debug('About to scheduleEntryStreamJob')
       await scheduleEntryStreamJob({
         streamId,
         count,
@@ -77,6 +78,7 @@ export const traverseFeedlyEntryStream = async ({
         newerThan,
       })
 
+      logger.debug('About to updateEntryStreamStatus')
       await updateEntryStreamStatus({
         streamIdentifier: streamId,
         continuation,
@@ -91,7 +93,7 @@ export const traverseFeedlyEntryStream = async ({
         `Reached end of streamId: ${streamId}`
       )
 
-      return { response: { id, updated, continuation, newerThan } }
+      return { response: { streamId, id, updated, continuation, newerThan } }
     }
   } catch (e) {
     logger.error(

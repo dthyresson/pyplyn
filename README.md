@@ -28,3 +28,7 @@ Your browser should open automatically to `http://localhost:8910` to see the web
 ## Tunneling for repeater.dev Functions
 
 `ngrok http -subdomain=dthyresson 8911`
+
+## Logs
+
+`tail -f logs/api-dev.log| pino-colada`

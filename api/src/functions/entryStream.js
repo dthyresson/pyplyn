@@ -1,9 +1,15 @@
+import { db } from 'src/lib/db'
+
 import { logger } from 'src/lib/logger'
 import { traverseFeedlyEntryStream } from 'src/services/entryStreamServices'
 import { entryStreamByName } from 'src/services/entryStreamQueries'
 
 export const handler = async (event, _context) => {
   try {
+    await db.$connect
+
+    logger.debug(event.headers, 'these are the entryStream headers')
+
     const { name, count } = JSON.parse(event.body)
 
     if (name === undefined) {
@@ -26,7 +32,7 @@ export const handler = async (event, _context) => {
 
     logger.info(entryStream, `Processing entryStream ${entryStream.name}`)
 
-    const response = traverseFeedlyEntryStream({
+    const { response } = await traverseFeedlyEntryStream({
       streamId: entryStream.streamIdentifier,
       count: count || 3,
       continuation: entryStream.continuation,
@@ -37,7 +43,7 @@ export const handler = async (event, _context) => {
       statusCode: 202,
       body: JSON.stringify({
         data: {
-          id: response.id,
+          id: response.id || response.streamId,
           updated: response.updated,
           continuation: response.continuation,
           newerThan: response.newerThan,
@@ -52,5 +58,7 @@ export const handler = async (event, _context) => {
         error: e,
       }),
     }
+  } finally {
+    await db.$disconnect()
   }
 }

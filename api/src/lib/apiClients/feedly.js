@@ -15,7 +15,7 @@ export const entries = async (ids) => {
 }
 
 const setDefaultNewerThan = (newerThan) => {
-  const NEWER_THAN_HOURS_AGO = 12
+  const NEWER_THAN_HOURS_AGO = 48
 
   logger.debug(
     { newerThan: newerThan },
