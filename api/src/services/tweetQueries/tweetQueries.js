@@ -11,6 +11,24 @@ export const tweetByEntryId = ({ entryId }) => {
   })
 }
 
+export const paginateTweets = async ({
+  page = 1,
+  limit = 100,
+  order = { createdAt: 'desc' },
+}) => {
+  const offset = (page - 1) * limit
+
+  return {
+    tweets: db.tweet.findMany({
+      include: { tags: true, tweetPriorities: true },
+      take: limit,
+      skip: offset,
+      orderBy: order,
+    }),
+    total: db.tweet.count(),
+  }
+}
+
 export const tweetByDocumentId = ({ documentId }) => {
   return db.entry.findOne({ where: { uid: documentId } }).tweet()
 }
