@@ -12,15 +12,26 @@ export const QUERY = gql`
       author
       title
       content
+      sentiment
       url
+
+      categories: tweetCategories {
+        label
+      }
+
       priorities: tweetPriorities {
         label
         terms: tweetPriorityTerms {
           label
         }
       }
+
       tags {
         label
+        mentions
+        confidence
+        salience
+        sentiment
       }
     }
   }
@@ -34,6 +45,18 @@ const sortUnique = (array) => {
     .filter((el, i, a) => i === a.indexOf(el))
 }
 
+const unique = (array) => {
+  return array?.filter((el, i, a) => i === a.indexOf(el))
+}
+
+const categoryLabels = (tweet) => {
+  return sortUnique(
+    tweet.categories?.map((tag) => {
+      return tag.label
+    })
+  )
+}
+
 const priorityLabels = (tweet) => {
   return sortUnique(
     tweet.priorities?.map((tag) => {
@@ -43,9 +66,9 @@ const priorityLabels = (tweet) => {
 }
 
 const tagLabels = (tweet) => {
-  return sortUnique(
+  return unique(
     tweet.tags?.map((tag) => {
-      return tag.label
+      return `${tag.label} (${tag.mentions})`
     })
   )
 }
@@ -93,6 +116,14 @@ export const Success = ({ tweet }) => {
           </div>
           <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
             <dt className="text-sm leading-5 font-medium text-gray-500">
+              Sentiment
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              {tweet.sentiment?.toFixed(5)}
+            </dd>
+          </div>
+          <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
               Published At
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
@@ -105,6 +136,25 @@ export const Success = ({ tweet }) => {
               <a href={tweet.url}>{tweet.url}</a>
             </dd>
           </div>
+          <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              Categories
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              <ul>
+                {categoryLabels(tweet).map((label, index) => {
+                  return (
+                    <li
+                      key={`${tweet.id}-pc${label}-${index}-li`}
+                      className="py-1 flex items-center justify-between text-sm leading-5"
+                    >
+                      {label}
+                    </li>
+                  )
+                })}
+              </ul>
+            </dd>
+          </div>{' '}
           <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
             <dt className="text-sm leading-5 font-medium text-gray-500">
               Priorities and Tags
@@ -145,7 +195,7 @@ export const Success = ({ tweet }) => {
                 })}
               </ul>
             </dd>
-          </div>
+          </div>{' '}
         </dl>
       </div>
     </div>
