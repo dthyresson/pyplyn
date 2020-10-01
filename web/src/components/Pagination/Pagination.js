@@ -204,9 +204,6 @@ const ShowingRecords = ({ offset, total, limit }) => {
         of
         <span className="px-1 font-medium">{total || 0}</span>
         results
-        <span className="px-1 font-medium">
-          {totalPages({ limit, total })} pages
-        </span>
       </p>
     </div>
   )
