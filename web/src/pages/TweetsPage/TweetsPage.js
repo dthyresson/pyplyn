@@ -1,13 +1,7 @@
 import AppLayout from 'src/layouts/AppLayout'
 import TweetsCell from 'src/components/TweetsCell'
 
-// import { Link, routes } from '@redwoodjs/router'
-import { useParams } from '@redwoodjs/router'
-
-const TweetsPage = () => {
-  let { page } = useParams()
-  page = page || 1
-
+const TweetsPage = ({ page = 1 }) => {
   return (
     <AppLayout>
       <div className="mb-5 pb-5 border-b border-gray-200">

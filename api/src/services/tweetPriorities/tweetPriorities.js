@@ -1,7 +1,9 @@
 import { db } from 'src/lib/db'
 
 export const tweetPriorities = () => {
-  return db.tweetPriority.findMany()
+  return db.tweetPriority.findMany({
+    orderBy: { label: 'asc' },
+  })
 }
 
 export const TweetPriority = {

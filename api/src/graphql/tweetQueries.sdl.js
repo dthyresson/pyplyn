@@ -1,7 +1,13 @@
 export const schema = gql`
+  type Pagination {
+    limit: Int!
+    offset: Int!
+    total: Int!
+  }
+
   type TweetsSet {
     tweets: [Tweet!]!
-    total: Int!
+    pagination: Pagination!
   }
   type Query {
     paginateTweets(page: Int, limit: Int): TweetsSet

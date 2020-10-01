@@ -13,7 +13,7 @@ export const tweetByEntryId = ({ entryId }) => {
 
 export const paginateTweets = async ({
   page = 1,
-  limit = 100,
+  limit = 20,
   order = { createdAt: 'desc' },
 }) => {
   const offset = (page - 1) * limit
@@ -25,7 +25,11 @@ export const paginateTweets = async ({
       skip: offset,
       orderBy: order,
     }),
-    total: db.tweet.count(),
+    pagination: {
+      limit: limit,
+      offset: offset,
+      total: db.tweet.count(),
+    },
   }
 }
 
