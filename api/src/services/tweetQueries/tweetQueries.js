@@ -16,6 +16,8 @@ export const paginateTweets = async ({
   limit = 20,
   order = { createdAt: 'desc' },
 }) => {
+  page = page < 1 ? 1 : page
+
   const offset = (page - 1) * limit
 
   return {

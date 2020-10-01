@@ -1,3 +1,4 @@
+import { routes } from '@redwoodjs/router'
 import { formatISO9075, parseISO } from 'date-fns'
 
 // import { Link, routes } from '@redwoodjs/router'
@@ -130,6 +131,7 @@ export const Success = ({ results }) => {
         </div>
       </div>
       <Pagination
+        paginatedRoute={routes.tweets}
         offset={results?.pagination?.offset}
         total={results?.pagination?.total}
         limit={results?.pagination?.limit}
