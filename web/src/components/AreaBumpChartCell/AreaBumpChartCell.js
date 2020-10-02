@@ -9,7 +9,7 @@ const MyResponsiveAreaBump = ({ data /* see data tab */ }) => (
   <ResponsiveAreaBump
     data={data}
     margin={{ top: 40, right: 100, bottom: 40, left: 100 }}
-    spacing={18}
+    spacing={14}
     colors={{ scheme: 'nivo' }}
     blendMode="multiply"
     defs={[]}

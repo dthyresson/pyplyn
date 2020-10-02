@@ -1,27 +1,35 @@
-import { Link, routes } from '@redwoodjs/router'
+import { NavLink, routes } from '@redwoodjs/router'
 
 const AppLayout = ({ children }) => {
   return (
-    <div>
-      <nav className="bg-gray-800">
-        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-          <div className="flex">
-            <Link
-              className="px-3 py-2 rounded-md text-sm font-medium leading-5 text-white bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
-              to={routes.home()}
-            >
-              Home
-            </Link>
-            <Link
-              className="px-3 py-2 rounded-md text-sm font-medium leading-5 text-white bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
-              to={routes.tweets()}
-            >
-              Tweets
-            </Link>
-          </div>
-        </div>
-      </nav>
-      <div className="py-10 max-w-7xl mx-auto sm:px-6 lg:px-8">{children}</div>
+    <div className="p-4">
+      <div className="sm:hidden">
+        <select aria-label="Selected tab" className="form-select block w-full">
+          <option>Dashboard</option>
+          <option selected>Tweets</option>
+        </select>
+      </div>
+      <div className="p-4 hidden sm:block">
+        <nav className="flex">
+          <NavLink
+            to={routes.home()}
+            className="px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800 focus:bg-gray-200"
+            activeClassName="ml-4 px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-800 bg-gray-200 focus:outline-none focus:bg-gray-300"
+          >
+            Dashboard
+          </NavLink>
+
+          <NavLink
+            to={routes.tweets()}
+            className="px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800 focus:bg-gray-200"
+            activeClassName="ml-4 px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-800 bg-gray-200 focus:outline-none focus:bg-gray-300"
+            aria-current="page"
+          >
+            Tweets
+          </NavLink>
+        </nav>
+      </div>
+      <div className="py-2 max-w-7xl mx-auto sm:px-6 lg:px-8">{children}</div>
     </div>
   )
 }
