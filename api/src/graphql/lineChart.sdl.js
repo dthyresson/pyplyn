@@ -1,9 +1,9 @@
 export const schema = gql`
-  type BumpChart {
+  type LineChart {
     chart: [ChartSeries!]
   }
 
   type Query {
-    bumpChart: BumpChart!
+    lineChart: LineChart!
   }
 `

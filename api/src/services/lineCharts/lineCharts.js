@@ -1,6 +1,6 @@
 import { db } from 'src/lib/db'
 
-const BUMP_CHART_SQL = `
+const LINE_CHART_SQL = `
 WITH t1 AS (
 	SELECT
 		(date_trunc('day'::text,
@@ -48,7 +48,7 @@ interpolated_data AS (
 )
 
 SELECT
-	row_to_json(bump) AS priority_bump_data
+	row_to_json(chart_series) AS chart_data
 FROM (
 	SELECT
 		d.id,
@@ -63,13 +63,14 @@ FROM (
     ORDER BY id, x
       ) d
 	GROUP BY
-		1) bump;
+		1) chart_series;
 `
 
-export const bumpChart = async () => {
-  const result = await db.$queryRaw(BUMP_CHART_SQL)
+export const lineChart = async () => {
+  const result = await db.$queryRaw(LINE_CHART_SQL)
   const charts = result?.map((chart) => {
-    return chart.priority_bump_data
+    return chart.chart_data
   })
+
   return { chart: charts }
 }

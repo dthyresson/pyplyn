@@ -10,7 +10,7 @@ const MyResponsiveAreaBump = ({ data /* see data tab */ }) => (
     data={data}
     margin={{ top: 40, right: 100, bottom: 40, left: 100 }}
     spacing={14}
-    colors={{ scheme: 'nivo' }}
+    colors={{ scheme: 'spectral' }}
     blendMode="multiply"
     defs={[]}
     fill={[]}
@@ -36,11 +36,13 @@ const MyResponsiveAreaBump = ({ data /* see data tab */ }) => (
 
 export const QUERY = gql`
   query AreaBumpChartQuery {
-    data: bumpCharts {
-      id
-      data {
-        x
-        y
+    bumpChart {
+      chart {
+        id
+        data {
+          x
+          y
+        }
       }
     }
   }
@@ -52,7 +54,6 @@ export const Empty = () => <div>Empty</div>
 
 export const Failure = ({ error }) => <div>Error: {error.message}</div>
 
-export const Success = ({ data }) => {
-  console.log(data)
-  return MyResponsiveAreaBump({ data })
+export const Success = ({ bumpChart }) => {
+  return MyResponsiveAreaBump({ data: bumpChart.chart })
 }
