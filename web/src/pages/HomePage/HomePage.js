@@ -6,7 +6,9 @@ const HomePage = () => {
   return (
     <AppLayout>
       <div className="h-screen">
-        <AreaBumpChartCell></AreaBumpChartCell>
+        <div className="bg-white overflow-hidden shadow rounded-lg h-full p-8">
+          <AreaBumpChartCell></AreaBumpChartCell>
+        </div>
       </div>
     </AppLayout>
   )
