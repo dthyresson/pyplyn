@@ -18,6 +18,7 @@ const queryPermissions = {
   tweetById: allow,
   tweets: allow,
   paginateTweets: allow,
+  bumpCharts: allow,
 }
 
 const permissions = shield(

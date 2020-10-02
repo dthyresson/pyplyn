@@ -14,7 +14,7 @@ const Routes = () => {
     <Router>
       <Route path="/tweet/{id}" page={TweetPage} name="tweet" />
       <Route path="/tweets" page={TweetsPage} name="tweets" />
-      <Route path="/" page={TweetsPage} name="home" />
+      <Route path="/" page={HomePage} name="home" />
       <Route notfound page={NotFoundPage} />
     </Router>
   )

@@ -8,6 +8,8 @@ export const QUERY = gql`
   query TweetQuery($id: String!) {
     tweet: tweetById(id: $id) {
       id
+      createdAt
+      updatedAt
       publishedAt
       author
       title
@@ -116,28 +118,6 @@ export const Success = ({ tweet }) => {
           </div>
           <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
             <dt className="text-sm leading-5 font-medium text-gray-500">
-              Sentiment
-            </dt>
-            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {tweet.sentiment?.toFixed(5)}
-            </dd>
-          </div>
-          <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-            <dt className="text-sm leading-5 font-medium text-gray-500">
-              Published At
-            </dt>
-            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {formatISO9075(parseISO(tweet.publishedAt))}
-            </dd>
-          </div>
-          <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-            <dt className="text-sm leading-5 font-medium text-gray-500">Url</dt>
-            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              <a href={tweet.url}>{tweet.url}</a>
-            </dd>
-          </div>
-          <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-            <dt className="text-sm leading-5 font-medium text-gray-500">
               Categories
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
@@ -154,7 +134,7 @@ export const Success = ({ tweet }) => {
                 })}
               </ul>
             </dd>
-          </div>{' '}
+          </div>
           <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
             <dt className="text-sm leading-5 font-medium text-gray-500">
               Priorities and Tags
@@ -195,7 +175,46 @@ export const Success = ({ tweet }) => {
                 })}
               </ul>
             </dd>
-          </div>{' '}
+          </div>
+          <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              Published At
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              {formatISO9075(parseISO(tweet.publishedAt))}
+            </dd>
+          </div>
+          <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              Sentiment
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              {tweet.sentiment?.toFixed(5)}
+            </dd>
+          </div>
+          <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+            <dt className="text-sm leading-5 font-medium text-gray-500">Url</dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              <a href={tweet.url}>{tweet.url}</a>
+            </dd>
+          </div>
+
+          <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              Created At
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              {formatISO9075(parseISO(tweet.createdAt))}
+            </dd>
+          </div>
+          <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              Updated At
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              {formatISO9075(parseISO(tweet.updatedAt))}
+            </dd>
+          </div>
         </dl>
       </div>
     </div>

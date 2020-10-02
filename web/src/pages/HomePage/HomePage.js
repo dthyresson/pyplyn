@@ -1,17 +1,14 @@
-import { Link, routes } from '@redwoodjs/router'
+import AppLayout from 'src/layouts/AppLayout'
+import AreaBumpChartCell from 'src/components/AreaBumpChartCell'
+// import { Link, routes } from '@redwoodjs/router'
 
 const HomePage = () => {
   return (
-    <>
-      <h1>HomePage</h1>
-      <p>
-        Find me in <tt>./web/src/pages/HomePage/HomePage.js</tt>
-      </p>
-      <p>
-        My default route is named <tt>home</tt>, link to me with `
-        <Link to={routes.home()}>Home</Link>`
-      </p>
-    </>
+    <AppLayout>
+      <div className="h-screen">
+        <AreaBumpChartCell></AreaBumpChartCell>
+      </div>
+    </AppLayout>
   )
 }
 
