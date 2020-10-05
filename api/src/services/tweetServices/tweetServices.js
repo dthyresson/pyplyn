@@ -254,6 +254,7 @@ export const persistTweet = async ({ entry }) => {
     await enrichTweet(tweet)
     // await enrichTweetId({ id: tweet.id })
 
+    // TODO - return articles w/ entry ids and create tweetLinkedArticle relations
     await persistLinkedArticles(entry)
     // await persistLinkedArticlesForEntryId({ id: tweet.entryId })
 

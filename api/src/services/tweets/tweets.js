@@ -1,7 +1,15 @@
 import { db } from 'src/lib/db'
 
 export const tweets = () => {
-  return db.tweet.findMany()
+  return db.tweet.findMany({
+    include: {
+      entry: true,
+      tweetContext: true,
+      tweetCategories: true,
+      tags: true,
+      tweetPriorities: true,
+    },
+  })
 }
 
 export const Tweet = {

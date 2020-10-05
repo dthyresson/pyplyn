@@ -7,14 +7,20 @@ export const tweetById = ({ id }) => {
 export const tweetByEntryId = ({ entryId }) => {
   return db.tweet.findOne({
     where: { entryId: entryId },
-    include: { entry: true },
+    include: {
+      entry: true,
+      tweetContext: true,
+      tweetCategories: true,
+      tags: true,
+      tweetPriorities: true,
+    },
   })
 }
 
 export const paginateTweets = async ({
   page = 1,
   limit = 20,
-  order = { createdAt: 'desc' },
+  order = { publishedAt: 'desc' },
 }) => {
   page = page < 1 ? 1 : page
 

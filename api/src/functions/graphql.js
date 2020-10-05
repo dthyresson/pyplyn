@@ -8,10 +8,16 @@ import schemas from 'src/graphql/**/*.{js,ts}'
 import services from 'src/services/**/*.{js,ts}'
 
 import { applyMiddleware } from 'graphql-middleware'
-import { allow, deny, shield } from 'graphql-shield'
+import { allow, deny, rule, shield } from 'graphql-shield'
 
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
+
+const requireAuth = rule({ cache: 'contextual' })(
+  async (_parent, _args, _ctx, _info) => {
+    return true
+  }
+)
 
 const queryPermissions = {
   '*': deny,
@@ -19,7 +25,7 @@ const queryPermissions = {
   tweets: allow,
   paginateTweets: allow,
   bumpChart: allow,
-  lineChart: allow,
+  lineChart: requireAuth,
 }
 
 const permissions = shield(

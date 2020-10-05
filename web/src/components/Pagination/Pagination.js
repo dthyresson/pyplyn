@@ -1,4 +1,8 @@
-import { Link, routes } from '@redwoodjs/router'
+import { Link } from '@redwoodjs/router'
+import { FirstArrowIcon } from 'src/components/icons/FirstArrowIcon'
+import { LastArrowIcon } from 'src/components/icons/LastArrowIcon'
+import { NextArrowIcon } from 'src/components/icons/NextArrowIcon'
+import { PreviousArrowIcon } from 'src/components/icons/PreviousArrowIcon'
 
 const totalPages = ({ total, limit }) => {
   return Math.ceil(total / limit)
@@ -21,13 +25,7 @@ const FirstLink = ({ paginatedRoute, _offset, _total, _limit }) => {
       className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
       aria-label="First"
     >
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-        <path
-          fillRule="evenodd"
-          d="M15.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 010 1.414zm-6 0a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L5.414 10l4.293 4.293a1 1 0 010 1.414z"
-          clipRule="evenodd"
-        ></path>
-      </svg>
+      <FirstArrowIcon />
     </Link>
   )
 }
@@ -41,13 +39,7 @@ const PreviousLink = ({ paginatedRoute, offset, total, limit }) => {
       className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
       aria-label="Previous"
     >
-      <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-        <path
-          fillRule="evenodd"
-          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-          clipRule="evenodd"
-        />
-      </svg>
+      <PreviousArrowIcon />
     </Link>
   )
 }
@@ -64,13 +56,7 @@ const NextLink = ({ paginatedRoute, offset, total, limit }) => {
       className="-ml-px relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
       aria-label="Next"
     >
-      <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-        <path
-          fillRule="evenodd"
-          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-          clipRule="evenodd"
-        />
-      </svg>
+      <NextArrowIcon />
     </Link>
   )
 }
@@ -84,18 +70,7 @@ const LastLink = ({ paginatedRoute, _offset, total, limit }) => {
       className="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
       aria-label="Last"
     >
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-        <path
-          fillRule="evenodd"
-          d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z"
-          clipRule="evenodd"
-        ></path>
-        <path
-          fillRule="evenodd"
-          d="M4.293 15.707a1 1 0 010-1.414L8.586 10 4.293 5.707a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z"
-          clipRule="evenodd"
-        ></path>
-      </svg>
+      <LastArrowIcon />
     </Link>
   )
 }
