@@ -1,14 +1,29 @@
+import { isAuthorized } from 'src/lib/authorization'
+import { logger } from 'src/lib/logger'
+
 import { extractArticle } from 'src/lib/apiClients/diffbot'
 
 export const handler = async (event, _context) => {
-  const { url } = event.queryStringParameters
+  try {
+    isAuthorized(event)
 
-  const data = await extractArticle({ url })
+    const { url } = event.queryStringParameters
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      data,
-    }),
+    const data = await extractArticle({ url })
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        data,
+      }),
+    }
+  } catch (e) {
+    logger.error(
+      { e, functionName: 'article' },
+      'Function Handler unauthorized'
+    )
+    return {
+      statusCode: 401,
+    }
   }
 }
