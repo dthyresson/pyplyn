@@ -17,6 +17,13 @@ export const QUERY = gql`
       sentiment
       url
 
+      articles {
+        id
+        title
+        description
+        url
+      }
+
       categories: tweetCategories {
         label
       }
@@ -114,6 +121,35 @@ export const Success = ({ tweet }) => {
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
               {tweet.content}
+            </dd>
+          </div>
+          <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              Articles Mentioned
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              <ul>
+                {tweet.articles.map((article, index) => {
+                  return (
+                    <li
+                      key={`${tweet.id}-a{article.id}-${index}-li`}
+                      className="text-sm"
+                    >
+                      <p>
+                        <a
+                          className="text-blue-500 hover:text-blue-800"
+                          href={article.url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {article.title}
+                        </a>
+                      </p>
+                      <p>{article.description}</p>
+                    </li>
+                  )
+                })}
+              </ul>
             </dd>
           </div>
           <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">

@@ -170,7 +170,7 @@ export const createTweetPriority = async ({ tweetId, uid, label }) => {
   }
 }
 
-export const persistLinkedArticle = async (linkedArticle) => {
+export const persistLinkedArticle = async (linkedArticle, tweet) => {
   try {
     const article = await db.article.create({
       data: {
@@ -190,7 +190,21 @@ export const persistLinkedArticle = async (linkedArticle) => {
       },
     })
 
-    // await enrichArticle(article)
+    logger.debug(
+      { articleId: article.id, article: article },
+      `Linking article ${article.id} to tweet ${tweet.id}`
+    )
+
+    await db.tweet.update({
+      where: { id: tweet.id },
+      data: { articles: { connect: [{ id: article.id }] } },
+    })
+
+    logger.info(
+      { articleId: article.id },
+      `Linked article ${article.id} to tweet ${tweet.id}`
+    )
+
     await enrichArticleId({ id: article.id })
 
     return article
@@ -201,22 +215,40 @@ export const persistLinkedArticle = async (linkedArticle) => {
   }
 }
 
-export const persistLinkedArticlesForEntryId = async ({ id }) => {
+export const persistLinkedArticlesForEntryId = async ({ id, tweetId }) => {
   const entry = await entryById({ id: id })
+  const tweet = await db.tweet.tweetById({ id: tweetId })
 
-  if (entry === undefined) {
-    logger.error(`persistLinkedArticlesForEntryId entry ${id} not found!`)
+  if (entry === undefined || tweet === undefined) {
+    logger.error(
+      { entryId: id, tweetId: tweetId },
+      'persistLinkedArticlesForEntryId entry or tweet not found!'
+    )
   }
 
-  linkedEntriesParser(entry).forEach(async (linkedArticle) => {
-    await persistLinkedArticle(linkedArticle)
+  const articles = linkedEntriesParser(entry).map(async (linkedArticle) => {
+    const article = await persistLinkedArticle(linkedArticle, tweet)
+    logger.debug(
+      { articleId: article.id },
+      `persistLinkedArticlesForEntryId ${article.id}`
+    )
+    return article
   })
+
+  return articles
 }
 
-export const persistLinkedArticles = async (entry) => {
-  linkedEntriesParser(entry).forEach(async (linkedArticle) => {
-    await persistLinkedArticle(linkedArticle)
+export const persistLinkedArticles = async (entry, tweet) => {
+  const articles = linkedEntriesParser(entry).map(async (linkedArticle) => {
+    const article = await persistLinkedArticle(linkedArticle, tweet)
+    logger.debug(
+      { articleId: article.id },
+      `persistLinkedArticles ${article.id}`
+    )
+    return article
   })
+
+  return articles
 }
 
 export const persistTweet = async ({ entry }) => {
@@ -244,19 +276,13 @@ export const persistTweet = async ({ entry }) => {
       include: { entry: true },
     })
 
-    // TODO: replace all with scheduler repeater tasks
-    // await persistTweetCategories({ id: tweet.id })
     await createTweetCategories(tweet)
 
-    // await persistTweetPriorities({ id: tweet.id })
     await createTweetPriorities(tweet)
 
     await enrichTweet(tweet)
-    // await enrichTweetId({ id: tweet.id })
 
-    // TODO - return articles w/ entry ids and create tweetLinkedArticle relations
-    await persistLinkedArticles(entry)
-    // await persistLinkedArticlesForEntryId({ id: tweet.entryId })
+    await persistLinkedArticles(entry, tweet)
 
     logger.debug(
       { tweet: { id: tweet.id, title: tweet.title } },

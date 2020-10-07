@@ -6,7 +6,7 @@ const AppLayout = ({ children }) => {
       <div className="sm:hidden">
         <select aria-label="Selected tab" className="form-select block w-full">
           <option>Dashboard</option>
-          <option selected>Tweets</option>
+          <option defaultValue>Tweets</option>
         </select>
       </div>
       <div className="p-4 hidden sm:block">
@@ -26,6 +26,22 @@ const AppLayout = ({ children }) => {
             aria-current="page"
           >
             Tweets
+          </NavLink>
+
+          <NavLink
+            to={routes.job({ name: 'process-entry-stream-job' })}
+            className="px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800 focus:bg-gray-200"
+            activeClassName="ml-4 px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-800 bg-gray-200 focus:outline-none focus:bg-gray-300"
+          >
+            Schedule Stream
+          </NavLink>
+
+          <NavLink
+            to={routes.job({ name: 'load-feed-paginated' })}
+            className="px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800 focus:bg-gray-200"
+            activeClassName="ml-4 px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-800 bg-gray-200 focus:outline-none focus:bg-gray-300"
+          >
+            Process Feed
           </NavLink>
         </nav>
       </div>

@@ -1,0 +1,19 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateField",
+      "model": "Article",
+      "field": "tweets",
+      "type": "Tweet",
+      "arity": "List"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Tweet",
+      "field": "articles",
+      "type": "Article",
+      "arity": "List"
+    }
+  ]
+}

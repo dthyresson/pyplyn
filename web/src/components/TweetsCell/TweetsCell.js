@@ -19,6 +19,13 @@ export const QUERY = gql`
         content
         author
         publishedAt
+
+        articles {
+          id
+          title
+          url
+        }
+
         priorities: tweetPriorities {
           label
           terms: tweetPriorityTerms {

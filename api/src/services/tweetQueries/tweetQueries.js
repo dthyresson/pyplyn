@@ -1,13 +1,24 @@
 import { db } from 'src/lib/db'
 
 export const tweetById = ({ id }) => {
-  return db.tweet.findOne({ where: { id: id }, include: { entry: true } })
+  return db.tweet.findOne({
+    where: { id: id },
+    include: {
+      entry: true,
+      articles: true,
+      tweetContext: true,
+      tweetCategories: true,
+      tags: true,
+      tweetPriorities: true,
+    },
+  })
 }
 
 export const tweetByEntryId = ({ entryId }) => {
   return db.tweet.findOne({
     where: { entryId: entryId },
     include: {
+      articles: true,
       entry: true,
       tweetContext: true,
       tweetCategories: true,
@@ -28,7 +39,7 @@ export const paginateTweets = async ({
 
   return {
     tweets: db.tweet.findMany({
-      include: { tags: true, tweetPriorities: true },
+      include: { articles: true, tags: true, tweetPriorities: true },
       take: limit,
       skip: offset,
       orderBy: order,

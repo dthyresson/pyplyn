@@ -31,4 +31,4 @@ Your browser should open automatically to `http://localhost:8910` to see the web
 
 ## Logs
 
-`tail -f logs/api-dev.log| pino-colada`
+`tail -f logs/api-dev.log | pino-colada`

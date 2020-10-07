@@ -26,6 +26,10 @@ const queryPermissions = {
   paginateTweets: allow,
   bumpChart: allow,
   lineChart: requireAuth,
+  repeaterJobs: allow,
+  repeaterJob: allow,
+  repeaterJobResults: allow,
+  repeaterJobChart: allow,
 }
 
 const permissions = shield(

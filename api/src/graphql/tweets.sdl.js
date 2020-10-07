@@ -15,10 +15,12 @@ export const schema = gql`
     tweetCategories: [TweetCategory]!
     tweetPriorities: [TweetPriority]!
     tags: [Tag]!
+    articles: [Article]!
   }
 
   type Query {
     tweets: [Tweet!]!
+    tweet(id: String!): Tweet
   }
 
   input CreateTweetInput {
@@ -39,5 +41,11 @@ export const schema = gql`
     content: String
     url: String
     sentiment: Float
+  }
+
+  type Mutation {
+    createTweet(input: CreateTweetInput!): Tweet!
+    updateTweet(id: String!, input: UpdateTweetInput!): Tweet!
+    deleteTweet(id: String!): Tweet!
   }
 `

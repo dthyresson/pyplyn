@@ -41,7 +41,7 @@ export const requireAuthorization = (event) => {
   return verifyToken(token)
 }
 
-export const signPayload = ({ payload }) => {
+export const signPayload = ({ payload, expiresIn = '1h' }) => {
   logger.debug(payload, 'signPayload init payload')
 
   const digest = createHash('md5')
@@ -59,7 +59,7 @@ export const signPayload = ({ payload }) => {
       subject: payload.streamId,
       audience: 'repeater-dev',
       issuer: 'pyplyn',
-      expiresIn: '1h',
+      expiresIn,
     }
   )
 
