@@ -22,6 +22,13 @@ export const QUERY = gql`
         title
         description
         url
+        tags {
+          label
+          mentions
+          confidence
+          salience
+          sentiment
+        }
       }
 
       categories: tweetCategories {
@@ -80,6 +87,18 @@ const tagLabels = (tweet) => {
       return `${tag.label} (${tag.mentions})`
     })
   )
+}
+
+const articleLabels = (tweet) => {
+  let labels = []
+
+  tweet.articles.forEach((article) => {
+    article.tags?.forEach((tag) => {
+      labels.push(`${tag.label} (${tag.mentions})`)
+    })
+  })
+
+  return unique(labels)
 }
 
 export const Loading = () => <div>Loading...</div>
@@ -192,8 +211,6 @@ export const Success = ({ tweet }) => {
                     </li>
                   )
                 })}
-              </ul>
-              <ul>
                 {tagLabels(tweet).map((label, index) => {
                   return (
                     <li
@@ -203,6 +220,21 @@ export const Success = ({ tweet }) => {
                       <span
                         key={`${tweet.id}-${label}-${index}`}
                         className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-green-100 text-green-800"
+                      >
+                        {label}
+                      </span>
+                    </li>
+                  )
+                })}
+                {articleLabels(tweet).map((label, index) => {
+                  return (
+                    <li
+                      key={`${tweet.id}-art-li-${label}-${index}-li`}
+                      className="py-1 flex items-center justify-between text-sm leading-5"
+                    >
+                      <span
+                        key={`${tweet.id}-art-${label}-${index}`}
+                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-teal-100 text-teal-800"
                       >
                         {label}
                       </span>

@@ -29,6 +29,14 @@ const AppLayout = ({ children }) => {
           </NavLink>
 
           <NavLink
+            to={routes.jobs()}
+            className="px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800 focus:bg-gray-200"
+            activeClassName="ml-4 px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-800 bg-gray-200 focus:outline-none focus:bg-gray-300"
+          >
+            Jobs
+          </NavLink>
+
+          <NavLink
             to={routes.job({ name: 'process-entry-stream-job' })}
             className="px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800 focus:bg-gray-200"
             activeClassName="ml-4 px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-800 bg-gray-200 focus:outline-none focus:bg-gray-300"

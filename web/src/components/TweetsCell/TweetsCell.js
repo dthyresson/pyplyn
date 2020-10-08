@@ -4,7 +4,7 @@ import { Link, routes } from '@redwoodjs/router'
 
 import Pagination from 'src/components/Pagination'
 
-export const beforeQuery = ({ page = 1, limit = 5 }) => {
+export const beforeQuery = ({ page = 1, limit = 20 }) => {
   page = page ? parseInt(page, 10) : 1
   return { variables: { page: page, limit: limit } }
 }

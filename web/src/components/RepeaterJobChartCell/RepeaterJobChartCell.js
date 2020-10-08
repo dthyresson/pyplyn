@@ -1,4 +1,5 @@
 import { ResponsiveScatterPlot } from '@nivo/scatterplot'
+import { he } from 'date-fns/locale'
 
 export const QUERY = gql`
   query RepeaterJobChartQuery($name: String!) {
@@ -31,15 +32,15 @@ export const Success = ({ repeaterJobChart }) => {
         xScale={{
           type: 'time',
           format: '%Y-%m-%dT%H:%M:%S.000Z',
-          useUTC: false,
+          useUTC: true,
           precision: 'second',
         }}
         xFormat="time:%Y-%m-%d %H:%M:%S"
         yScale={{
           type: 'linear',
-          min: 'auto',
+          min: '0',
           max: 'auto',
-          stacked: true,
+          // stacked: true,
           reverse: false,
         }}
         axisTop={null}

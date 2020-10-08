@@ -1,7 +1,7 @@
 import { db } from 'src/lib/db'
 
 export const articles = () => {
-  return db.article.findMany()
+  return db.article.findMany({})
 }
 
 export const article = ({ id }) => {
@@ -35,7 +35,11 @@ export const Article = {
   articleContext: (_obj, { root }) =>
     db.article.findOne({ where: { id: root.id } }).articleContext(),
   tags: (_obj, { root }) =>
-    db.article.findOne({ where: { id: root.id } }).tags(),
+    db.article
+      .findOne({
+        where: { id: root.id },
+      })
+      .tags(),
   tweets: (_obj, { root }) =>
     db.article.findOne({ where: { id: root.id } }).tweets(),
 }

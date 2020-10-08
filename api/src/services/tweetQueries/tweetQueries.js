@@ -5,10 +5,14 @@ export const tweetById = ({ id }) => {
     where: { id: id },
     include: {
       entry: true,
-      articles: true,
+      articles: {
+        include: {
+          tags: { where: { confidence: { gte: 0.4 }, mentions: { gt: 0 } } },
+        },
+      },
       tweetContext: true,
       tweetCategories: true,
-      tags: true,
+      tags: { where: { confidence: { gte: 0.4 }, mentions: { gt: 0 } } },
       tweetPriorities: true,
     },
   })
