@@ -134,7 +134,7 @@ export const Success = ({ results }) => {
                             return (
                               <span
                                 key={`${article.id}-${label}-${index}`}
-                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-blue-100 text-blue-800"
+                                className="m-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-blue-100 text-blue-800"
                               >
                                 {label}
                               </span>

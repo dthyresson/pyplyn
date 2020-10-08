@@ -58,32 +58,20 @@ const AppLayout = ({ children }) => {
               <div className="flex-shrink-0">
                 <svg
                   className="block lg:hidden h-8 w-auto"
-                  fill="gray"
+                  fill="white"
                   viewBox="0 0 100 100"
                   alt="Pyplyn logo"
                 >
-                  <g>
-                    <path d="m62.727 50.074h20.637v21.051h-20.637z" />
-                    <path d="m16.637 50.074h23.746v21.051h-23.746z" />
-                    <path d="m82.109 48.613v23.977c0 2.5234 2.0469 4.5703 4.5703 4.5703 2.5234 0 4.5703-2.0469 4.5703-4.5703v-23.977c0-2.5234-2.0469-4.5703-4.5703-4.5703-2.5234 0-4.5703 2.043-4.5703 4.5703z" />
-                    <path d="m8.75 48.613v23.977c0 2.5234 2.0469 4.5703 4.5703 4.5703 2.5234 0 4.5703-2.0469 4.5703-4.5703v-23.977c0-2.5234-2.0469-4.5703-4.5703-4.5703-2.5234 0-4.5703 2.043-4.5703 4.5703z" />
-                    <path d="m70.148 28.363c0 1.5508-0.64844 3.0391-1.8008 4.0859-1.1367 1.0391-2.6992 1.5625-4.2266 1.4141l-8.8242-0.82422v7.9141h3.1641c0.96094 0 1.7383 0.77344 1.7383 1.7266v3.9141h0.52344c1.7891 0 3.25 1.4492 3.25 3.2383v21.551c0 1.7891-1.4609 3.2383-3.25 3.2383l-21.535-0.007813c-1.7891 0-3.2383-1.4492-3.2383-3.2383v-21.551c0-1.7891 1.4492-3.2383 3.2383-3.2383h0.61328v-3.9141c0-0.94922 0.77344-1.7266 1.7383-1.7266h3.1641v-7.9141l-8.8242 0.82422c-0.16406 0.011719-0.33594 0.023437-0.51172 0.023437-1.3633 0-2.6992-0.51172-3.7109-1.4375-1.1484-1.0508-1.8008-2.5391-1.8008-4.0859 0-1.5508 0.64844-3.0391 1.8008-4.0859 1.1484-1.0391 2.6875-1.5508 4.2266-1.4141l10.188 0.94922h7.9883l10.074-0.94922c1.5391-0.13672 3.0859 0.375 4.2266 1.4141 1.1406 1.0547 1.7891 2.543 1.7891 4.0938z" />
-                  </g>
+                  <path d="m66.191 85.555-11.504-1.043v-25.98c0.003906-1.4883 1.0547-2.7695 2.5117-3.0664 5.6641-1.1328 10.66-4.4297 13.93-9.1914 3.2656-4.7656 4.5469-10.613 3.5664-16.305l-4.4062-25.547c-0.12891-0.75-0.77734-1.2969-1.5391-1.2969h-37.5c-0.76172 0-1.4102 0.54688-1.5391 1.2969l-4.4062 25.547c-0.98047 5.6914 0.30078 11.539 3.5664 16.305 3.2695 4.7617 8.2656 8.0586 13.93 9.1914 1.457 0.29688 2.5078 1.5781 2.5117 3.0664v25.98l-11.504 1.0469v-0.003906c-3.2266 0.28125-5.6992 2.9883-5.6836 6.2266v0.40625c0 0.41406 0.16406 0.8125 0.45703 1.1055s0.69141 0.45703 1.1055 0.45703h40.625c0.41406 0 0.8125-0.16406 1.1055-0.45703s0.45703-0.69141 0.45703-1.1055v-0.40625c0.015625-3.2383-2.457-5.9453-5.6836-6.2266zm-0.21484-42.82c-0.22266 0.32812-0.46094 0.64453-0.70703 0.95312v0.003906c-0.24609 0.30469-0.60938 0.49609-1.0039 0.51953-0.39062 0.027343-0.77734-0.11719-1.0586-0.39063l-0.24609-0.23828c-0.51172-0.49609-0.5625-1.3047-0.11719-1.8633 0.19531-0.24219 0.37891-0.49219 0.55469-0.75l0.007812-0.011719c0.40234-0.59766 1.1953-0.79297 1.8281-0.44531l0.30078 0.16406c0.33984 0.1875 0.58984 0.50781 0.68359 0.88672 0.089844 0.37891 0.019531 0.78125-0.19531 1.1055zm0.83203-5.207-0.32812-0.089844h-0.003907c-0.6875-0.18359-1.125-0.85938-1.0078-1.5625 0.24219-1.4258 0.23828-2.8867-0.011719-4.3164l-0.32422-1.8711h3.1719l0.23047 1.3438c0.3125 1.7812 0.31641 3.6055 0.011719 5.3906-0.070313 0.38672-0.29688 0.72656-0.625 0.9375-0.33203 0.21094-0.73828 0.26953-1.1172 0.16797zm-37.707-11.191 3.4648-20.086h34.867l3.4609 20.086 0.003907-0.003907c0.019531 0.12109-0.074219 0.23047-0.19531 0.23047h-2.9375l-2.207-12.789c-0.14453-0.84766-0.95312-1.4219-1.8047-1.2734-0.40625 0.070312-0.76953 0.30078-1.0117 0.64062-0.23828 0.33594-0.33203 0.75781-0.26172 1.1641l2.1133 12.258h-35.297c-0.12109 0-0.21484-0.10938-0.19531-0.22656zm2.3672 64.289c0.43359-1.0977 1.4492-1.8555 2.625-1.957l12.926-1.1758h-0.003906c0.80469-0.070313 1.4219-0.74609 1.4219-1.5547v-22.988c1.0117 0.35938 2.1133 0.35938 3.125 0v22.988c0 0.80859 0.61719 1.4844 1.4219 1.5547l12.926 1.1758h-0.003906c1.1758 0.10156 2.1914 0.85938 2.625 1.957z" />
                 </svg>
 
                 <svg
                   className="hidden lg:block h-8 w-auto"
-                  fill="gray"
+                  fill="white"
                   viewBox="0 0 100 100"
                   alt="Pyplyn logo"
                 >
-                  <g>
-                    <path d="m62.727 50.074h20.637v21.051h-20.637z" />
-                    <path d="m16.637 50.074h23.746v21.051h-23.746z" />
-                    <path d="m82.109 48.613v23.977c0 2.5234 2.0469 4.5703 4.5703 4.5703 2.5234 0 4.5703-2.0469 4.5703-4.5703v-23.977c0-2.5234-2.0469-4.5703-4.5703-4.5703-2.5234 0-4.5703 2.043-4.5703 4.5703z" />
-                    <path d="m8.75 48.613v23.977c0 2.5234 2.0469 4.5703 4.5703 4.5703 2.5234 0 4.5703-2.0469 4.5703-4.5703v-23.977c0-2.5234-2.0469-4.5703-4.5703-4.5703-2.5234 0-4.5703 2.043-4.5703 4.5703z" />
-                    <path d="m70.148 28.363c0 1.5508-0.64844 3.0391-1.8008 4.0859-1.1367 1.0391-2.6992 1.5625-4.2266 1.4141l-8.8242-0.82422v7.9141h3.1641c0.96094 0 1.7383 0.77344 1.7383 1.7266v3.9141h0.52344c1.7891 0 3.25 1.4492 3.25 3.2383v21.551c0 1.7891-1.4609 3.2383-3.25 3.2383l-21.535-0.007813c-1.7891 0-3.2383-1.4492-3.2383-3.2383v-21.551c0-1.7891 1.4492-3.2383 3.2383-3.2383h0.61328v-3.9141c0-0.94922 0.77344-1.7266 1.7383-1.7266h3.1641v-7.9141l-8.8242 0.82422c-0.16406 0.011719-0.33594 0.023437-0.51172 0.023437-1.3633 0-2.6992-0.51172-3.7109-1.4375-1.1484-1.0508-1.8008-2.5391-1.8008-4.0859 0-1.5508 0.64844-3.0391 1.8008-4.0859 1.1484-1.0391 2.6875-1.5508 4.2266-1.4141l10.188 0.94922h7.9883l10.074-0.94922c1.5391-0.13672 3.0859 0.375 4.2266 1.4141 1.1406 1.0547 1.7891 2.543 1.7891 4.0938z" />
-                  </g>
+                  <path d="m66.191 85.555-11.504-1.043v-25.98c0.003906-1.4883 1.0547-2.7695 2.5117-3.0664 5.6641-1.1328 10.66-4.4297 13.93-9.1914 3.2656-4.7656 4.5469-10.613 3.5664-16.305l-4.4062-25.547c-0.12891-0.75-0.77734-1.2969-1.5391-1.2969h-37.5c-0.76172 0-1.4102 0.54688-1.5391 1.2969l-4.4062 25.547c-0.98047 5.6914 0.30078 11.539 3.5664 16.305 3.2695 4.7617 8.2656 8.0586 13.93 9.1914 1.457 0.29688 2.5078 1.5781 2.5117 3.0664v25.98l-11.504 1.0469v-0.003906c-3.2266 0.28125-5.6992 2.9883-5.6836 6.2266v0.40625c0 0.41406 0.16406 0.8125 0.45703 1.1055s0.69141 0.45703 1.1055 0.45703h40.625c0.41406 0 0.8125-0.16406 1.1055-0.45703s0.45703-0.69141 0.45703-1.1055v-0.40625c0.015625-3.2383-2.457-5.9453-5.6836-6.2266zm-0.21484-42.82c-0.22266 0.32812-0.46094 0.64453-0.70703 0.95312v0.003906c-0.24609 0.30469-0.60938 0.49609-1.0039 0.51953-0.39062 0.027343-0.77734-0.11719-1.0586-0.39063l-0.24609-0.23828c-0.51172-0.49609-0.5625-1.3047-0.11719-1.8633 0.19531-0.24219 0.37891-0.49219 0.55469-0.75l0.007812-0.011719c0.40234-0.59766 1.1953-0.79297 1.8281-0.44531l0.30078 0.16406c0.33984 0.1875 0.58984 0.50781 0.68359 0.88672 0.089844 0.37891 0.019531 0.78125-0.19531 1.1055zm0.83203-5.207-0.32812-0.089844h-0.003907c-0.6875-0.18359-1.125-0.85938-1.0078-1.5625 0.24219-1.4258 0.23828-2.8867-0.011719-4.3164l-0.32422-1.8711h3.1719l0.23047 1.3438c0.3125 1.7812 0.31641 3.6055 0.011719 5.3906-0.070313 0.38672-0.29688 0.72656-0.625 0.9375-0.33203 0.21094-0.73828 0.26953-1.1172 0.16797zm-37.707-11.191 3.4648-20.086h34.867l3.4609 20.086 0.003907-0.003907c0.019531 0.12109-0.074219 0.23047-0.19531 0.23047h-2.9375l-2.207-12.789c-0.14453-0.84766-0.95312-1.4219-1.8047-1.2734-0.40625 0.070312-0.76953 0.30078-1.0117 0.64062-0.23828 0.33594-0.33203 0.75781-0.26172 1.1641l2.1133 12.258h-35.297c-0.12109 0-0.21484-0.10938-0.19531-0.22656zm2.3672 64.289c0.43359-1.0977 1.4492-1.8555 2.625-1.957l12.926-1.1758h-0.003906c0.80469-0.070313 1.4219-0.74609 1.4219-1.5547v-22.988c1.0117 0.35938 2.1133 0.35938 3.125 0v22.988c0 0.80859 0.61719 1.4844 1.4219 1.5547l12.926 1.1758h-0.003906c1.1758 0.10156 2.1914 0.85938 2.625 1.957z" />
                 </svg>
               </div>
               <div className="hidden sm:block sm:ml-6">
@@ -108,6 +96,13 @@ const AppLayout = ({ children }) => {
                     className="ml-4 px-3 py-2 rounded-md text-sm font-medium leading-5 text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
                   >
                     Articles
+                  </NavLink>
+                  <NavLink
+                    to={routes.tags()}
+                    activeClassName="px-3 py-2 rounded-md text-sm font-medium leading-5 text-white bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
+                    className="ml-4 px-3 py-2 rounded-md text-sm font-medium leading-5 text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
+                  >
+                    Tags
                   </NavLink>
                   <NavLink
                     to={routes.jobs()}
@@ -222,6 +217,13 @@ const AppLayout = ({ children }) => {
             Articles
           </NavLink>
           <NavLink
+            to={routes.tags()}
+            activeClassName="block px-3 py-2 rounded-md text-base font-medium text-white bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
+            className="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
+          >
+            Tags
+          </NavLink>
+          <NavLink
             to={routes.jobs()}
             activeClassName="block px-3 py-2 rounded-md text-base font-medium text-white bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
             className="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition duration-150 ease-in-out"
@@ -230,75 +232,9 @@ const AppLayout = ({ children }) => {
           </NavLink>
         </Transition>
       </nav>
-      <div className="py-2 max-w-7xl mx-auto sm:px-6 lg:px-8">{children}</div>
+      <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">{children}</div>
     </div>
   )
 }
-
-// const AppLayout = ({ children }) => {
-//   return (
-//     <div className="p-4">
-//       <div className="sm:hidden">
-//         <select aria-label="Selected tab" className="form-select block w-full">
-//           <option>Dashboard</option>
-//           <option defaultValue>Tweets</option>
-//         </select>
-//       </div>
-//       <div className="p-4 hidden sm:block">
-//         <nav className="flex">
-//           <NavLink
-//             to={routes.home()}
-//             className="px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800 focus:bg-gray-200"
-//             activeClassName="ml-4 px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-800 bg-gray-200 focus:outline-none focus:bg-gray-300"
-//           >
-//             Dashboard
-//           </NavLink>
-
-//           <NavLink
-//             to={routes.tweets()}
-//             className="px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800 focus:bg-gray-200"
-//             activeClassName="ml-4 px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-800 bg-gray-200 focus:outline-none focus:bg-gray-300"
-//             aria-current="page"
-//           >
-//             Tweets
-//           </NavLink>
-
-//           <NavLink
-//             to={routes.articles()}
-//             className="px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800 focus:bg-gray-200"
-//             activeClassName="ml-4 px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-800 bg-gray-200 focus:outline-none focus:bg-gray-300"
-//             aria-current="page"
-//           >
-//             Articles
-//           </NavLink>
-//           <NavLink
-//             to={routes.jobs()}
-//             className="px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800 focus:bg-gray-200"
-//             activeClassName="ml-4 px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-800 bg-gray-200 focus:outline-none focus:bg-gray-300"
-//           >
-//             Jobs
-//           </NavLink>
-
-//           <NavLink
-//             to={routes.job({ name: 'process-entry-stream-job' })}
-//             className="px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800 focus:bg-gray-200"
-//             activeClassName="ml-4 px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-800 bg-gray-200 focus:outline-none focus:bg-gray-300"
-//           >
-//             Schedule Stream
-//           </NavLink>
-
-//           <NavLink
-//             to={routes.job({ name: 'load-feed-paginated' })}
-//             className="px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800 focus:bg-gray-200"
-//             activeClassName="ml-4 px-3 py-2 font-medium text-sm leading-5 rounded-md text-gray-800 bg-gray-200 focus:outline-none focus:bg-gray-300"
-//           >
-//             Process Feed
-//           </NavLink>
-//         </nav>
-//       </div>
-//       <div className="py-2 max-w-7xl mx-auto sm:px-6 lg:px-8">{children}</div>
-//     </div>
-//   )
-// }
 
 export default AppLayout

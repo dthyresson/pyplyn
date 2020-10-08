@@ -1,5 +1,3 @@
-import { formatISO9075, parseISO } from 'date-fns'
-
 import { Link, routes } from '@redwoodjs/router'
 
 import Pagination from 'src/components/Pagination'
@@ -10,31 +8,25 @@ export const beforeQuery = ({ page = 1, limit = 20 }) => {
 }
 
 export const QUERY = gql`
-  query TweetsQuery($page: Int, $limit: Int) {
-    results: paginateTweets(page: $page, limit: $limit) {
-      tweets {
-        id
-        entryId
-        title
-        content
-        author
-        publishedAt
-
-        articles {
-          id
-          title
-          url
-        }
-
-        priorities: tweetPriorities {
-          label
-          terms: tweetPriorityTerms {
-            label
-          }
-        }
-        tags {
-          label
-        }
+  query PaginateTagsQuery($page: Int, $limit: Int) {
+    results: paginateTagSummaries(page: $page, limit: $limit) {
+      tagSummaries {
+        label
+        entityTypes
+        totalCount
+        totalMentions
+        minMentions
+        maxMentions
+        avgMentions
+        minConfidence
+        maxConfidence
+        avgConfidence
+        minSalience
+        maxSalience
+        avgSalience
+        minSentiment
+        maxSentiment
+        avgSentiment
       }
       pagination {
         limit
@@ -44,22 +36,6 @@ export const QUERY = gql`
     }
   }
 `
-
-const sortUnique = (array) => {
-  return array
-    ?.sort((a, b) => {
-      return a.localeCompare(b, 'en', { sensitivity: 'base' })
-    })
-    .filter((el, i, a) => i === a.indexOf(el))
-}
-
-const tagLabels = (tweet) => {
-  return sortUnique(
-    tweet.priorities?.map((tag) => {
-      return tag.label
-    })
-  )
-}
 
 export const Loading = () => (
   <div className="overflow-hidden bg-white text-center p-4 py-12">
@@ -110,54 +86,57 @@ export const Success = ({ results }) => {
                 <thead>
                   <tr>
                     <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                      Title
+                      Label
                     </th>
                     <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                      Author
+                      Types
                     </th>
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                      Tags
+                    <th className="px-6 py-3 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                      Total Count
                     </th>
-                    <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                      Date
+                    <th className="px-6 py-3 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                      Total Mentions
                     </th>
-                    <th className="px-6 py-3 bg-gray-50"></th>
+                    <th className="px-6 py-3 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                      Max Mentions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {results?.tweets?.map((tweet, index) => {
+                  {results?.tagSummaries?.map((tagSummary, index) => {
                     const rowColor = index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                     return (
-                      <tr key={tweet.id} className={rowColor}>
+                      <tr key={tagSummary.label} className={rowColor}>
                         <td className="px-6 py-4 text-sm leading-5 font-medium text-gray-900">
-                          {tweet.title}
+                          {tagSummary.label}
                         </td>
-                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                          {tweet.author}
+                        <td className="px-6 py-4 text-sm leading-5 text-gray-500">
+                          <ul>
+                            {tagSummary.entityTypes.map((entityType) => {
+                              return (
+                                <li
+                                  key={`li-label-${tagSummary.label}-${entityType}`}
+                                  className="m-1"
+                                >
+                                  <span
+                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-200 text-gray-800"
+                                    key={`label-${tagSummary.label}-${entityType}`}
+                                  >
+                                    {entityType}
+                                  </span>
+                                </li>
+                              )
+                            })}
+                          </ul>
                         </td>
-                        <td className="px-6 py-4 whitespace-normal text-sm leading-5 text-gray-500">
-                          {tagLabels(tweet).map((label, index) => {
-                            return (
-                              <span
-                                key={`${tweet.id}-${label}-${index}`}
-                                className="m-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-blue-100 text-blue-800"
-                              >
-                                {label}
-                              </span>
-                            )
-                          })}
+                        <td className="px-6 py-4 text-sm text-right leading-5 text-gray-500">
+                          {tagSummary.totalCount}
                         </td>
-                        <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                          {formatISO9075(parseISO(tweet.publishedAt))}
+                        <td className="px-6 py-4 text-sm text-right leading-5 text-gray-500">
+                          {tagSummary.totalMentions}
                         </td>
-
-                        <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
-                          <Link
-                            to={routes.tweet({ id: tweet.id })}
-                            className="text-purple-600 hover:text-purple-900"
-                          >
-                            View
-                          </Link>
+                        <td className="px-6 py-4 text-sm text-right leading-5 text-gray-500">
+                          {tagSummary.maxMentions}
                         </td>
                       </tr>
                     )
@@ -169,7 +148,7 @@ export const Success = ({ results }) => {
         </div>
       </div>
       <Pagination
-        paginatedRoute={routes.tweets}
+        paginatedRoute={routes.tags}
         offset={results?.pagination?.offset}
         total={results?.pagination?.total}
         limit={results?.pagination?.limit}
