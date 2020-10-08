@@ -61,7 +61,7 @@ export const Success = ({ repeaterJobChart }) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: 'Duration',
+          legend: 'Duration (secs)',
           legendOffset: -40,
           legendPosition: 'middle',
         }}

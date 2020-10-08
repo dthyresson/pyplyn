@@ -18,8 +18,6 @@ export const repeaterJob = async ({ name }) => {
 }
 
 export const repeaterJobResults = async ({ name }) => {
-  logger.debug(name)
-
   const job = await repeaterJob({ name })
   const results = await job.results()
 
@@ -27,8 +25,6 @@ export const repeaterJobResults = async ({ name }) => {
 }
 
 export const repeaterJobChart = async ({ name }) => {
-  logger.debug(name)
-
   const job = await repeaterJob({ name })
   const results = await job.results()
 
@@ -39,16 +35,13 @@ export const repeaterJobChart = async ({ name }) => {
       chartSeries[result.status] = { data: [] }
     else {
       const x = result.runAt.toISOString()
-      const y = result.duration
-      console.log(x)
+      const y = result.duration / 1000
 
       const point = {
         x,
         y,
       }
       chartSeries[result.status].data.push(point)
-
-      console.log(point)
     }
   })
 
