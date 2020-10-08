@@ -21,6 +21,9 @@ const requireAuth = rule({ cache: 'contextual' })(
 
 const queryPermissions = {
   '*': deny,
+  articleById: allow,
+  articles: allow,
+  paginateArticles: allow,
   tweetById: allow,
   tweets: allow,
   paginateTweets: allow,
