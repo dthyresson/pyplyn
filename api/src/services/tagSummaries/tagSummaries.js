@@ -35,14 +35,20 @@ export const tagSummaries = async () => {
   return summary
 }
 
+export const tagTotals = async () => {
+  const total = await db.$queryRaw(
+    'SELECT count(distinct t.label) as total FROM "Tag" t'
+  )
+
+  return total[0]
+}
+
 export const paginateTagSummaries = async ({ page = 1, limit = 20 }) => {
   page = page < 1 ? 1 : page
 
   const offset = (page - 1) * limit
 
-  const total = await db.$queryRaw(
-    'SELECT count(distinct t.label) as total FROM "Tag" t'
-  )
+  const total = await tagTotals()
 
   const tagSummaries = await db.$queryRaw(
     `${TAG_SUMMARY_SQL} LIMIT ${limit} OFFSET ${offset}`
@@ -53,7 +59,7 @@ export const paginateTagSummaries = async ({ page = 1, limit = 20 }) => {
     pagination: {
       limit: limit,
       offset: offset,
-      ...total[0],
+      ...total,
     },
   }
 

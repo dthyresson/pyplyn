@@ -27,6 +27,7 @@ const MyResponsiveAreaBump = ({ data /* see data tab */ }) => (
       tickSize: 5,
       tickPadding: 5,
       tickRotation: 0,
+      tickValues: 4,
       legend: '',
       legendPosition: 'middle',
       legendOffset: 32,

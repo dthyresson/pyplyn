@@ -19,7 +19,7 @@ export const Failure = ({ error }) => <div>Error: {error.message}</div>
 
 export const Success = ({ repeaterJobResults }) => {
   return (
-    <div>
+    <div className="mt-4">
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -46,7 +46,11 @@ export const Success = ({ repeaterJobResults }) => {
                 </thead>
                 <tbody>
                   {repeaterJobResults?.map((result, index) => {
-                    const rowColor = index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                    let rowColor = index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+
+                    if (result.duration > 10000) {
+                      rowColor = 'bg-red-100'
+                    }
                     let color = 'green'
                     switch (Math.floor(result.status / 100)) {
                       case 2:
@@ -80,7 +84,7 @@ export const Success = ({ repeaterJobResults }) => {
                           {formatDistanceToNowStrict(parseISO(result.runAt))}
                         </td>
                         <td className="text-right px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                          {result.duration}
+                          {(result.duration / 1000).toFixed(3)}
                         </td>
                         <td className="text-right px-6 py-4 text-sm leading-5 font-medium text-gray-900">
                           <span

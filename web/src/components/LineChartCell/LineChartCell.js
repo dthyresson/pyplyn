@@ -18,7 +18,13 @@ const MyResponsiveLine = ({ data /* see data tab */ }) => (
   <ResponsiveLine
     data={data}
     margin={{ top: 10, right: 200, bottom: 40, left: 60 }}
-    xScale={{ type: 'point' }}
+    xScale={{
+      type: 'time',
+      format: '%Y-%m-%d',
+      useUTC: false,
+      precision: 'day',
+    }}
+    xFormat="time:%Y-%m-%d"
     yScale={{
       type: 'linear',
       min: 'auto',
@@ -33,9 +39,11 @@ const MyResponsiveLine = ({ data /* see data tab */ }) => (
       tickSize: 5,
       tickPadding: 5,
       tickRotation: 0,
+      tickValues: 5,
       legend: 'Date',
       legendOffset: 36,
       legendPosition: 'middle',
+      format: '%Y-%m-%d',
     }}
     axisLeft={{
       orient: 'left',

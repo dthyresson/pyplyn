@@ -232,7 +232,7 @@ const AppLayout = ({ children }) => {
           </NavLink>
         </Transition>
       </nav>
-      <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">{children}</div>
+      <div className="py-1 max-w-7xl mx-auto sm:px-6 lg:px-8">{children}</div>
     </div>
   )
 }

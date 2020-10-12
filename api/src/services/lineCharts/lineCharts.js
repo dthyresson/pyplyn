@@ -68,9 +68,9 @@ FROM (
 
 export const lineChart = async () => {
   const result = await db.$queryRaw(LINE_CHART_SQL)
-  const charts = result?.map((chart) => {
+  const chartDataSeries = result?.map((chart) => {
     return chart.chart_data
   })
 
-  return { chart: charts }
+  return { chart: chartDataSeries }
 }

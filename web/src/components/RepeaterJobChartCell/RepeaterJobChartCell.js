@@ -22,13 +22,11 @@ export const Empty = () => <div>Empty</div>
 export const Failure = ({ error }) => <div>Error: {error.message}</div>
 
 export const Success = ({ repeaterJobChart }) => {
-  console.log(repeaterJobChart.chart)
-
   return (
-    <div className="h-screen">
+    <div className="h-screen my-2 bg-white shadow overflow-hidden sm:rounded-lg">
       <ResponsiveScatterPlot
         data={repeaterJobChart.chart}
-        margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+        margin={{ top: 50, right: 60, bottom: 110, left: 60 }}
         xScale={{
           type: 'time',
           format: '%Y-%m-%dT%H:%M:%S.000Z',
@@ -39,7 +37,7 @@ export const Success = ({ repeaterJobChart }) => {
         yScale={{
           type: 'linear',
           min: '0',
-          max: 'auto',
+          max: '10',
           // stacked: true,
           reverse: false,
         }}
@@ -50,7 +48,7 @@ export const Success = ({ repeaterJobChart }) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          // tickValues: 20,
+          tickValues: 3,
           legend: 'Date',
           legendOffset: 36,
           legendPosition: 'middle',
@@ -75,11 +73,11 @@ export const Success = ({ repeaterJobChart }) => {
         useMesh={true}
         legends={[
           {
-            anchor: 'bottom-right',
-            direction: 'column',
+            anchor: 'bottom',
+            direction: 'row',
             justify: false,
-            translateX: 100,
-            translateY: 0,
+            translateX: 0,
+            translateY: 60,
             itemsSpacing: 0,
             itemDirection: 'left-to-right',
             itemWidth: 80,
