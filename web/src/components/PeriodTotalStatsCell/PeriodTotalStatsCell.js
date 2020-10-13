@@ -1,3 +1,4 @@
+import { routes } from '@redwoodjs/router'
 import PeriodTotalStat from 'src/components/PeriodTotalStat'
 
 export const beforeQuery = ({ period }) => {
@@ -65,6 +66,7 @@ export const Success = ({ period, periodTotalStats }) => {
             <PeriodTotalStat
               caption="Tweets"
               periodTotalStat={periodTotalStats.tweetPeriodTotalStat}
+              route={routes.tweets()}
             />
           </div>
         </div>
@@ -73,14 +75,16 @@ export const Success = ({ period, periodTotalStats }) => {
             <PeriodTotalStat
               caption="Articles"
               periodTotalStat={periodTotalStats.articlePeriodTotalStat}
+              route={routes.articles()}
             />
           </div>
         </div>
         <div className="border-t border-gray-200 md:border-0 md:border-l">
           <div className="px-4 py-5 sm:p-6">
             <PeriodTotalStat
-              caption="Tags"
+              caption="Food Related Tags"
               periodTotalStat={periodTotalStats.tagPeriodTotalStat}
+              route={routes.tags()}
             />
           </div>
         </div>

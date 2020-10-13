@@ -1,4 +1,10 @@
-const PeriodTotalStat = ({ caption, periodTotalStat }) => {
+import { Link, routes } from '@redwoodjs/router'
+
+const PeriodTotalStat = ({
+  caption,
+  periodTotalStat,
+  route = routes.tweets(),
+}) => {
   const downArrow = (
     <path
       fillRule="evenodd"
@@ -46,7 +52,7 @@ const PeriodTotalStat = ({ caption, periodTotalStat }) => {
       </dt>
       <dd className="mt-1 flex justify-between items-baseline md:block lg:flex">
         <div className="flex items-baseline text-2xl leading-8 font-semibold text-indigo-600">
-          {periodTotalStat.currentPeriodTotal}
+          <Link to={route}>{periodTotalStat.currentPeriodTotal}</Link>
           <span className="ml-2 text-sm leading-5 font-medium text-gray-500">
             from {periodTotalStat.priorPeriodTotal}
           </span>
