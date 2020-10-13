@@ -9,7 +9,7 @@ export const schema = gql`
   }
 
   type Query {
-    TweetContexts: [TweetContext!]!
+    tweetContexts: [TweetContext!]!
   }
 
   input CreateTweetContextInput {

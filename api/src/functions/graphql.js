@@ -28,6 +28,7 @@ const queryPermissions = {
   paginateTagSummaries: allow,
   tweetById: allow,
   tweets: allow,
+  tweetStats: allow,
   paginateTweets: allow,
   bumpChart: allow,
   lineChart: requireAuth,
@@ -35,6 +36,7 @@ const queryPermissions = {
   repeaterJob: allow,
   repeaterJobResults: allow,
   repeaterJobChart: allow,
+  periodTotalStats: allow,
 }
 
 const permissions = shield(
