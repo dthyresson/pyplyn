@@ -58,7 +58,7 @@ export const Success = ({ period, periodTotalStats }) => {
   return (
     <div>
       <h3 className="capitalize text-lg leading-6 font-medium text-gray-900">
-        Current {period}
+        {period !== 'day' ? `This ${period}` : 'Today'}
       </h3>
       <div className="mt-5 grid grid-cols-1 rounded-lg bg-white overflow-hidden shadow md:grid-cols-3">
         <div>
