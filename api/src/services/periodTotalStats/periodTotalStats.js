@@ -103,14 +103,20 @@ const documentTypePeriodTotalStatsQuery = ({
 }
 
 const tweetPeriodTotalStatsQuery = ({ period }) => {
-  return documentTypePeriodTotalStatsQuery({period, documentType = DocumentType.TWEET})
+  return documentTypePeriodTotalStatsQuery({
+    period,
+    documentType: DocumentType.TWEET,
+  })
 }
 
 const articlePeriodTotalStatsQuery = ({ period }) => {
-  return documentTypePeriodTotalStatsQuery({period, documentType = DocumentType.ARTICLE})
+  return documentTypePeriodTotalStatsQuery({
+    period,
+    documentType: DocumentType.ARTICLE,
+  })
 }
 
-const tagPeriodTotalStatsQuery = ({ period }) => {
+const tagPeriodTotalStatsQuery = ({ period, entityType = 'food' }) => {
   return `
   WITH t1 AS (
     SELECT
@@ -125,7 +131,7 @@ const tagPeriodTotalStatsQuery = ({ period }) => {
   WHERE
     g.confidence >= 0.8
     AND NOT('date' = ANY (g. "entityTypes"))
-    AND('food' = ANY (g. "entityTypes"))
+    AND('${entityType}' = ANY (g. "entityTypes"))
     AND label != 'wine'
   ORDER BY
     2,
@@ -236,16 +242,34 @@ const tagPeriodTotalStatsQuery = ({ period }) => {
 `
 }
 
+const emptyPeriodTotalStat = {
+  duration: 1,
+  period: 'None',
+  current: Date.now(),
+  currentPeriod: Date.now(),
+  currentPeriodTotal: 0,
+  priorPeriod: Date.now(),
+  priorPeriodTotal: 0,
+  delta: 0,
+  deltaDirection: 0,
+  pctChange: 0,
+}
+
 export const periodTotalStats = async ({ period = 'month' }) => {
-  const tweetPeriodTotalStat = (
-    await db.$queryRaw(tweetPeriodTotalStatsQuery({ period }))
-  )[0]
-  const articlePeriodTotalStat = (
-    await db.$queryRaw(articlePeriodTotalStatsQuery({ period }))
-  )[0]
-  const tagPeriodTotalStat = (
-    await db.$queryRaw(tagPeriodTotalStatsQuery({ period }))
-  )[0]
+  const tweetPeriodTotalStat =
+    (await db.$queryRaw(tweetPeriodTotalStatsQuery({ period })))[0] ||
+    emptyPeriodTotalStat
+
+  const articlePeriodTotalStat =
+    (await db.$queryRaw(articlePeriodTotalStatsQuery({ period })))[0] ||
+    emptyPeriodTotalStat
+
+  const tagPeriodTotalStat =
+    (
+      await db.$queryRaw(
+        tagPeriodTotalStatsQuery({ period, entityType: 'food' })
+      )
+    )[0] || emptyPeriodTotalStat
 
   return { tweetPeriodTotalStat, articlePeriodTotalStat, tagPeriodTotalStat }
 }
