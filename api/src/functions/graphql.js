@@ -25,6 +25,7 @@ const queryPermissions = {
   articles: allow,
   paginateArticles: allow,
   tagSummaries: allow,
+  tagSummariesForLabel: allow,
   paginateTagSummaries: allow,
   tweetById: allow,
   tweets: allow,

@@ -1,4 +1,6 @@
 import pluralize from 'pluralize'
+
+import { Link, routes } from '@redwoodjs/router'
 import PercentChangeBadge from 'src/components/PercentChangeBadge'
 
 export const beforeQuery = ({
@@ -85,7 +87,12 @@ export const Success = ({ popularTags }) => {
                         {ranking.ranking}
                       </td>
                       <td className="px-6 py-4 text-sm leading-5 font-medium text-gray-900">
-                        {ranking.label}
+                        <Link
+                          className="text-purple-600 hover:text-purple-900"
+                          to={routes.tag({ label: ranking.label })}
+                        >
+                          {ranking.label}
+                        </Link>
                       </td>
                       <td className="text-right px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
                         <span className="font-medium text-gray-500">

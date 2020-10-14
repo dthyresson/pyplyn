@@ -100,6 +100,7 @@ export const Success = ({ results }) => {
                     <th className="px-6 py-3 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                       Max Mentions
                     </th>
+                    <th className="px-6 py-3 bg-gray-50"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -137,6 +138,14 @@ export const Success = ({ results }) => {
                         </td>
                         <td className="px-6 py-4 text-sm text-right leading-5 text-gray-500">
                           {tagSummary.maxMentions}
+                        </td>
+                        <td className="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium">
+                          <Link
+                            to={routes.tag({ label: tagSummary.label })}
+                            className="text-purple-600 hover:text-purple-900"
+                          >
+                            View
+                          </Link>
                         </td>
                       </tr>
                     )

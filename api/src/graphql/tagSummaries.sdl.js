@@ -26,5 +26,6 @@ export const schema = gql`
   type Query {
     paginateTagSummaries(page: Int, limit: Int): TagSummariesSet
     tagSummaries: [TagSummary!]!
+    tagSummariesForLabel(label: String!): [TagSummary!]!
   }
 `
