@@ -86,7 +86,7 @@ const HomePage = () => {
           </h2>
 
           <p className="max-w-4xl text-sm leading-5 text-gray-500">
-            Compares the number of varietals mentioned,
+            Compares the number of varietals mentioned.
           </p>
         </div>
 

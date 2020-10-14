@@ -52,7 +52,7 @@ const tagSummariesForLabelQuery = ({ label }) => {
     FROM
     "Tag" t
     WHERE
-    lower(label) = lower('${label}')
+    lower(label) = lower('${unescape(label).replace("'", "''")}')
     AND NOT('date' = ANY ("entityTypes"))
     GROUP BY
     1,

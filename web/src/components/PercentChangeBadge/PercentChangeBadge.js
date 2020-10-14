@@ -29,6 +29,16 @@ const PercentChangeBadge = ({ deltaDirection, pctChange }) => {
     arrow = downArrow
   }
 
+  if (pctChange == 0) {
+    return (
+      <div
+        className={`inline-flex items-baseline px-2.5 py-0.5 rounded-full text-sm font-medium leading-5 bg-orange-100 text-orange-800 md:mt-2 lg:mt-0`}
+      >
+        New
+      </div>
+    )
+  }
+
   let pctChangeArrow = (
     <svg
       className={`-ml-1 mr-0.5 flex-shrink-0 self-center h-5 w-5 text-${pctChangeColor}-500`}
