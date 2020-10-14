@@ -33,7 +33,8 @@ t3 AS (
 t4 AS (
 SELECT
 	*,
-	lag(total) OVER (PARTITION BY label ORDER BY date) AS "previousTotal"
+	coalesce(lag(total) OVER (PARTITION BY label ORDER BY date),
+0) AS "previousTotal"
 FROM
 	t3
 ),
@@ -59,13 +60,19 @@ FROM
 	t4
 WHERE
 	date = date_trunc('month',
-	CURRENT_TIMESTAMP) - INTERVAL '0 week'
+	CURRENT_TIMESTAMP) - INTERVAL '0 month'
 	AND ranking <= 20 ORDER BY
 		date,
 		ranking ASC
 )
 SELECT
-	date, label, total, "previousTotal", delta, "pctChange", ranking, rank() OVER (PARTITION BY date ORDER BY "pctChange" DESC) AS "rankingPctChange"
+	'food' AS "entityType", 20 AS top, 'month' AS period, 0.8 AS confidence, date, label, total, "previousTotal", delta, CASE WHEN delta > 0 THEN
+		1
+	WHEN delta < 0 THEN
+		- 1
+	ELSE
+		0
+	END AS "deltaDirection", "pctChange", ranking, rank() OVER (PARTITION BY date ORDER BY "pctChange" DESC) AS "rankingPctChange"
 	FROM
 		t5
 	ORDER BY
