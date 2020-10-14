@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@redwoodjs/api": "^0.19.1",
+    "@redwoodjs/api": "^0.19.5-canary.8",
     "date-fns": "^2.16.1",
     "exponential-backoff": "^3.1.0",
     "got": "^11.6.2",

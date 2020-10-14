@@ -10,8 +10,9 @@
     "@nivo/bump": "^0.62.0",
     "@nivo/line": "^0.62.0",
     "@nivo/scatterplot": "^0.62.0",
-    "@redwoodjs/router": "^0.19.1",
-    "@redwoodjs/web": "^0.19.1",
+    "@redwoodjs/forms": "^0.19.5-canary.8",
+    "@redwoodjs/router": "^0.19.5-canary.8",
+    "@redwoodjs/web": "^0.19.5-canary.8",
     "@tailwindcss/ui": "^0.6.2",
     "@tailwindui/react": "^0.1.1",
     "date-fns": "^2.16.1",
@@ -22,6 +23,6 @@
   "devDependencies": {
     "autoprefixer": "^9.8.6",
     "postcss-loader": "^4.0.2",
-    "tailwindcss": "^1.8.10"
+    "tailwindcss": "^1.9"
   }
 }
