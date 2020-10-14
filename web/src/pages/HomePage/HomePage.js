@@ -11,6 +11,26 @@ const HomePage = () => {
       <div className="mt-8">
         <div className="mb-4">
           <h2 className="text-lg leading-6 font-medium text-cool-gray-900">
+            Rankings
+          </h2>
+
+          <p className="max-w-4xl text-sm leading-5 text-gray-500">
+            Popular people, places, events, and things mentioned together with
+            wine.
+          </p>
+        </div>
+
+        <div className="mb-4 flex flex-wrap">
+          <PopularTagsCell period="month" entityType="food" top={10} />
+          <PopularTagsCell period="month" entityType="product" top={10} />
+          <PopularTagsCell period="month" entityType="place" top={5} />
+          <PopularTagsCell period="month" entityType="person" top={5} />
+          <PopularTagsCell period="month" entityType="activity" top={5} />
+          <PopularTagsCell period="month" entityType="event" top={5} />
+        </div>
+
+        <div className="mb-4">
+          <h2 className="text-lg leading-6 font-medium text-cool-gray-900">
             Overview
           </h2>
 
@@ -18,12 +38,6 @@ const HomePage = () => {
             Recent stats for how many tweets, articles and tags have been
             processed.
           </p>
-        </div>
-
-        <div className="mb-4">
-          <PopularTagsCell />
-          <PopularTagsCell period="month" entityType="city" />
-          <PopularTagsCell period="week" entityType="product" top={20} />
         </div>
 
         <div className="mb-4">
