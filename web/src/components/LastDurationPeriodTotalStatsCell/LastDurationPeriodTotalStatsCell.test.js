@@ -1,8 +1,13 @@
 import { render, screen } from '@redwoodjs/testing'
-import { Loading, Empty, Failure, Success } from './TweetStatsCell'
-import { standard } from './TweetStatsCell.mock'
+import {
+  Loading,
+  Empty,
+  Failure,
+  Success,
+} from './LastDurationPeriodTotalStatsCell'
+import { standard } from './LastDurationPeriodTotalStatsCell.mock'
 
-describe('TweetStatsCell', () => {
+describe('LastDurationPeriodTotalStatsCell', () => {
   test('Loading renders successfully', () => {
     render(<Loading />)
     // Use screen.debug() to see output
@@ -20,7 +25,11 @@ describe('TweetStatsCell', () => {
   })
 
   test('Success renders successfully', async () => {
-    render(<Success tweetStats={standard().tweetStats} />)
+    render(
+      <Success
+        lastDurationPeriodTotalStats={standard().lastDurationPeriodTotalStats}
+      />
+    )
     expect(screen.getByText(/42/i)).toBeInTheDocument()
   })
 })

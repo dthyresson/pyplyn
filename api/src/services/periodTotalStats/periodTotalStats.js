@@ -123,7 +123,8 @@ const tagPeriodTotalStatsQuery = ({ period, entityType = 'food' }) => {
       lower(g.label) AS "label",
       date_trunc('${period}',
         coalesce(t. "publishedAt",
-          a. "publishedAt")) AS date
+          a. "publishedAt")) AS date,
+      g.mentions
     FROM
       "Tag" AS g
     LEFT JOIN "Tweet" AS t ON t.id = g. "tweetId"
@@ -141,8 +142,8 @@ const tagPeriodTotalStatsQuery = ({ period, entityType = 'food' }) => {
     SELECT
       label,
       date,
-      count(label) AS "currentPeriodTotal",
-      rank() OVER (PARTITION BY date ORDER BY count(label)
+      sum(mentions) AS "currentPeriodTotal",
+      rank() OVER (PARTITION BY date ORDER BY sum(mentions)
         DESC) AS ranking
     FROM
       t1

@@ -20,5 +20,9 @@ export const schema = gql`
 
   type Query {
     periodTotalStats(period: String!): periodTotalStats!
+    lastDurationPeriodTotalStats(
+      duration: Int!
+      period: String!
+    ): periodTotalStats!
   }
 `

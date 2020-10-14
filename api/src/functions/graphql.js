@@ -37,6 +37,7 @@ const queryPermissions = {
   repeaterJobResults: allow,
   repeaterJobChart: allow,
   periodTotalStats: allow,
+  lastDurationPeriodTotalStats: allow,
 }
 
 const permissions = shield(

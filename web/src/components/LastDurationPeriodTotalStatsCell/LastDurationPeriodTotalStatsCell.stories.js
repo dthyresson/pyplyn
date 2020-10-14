@@ -1,5 +1,10 @@
-import { Loading, Empty, Failure, Success } from './TweetStatsCell'
-import { standard } from './TweetStatsCell.mock'
+import {
+  Loading,
+  Empty,
+  Failure,
+  Success,
+} from './LastDurationPeriodTotalStatsCell'
+import { standard } from './LastDurationPeriodTotalStatsCell.mock'
 
 export const loading = () => {
   return Loading ? <Loading /> : null
@@ -17,4 +22,4 @@ export const success = () => {
   return Success ? <Success {...standard()} /> : null
 }
 
-export default { title: 'Cells/TweetStatsCell' }
+export default { title: 'Cells/LastDurationPeriodTotalStatsCell' }
