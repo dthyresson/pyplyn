@@ -9,7 +9,10 @@ export const beforeQuery = ({
   top = 10,
   score = 0.8,
 }) => {
-  return { variables: { entityType, period, top, score } }
+  return {
+    variables: { entityType, period, top, score },
+    pollInterval: 1000 * 60 * 55,
+  }
 }
 
 export const QUERY = gql`

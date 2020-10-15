@@ -12,6 +12,25 @@ export const articleByDocumentId = ({ documentId }) => {
   return db.entry.findOne({ where: { uid: documentId } }).article()
 }
 
+export const articlesForLabel = async ({ label }) => {
+  const safeLabel = unescape(label)
+    .replace("'", "''")
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+
+  const SQL = `SELECT a.*
+  FROM
+	  "Article" a
+	JOIN "Tag" AS g ON g. "articleId" = a. "id"
+  WHERE
+	  lower(g.label) = lower('${safeLabel}')
+    AND g. "articleId" IS NOT NULL
+  ORDER BY a."publishedAt" DESC
+  `
+
+  return await db.$queryRaw(SQL)
+}
+
 export const paginateArticles = async ({
   page = 1,
   limit = 20,

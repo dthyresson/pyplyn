@@ -2,7 +2,7 @@ import { routes } from '@redwoodjs/router'
 import PeriodTotalStat from 'src/components/PeriodTotalStat'
 
 export const beforeQuery = ({ duration = 7, period = 'day' }) => {
-  return { variables: { duration, period } }
+  return { variables: { duration, period }, pollInterval: 1000 * 60 * 55 }
 }
 
 export const QUERY = gql`

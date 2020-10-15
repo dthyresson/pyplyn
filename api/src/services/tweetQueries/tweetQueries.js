@@ -32,6 +32,25 @@ export const tweetByEntryId = ({ entryId }) => {
   })
 }
 
+export const tweetsForLabel = async ({ label }) => {
+  const safeLabel = unescape(label)
+    .replace("'", "''")
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+
+  const SQL = `SELECT t.*
+  FROM
+	  "Tweet" t
+	JOIN "Tag" AS g ON g. "tweetId" = t. "id"
+  WHERE
+	  lower(g.label) = lower('${safeLabel}')
+    AND g. "tweetId" IS NOT NULL
+  ORDER BY t."publishedAt" DESC
+  `
+
+  return await db.$queryRaw(SQL)
+}
+
 export const paginateTweets = async ({
   page = 1,
   limit = 20,

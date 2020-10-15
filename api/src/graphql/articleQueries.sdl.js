@@ -9,6 +9,7 @@ export const schema = gql`
     articleById(id: String!): Article
     articleByEntryId(entryId: String!): Article
     articleByDocumentId(documentId: String!): Article
+    articlesForLabel(label: String!): [Article]
     paginateArticles(page: Int, limit: Int): ArticlesSet
   }
 `

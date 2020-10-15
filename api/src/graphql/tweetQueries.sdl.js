@@ -9,6 +9,7 @@ export const schema = gql`
     tweetById(id: String!): Tweet
     tweetByEntryId(entryId: String!): Tweet
     tweetByDocumentId(documentId: String!): Tweet
+    tweetsForLabel(label: String!): [Tweet]
   }
 
   type Mutation {

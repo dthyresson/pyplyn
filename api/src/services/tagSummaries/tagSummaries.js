@@ -31,6 +31,11 @@ const TAG_SUMMARIES_SQL = `
 `
 
 const tagSummariesForLabelQuery = ({ label }) => {
+  const safeLabel = unescape(label)
+    .replace("'", "''")
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+
   return `
     SELECT
     label,
@@ -52,7 +57,7 @@ const tagSummariesForLabelQuery = ({ label }) => {
     FROM
     "Tag" t
     WHERE
-    lower(label) = lower('${unescape(label).replace("'", "''")}')
+    lower(label) = lower('${safeLabel}')
     AND NOT('date' = ANY ("entityTypes"))
     GROUP BY
     1,
@@ -68,6 +73,7 @@ export const tagSummaries = async () => {
 }
 
 export const tagSummariesForLabel = async ({ label }) => {
+  console.log(tagSummariesForLabelQuery({ label }))
   return await db.$queryRaw(tagSummariesForLabelQuery({ label }))
 }
 

@@ -1,5 +1,11 @@
 import { ResponsiveLine } from '@nivo/line'
 
+export const beforeQuery = () => {
+  return {
+    pollInterval: 1000 * 60 * 55,
+  }
+}
+
 export const QUERY = gql`
   query LineChartQuery {
     lineChart {

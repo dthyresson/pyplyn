@@ -1,5 +1,25 @@
 import { ResponsiveAreaBump } from '@nivo/bump'
 
+export const beforeQuery = () => {
+  return {
+    pollInterval: 1000 * 60 * 55,
+  }
+}
+
+export const QUERY = gql`
+  query AreaBumpChartQuery {
+    bumpChart {
+      chart {
+        id
+        data {
+          x
+          y
+        }
+      }
+    }
+  }
+`
+
 // make sure parent container have a defined height when using
 // responsive component, otherwise height will be 0 and
 // no chart will be rendered.
@@ -34,20 +54,6 @@ const MyResponsiveAreaBump = ({ data /* see data tab */ }) => (
     }}
   />
 )
-
-export const QUERY = gql`
-  query AreaBumpChartQuery {
-    bumpChart {
-      chart {
-        id
-        data {
-          x
-          y
-        }
-      }
-    }
-  }
-`
 
 export const Loading = () => (
   <div className="overflow-hidden bg-white text-center p-4 py-12">
