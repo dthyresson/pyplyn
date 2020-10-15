@@ -18,11 +18,13 @@ export const schema = gql`
     articleContext: ArticleContext
     tags: [Tag]!
     tweets: [Tweet]!
+    articleCategories: [ArticleCategory]!
+    summaries: [ArticleSummary]!
+    articlePriorities: [ArticlePriority]!
   }
 
   type Query {
     articles: [Article!]!
-    article(id: String!): Article
   }
 
   input CreateArticleInput {
@@ -51,11 +53,5 @@ export const schema = gql`
     sentiment: Float
     tagLabels: [String]!
     url: String
-  }
-
-  type Mutation {
-    createArticle(input: CreateArticleInput!): Article!
-    updateArticle(id: String!, input: UpdateArticleInput!): Article!
-    deleteArticle(id: String!): Article!
   }
 `

@@ -1,0 +1,179 @@
+import { logger } from 'src/lib/logger'
+import { db } from 'src/lib/db'
+
+import { articleDetailParser, entryParser } from 'src/lib/parsers/entryParser'
+import { enrichArticleId } from 'src/services/enrichment'
+
+export const persistArticle = async ({ entry }) => {
+  logger.debug(
+    { entryId: entry.id, documumentType: entry.DocumentType },
+    `persistArticle for entry: ${entry.id}`
+  )
+
+  const parsedEntry = entryParser(entry)
+  const parsedArticle = articleDetailParser(entry)
+
+  logger.debug({ uid: parsedEntry.uid }, `parsedEntry entry: ${entry.id}`)
+  logger.debug({ parsedArticle }, `parsedArticle for entry: ${entry.id}`)
+
+  try {
+    const article = await db.article.create({
+      data: {
+        entry: {
+          connectOrCreate: {
+            where: { uid: parsedEntry.uid },
+            create: parsedEntry,
+          },
+        },
+        author: parsedArticle.articleAuthor,
+        description: parsedArticle.description,
+        publishedAt: parsedArticle.articlePublishedAt,
+        title: parsedArticle.articleTitle,
+        url: parsedArticle.articleUrl,
+        tagLabels: { set: [''] },
+      },
+      include: { entry: true },
+    })
+
+    await createArticleCategories(article)
+
+    await createArticlePriorities(article)
+
+    await enrichArticleId({ id: article.id })
+
+    logger.debug(
+      { article: { id: article.id, title: article.title } },
+      `Successfully persistArticle: ${article.id}`
+    )
+  } catch (e) {
+    logger.error(e, `persistArticle error: ${e.message}`)
+    logger.warn(e.stack, 'persistArticle error stack')
+  }
+}
+
+export const createArticleCategories = async (article) => {
+  if (article == undefined) {
+    logger.error(`createArticleCategories has undefined article`)
+    return
+  }
+
+  logger.debug(
+    { articleId: article.id },
+    `createArticleCategories for article: ${article.id}`
+  )
+
+  if (article.entry?.document?.categories === undefined) {
+    logger.warn(
+      { articleId: article.id },
+      `createArticleCategories missing categories for article: ${article.id}`
+    )
+  }
+
+  article.entry?.document?.categories?.map(async (category) => {
+    try {
+      await createArticleCategory({
+        articleId: article.id,
+        uid: category.id,
+        label: category.label,
+      })
+    } catch (e) {
+      logger.error(e, `createArticleCategory error: ${e.message}`)
+      logger.warn(e.stack, 'createArticleCategory error stack')
+    }
+  })
+
+  return
+}
+
+export const createArticleCategory = async ({ articleId, uid, label }) => {
+  try {
+    const articleCategory = await db.articleCategory.create({
+      data: {
+        article: {
+          connect: { id: articleId },
+        },
+        uid,
+        label,
+      },
+      include: { article: true },
+    })
+
+    return articleCategory
+  } catch (e) {
+    logger.error(e, `createArticleCategory error: ${e.message}`)
+    logger.warn(e.stack, 'createArticleCategory error stack')
+    return null
+  }
+}
+
+export const createArticlePriorities = async (article) => {
+  if (article == undefined) {
+    logger.error(
+      { articleId: undefined }`createArticlePriorities has undefined article`
+    )
+    return
+  }
+
+  logger.debug(
+    { articleId: article.id },
+    `createArticlePriorities for article: ${article.id}`
+  )
+
+  if (article.entry?.document?.priorities === undefined) {
+    logger.warn(
+      { articleId: article.id },
+      `createArticlePriorities missing priorities for article: ${article.id}`
+    )
+  }
+
+  article.entry?.document?.priorities?.map(async (priority) => {
+    try {
+      const articlePriority = await createArticlePriority({
+        articleId: article.id,
+        uid: priority.id,
+        label: priority.label,
+      })
+
+      priority.searchTerms?.parts?.forEach(async (term) => {
+        const label = term.label || term.text || term.id?.split('/').pop()
+
+        await db.articlePriorityTerm.create({
+          data: {
+            articlePriority: {
+              connect: { id: articlePriority.id },
+            },
+            uid: term.id || 'nlp/f/entity/unknown',
+            label: label,
+          },
+          include: { articlePriority: true },
+        })
+      })
+    } catch (e) {
+      logger.error(e, `createArticlePriority error: ${e.message}`)
+      logger.warn(e.stack, 'createArticlePriority error stack')
+    }
+  })
+
+  return
+}
+
+export const createArticlePriority = async ({ articleId, uid, label }) => {
+  try {
+    const articlePriority = await db.articlePriority.create({
+      data: {
+        article: {
+          connect: { id: articleId },
+        },
+        uid,
+        label,
+      },
+      include: { article: true },
+    })
+
+    return articlePriority
+  } catch (e) {
+    logger.error(e, `createArticlePriority error: ${e.message}`)
+    logger.warn(e.stack, 'createArticlePriority error stack')
+    return
+  }
+}

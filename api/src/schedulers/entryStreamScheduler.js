@@ -1,6 +1,10 @@
+import camelCase from 'camelcase'
 import { addSeconds } from 'date-fns'
 import { Repeater } from 'repeaterdev-js'
 import { signPayload } from 'src/lib/authorization'
+
+import { entryStreamByIdentifier } from 'src/services/entryStreamQueries'
+
 import { logger } from 'src/lib/logger'
 
 const runAt = (count = 10) => {
@@ -26,9 +30,13 @@ export const scheduleEntryStreamJob = async ({
 
   const token = signPayload({ payload })
 
+  const entryStream = await entryStreamByIdentifier({
+    streamIdentifier: streamId,
+  })
+
   try {
     const job = await repeater.enqueueOrUpdate({
-      name: 'load-feed-paginated',
+      name: `${camelCase(entryStream.name)}PaginateJob`,
       runAt: runAt(count),
       endpoint: process.env.FEEB_JOB_ENDPOINT,
       verb: 'POST',

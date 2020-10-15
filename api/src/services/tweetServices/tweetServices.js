@@ -1,5 +1,9 @@
 import { DocumentType } from '@prisma/client'
 
+import {
+  createArticleCategories,
+  createArticlePriorities,
+} from 'src/services/articleServices'
 import { entryById } from 'src/services/entryQueries'
 import { tweetById } from 'src/services/tweetQueries'
 
@@ -9,6 +13,7 @@ import {
   linkedEntriesParser,
 } from 'src/lib/parsers/entryParser'
 import { enrichArticleId, enrichTweet } from 'src/services/enrichment'
+
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
 
@@ -205,6 +210,9 @@ export const persistLinkedArticle = async (linkedArticle, tweet) => {
       `Linked article ${article.id} to tweet ${tweet.id}`
     )
 
+    await createArticleCategories(article)
+    await createArticlePriorities(article)
+
     await enrichArticleId({ id: article.id })
 
     return article
@@ -291,21 +299,5 @@ export const persistTweet = async ({ entry }) => {
   } catch (e) {
     logger.error(e, `persistTweet error: ${e.message}`)
     logger.warn(e.stack, 'persistTweet error stack')
-  }
-}
-
-export const persistTweets = async ({ data }) => {
-  try {
-    data?.items.forEach(async (item) => {
-      try {
-        await persistTweet({ entry: item })
-      } catch (e) {
-        logger.error(e, `persistTweets persistTweet error: ${e.message}`)
-        logger.warn(e.stack, 'persistTweets persistTweet error stack')
-      }
-    })
-  } catch (e) {
-    logger.error(e, `persistTweets error: ${e.message}`)
-    logger.warn(e.stack, 'persistTweets  error stack')
   }
 }

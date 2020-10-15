@@ -2,7 +2,7 @@ datasource DS {
   // optionally set multiple providers
   // example: provider = ["sqlite", "postgresql"]
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -28,27 +28,26 @@ model Entry {
 }
 
 model Article {
-  id                String            @id @default(cuid())
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @default(now())
-  publishedAt       DateTime          @default(now())
-  entry             Entry             @relation(fields: [entryId], references: [id])
-  entryId           String            @unique
+  id                String             @id @default(cuid())
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @default(now())
+  publishedAt       DateTime           @default(now())
+  entry             Entry              @relation(fields: [entryId], references: [id])
+  entryId           String             @unique
   author            String
   siteName          String?
   title             String
   description       String?
   articleText       String?
   language          String?
-  sentiment         Float             @default(0)
+  sentiment         Float              @default(0)
   tagLabels         String[]
-  url               String            @unique
+  url               String             @unique
   articleContext    ArticleContext?
   tags              Tag[]
   tweets            Tweet[]
   articleCategories ArticleCategory[]
-  summaries         ArticleSummary[]
-  articlePriorities ArticlePriority[]
+  summaries         ArticleSummaries[]
 }
 
 model ArticleCategory {
@@ -70,28 +69,7 @@ model ArticleContext {
   content   Json
 }
 
-model ArticlePriority {
-  id                   String                @id @default(cuid())
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @default(now())
-  article              Article               @relation(fields: [articleId], references: [id])
-  articleId            String
-  uid                  String
-  label                String
-  articlePriorityTerms ArticlePriorityTerm[]
-}
-
-model ArticlePriorityTerm {
-  id                String           @id @default(cuid())
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @default(now())
-  articlePriority   ArticlePriority? @relation(fields: [articlePriorityId], references: [id])
-  articlePriorityId String?
-  uid               String
-  label             String
-}
-
-model ArticleSummary {
+model ArticleSummaries {
   id               String   @id @default(cuid())
   createdAt        DateTime @default(now())
   updatedAt        DateTime @default(now())

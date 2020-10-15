@@ -73,7 +73,6 @@ export const tagSummaries = async () => {
 }
 
 export const tagSummariesForLabel = async ({ label }) => {
-  console.log(tagSummariesForLabelQuery({ label }))
   return await db.$queryRaw(tagSummariesForLabelQuery({ label }))
 }
 

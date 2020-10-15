@@ -113,6 +113,8 @@ export const enrichArticle = async (article) => {
     })
   }
 
+  await createArticleSummaries(article)
+
   return db.article.findOne({
     where: { id: article.id },
     include: { articleContext: true, tags: true },
@@ -218,4 +220,42 @@ export const enrichTweetContext = async ({ tweetContextId }) => {
       )
     }
   })
+}
+
+export const createArticleSummaries = async (article) => {
+  if (article == undefined) {
+    logger.error(
+      { articleId: undefined }`createArticleSummaries has undefined article`
+    )
+    return
+  }
+
+  logger.debug(
+    { articleId: article.id },
+    `createArticleSummaries for article: ${article.id}`
+  )
+
+  if (article.entry?.document?.leoSummary === undefined) {
+    logger.warn(
+      { articleId: article.id },
+      `createArticlePriorities missing summary for article: ${article.id}`
+    )
+  }
+
+  article.entry?.document?.leoSummary?.sentences.forEach(async (summary) => {
+    try {
+      await db.articleSummary.create({
+        data: {
+          sentenceText: summary.text,
+          sentenceScore: summary.score || 0,
+          sentencePostion: summary.position || 0,
+        },
+        connect: { article: { id: article.id } },
+      })
+    } catch (e) {
+      logger.error({ e }, 'createArticlePriorities error')
+    }
+  })
+
+  return
 }

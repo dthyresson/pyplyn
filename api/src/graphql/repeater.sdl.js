@@ -1,7 +1,7 @@
 export const schema = gql`
   type RepeaterJob {
     name: String!
-    enabled: Boolean!
+    enabled: Boolean
     endpoint: String!
     verb: String!
     headers: JSON

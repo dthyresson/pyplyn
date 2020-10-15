@@ -4,7 +4,8 @@ import { logger } from 'src/lib/logger'
 
 import { streamContents } from 'src/lib/apiClients/feedly'
 import { scheduleEntryStreamJob } from 'src/schedulers/entryStreamScheduler'
-import { persistTweets } from 'src/services/tweetServices'
+import { persistTweet } from 'src/services/tweetServices'
+import { persistArticle } from 'src/services/articleServices'
 
 import { updateEntryStream } from 'src/services/entryStreams'
 import { entryStreamByIdentifier } from 'src/services/entryStreamQueries'
@@ -65,7 +66,7 @@ export const traverseFeedlyEntryStream = async ({
     newerThan,
   })
   try {
-    await persistTweets({ data: response })
+    await persistEntryStream({ data: response })
 
     const { id, updated, continuation, newerThan } = searchParams
 
@@ -100,5 +101,37 @@ export const traverseFeedlyEntryStream = async ({
       { e, continuation, newerThan },
       'Error in traverseFeedlyEntryStream'
     )
+  }
+}
+
+export const persistEntryStream = async ({ data }) => {
+  try {
+    data?.items.forEach(async (item) => {
+      const isTweet =
+        item.origin?.htmlUrl &&
+        item.origin?.htmlUrl.startsWith('https://twitter.com')
+
+      if (isTweet) {
+        try {
+          await persistTweet({ entry: item })
+        } catch (e) {
+          logger.error(e, `persistEntryStream persistTweet error: ${e.message}`)
+          logger.warn(e.stack, 'persistEntryStream persistTweet error stack')
+        }
+      } else {
+        try {
+          await persistArticle({ entry: item })
+        } catch (e) {
+          logger.error(
+            e,
+            `persistEntryStream persistArticle error: ${e.message}`
+          )
+          logger.warn(e.stack, 'persistEntryStream persistArticle error stack')
+        }
+      }
+    })
+  } catch (e) {
+    logger.error(e, `persistTweets error: ${e.message}`)
+    logger.warn(e.stack, 'persistTweets  error stack')
   }
 }

@@ -11,7 +11,7 @@ export const beforeQuery = ({
 }) => {
   return {
     variables: { entityType, period, top, score },
-    pollInterval: 1000 * 60 * 55,
+    pollInterval: 1000 * 60 * 5,
   }
 }
 

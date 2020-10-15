@@ -2,7 +2,7 @@ datasource DS {
   // optionally set multiple providers
   // example: provider = ["sqlite", "postgresql"]
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -48,7 +48,7 @@ model Article {
   tweets            Tweet[]
   articleCategories ArticleCategory[]
   summaries         ArticleSummary[]
-  articlePriorities ArticlePriority[]
+  ArticlePriority   ArticlePriority[]
 }
 
 model ArticleCategory {
