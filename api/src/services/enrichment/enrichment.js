@@ -250,7 +250,7 @@ export const createArticleSummaries = async (article) => {
           article: { connect: { id: article.id } },
           sentenceText: summary.text,
           sentenceScore: summary.score || 0,
-          sentencePostion: summary.position || 0,
+          sentencePosition: summary.position || 0,
         },
       })
     } catch (e) {
