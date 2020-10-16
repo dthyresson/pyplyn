@@ -9,7 +9,7 @@ const PeriodTotalStat = ({
   return (
     <dl>
       <dt className="capitalize text-base leading-6 font-normal text-gray-900">
-        Total {caption} Processed
+        {caption}
       </dt>
       <dd className="mt-1 flex justify-between items-baseline md:block lg:flex">
         <div className="flex items-baseline text-2xl leading-8 font-semibold text-indigo-600">
