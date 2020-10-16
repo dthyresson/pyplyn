@@ -8,7 +8,7 @@ import { entryStreamByIdentifier } from 'src/services/entryStreamQueries'
 import { logger } from 'src/lib/logger'
 
 const runAt = (count = 10) => {
-  return addSeconds(Date.now(), Math.ceil(Math.log10(count) * 10))
+  return addSeconds(Date.now(), count * 10)
 }
 
 export const scheduleEntryStreamJob = async ({
