@@ -32,3 +32,23 @@ Your browser should open automatically to `http://localhost:8910` to see the web
 ## Logs
 
 `tail -f logs/api-dev.log | pino-colada`
+
+
+## Accented Characters
+
+
+The `tagSummaries` uses the Postgres `unaccent` extensison.
+
+This needs to be installed in Postgres. If suing Supabase postgres:
+
+All extensions are intalled in the `extensions` schema so that your public schema stays clean.
+
+You can solve this in two ways -
+
+1 - Add the extensions schema to the search path for the postgres user:
+
+`ALTER ROLE postgres SET search_path = public,extensions;`
+
+2 - just add the "extensions" namespace to your query:
+
+`SELECT extensions.unaccent('côtes du rhône aoc');`

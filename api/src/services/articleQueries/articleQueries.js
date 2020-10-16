@@ -1,3 +1,5 @@
+import transliterate from '@sindresorhus/transliterate'
+
 import { db } from 'src/lib/db'
 
 export const articleById = ({ id }) => {
@@ -5,7 +7,9 @@ export const articleById = ({ id }) => {
 }
 
 export const articleByEntryId = ({ entryId }) => {
-  return db.article.findOne({ where: { entryId: entryId } })
+  const articles = db.article.findMany({ where: { entryId: entryId } })
+
+  return articles && articles[0]
 }
 
 export const articleByDocumentId = ({ documentId }) => {
@@ -13,17 +17,14 @@ export const articleByDocumentId = ({ documentId }) => {
 }
 
 export const articlesForLabel = async ({ label }) => {
-  const safeLabel = unescape(label)
-    .replace("'", "''")
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+  const safeLabel = transliterate(decodeURI(label))
 
   const SQL = `SELECT a.*
   FROM
 	  "Article" a
 	JOIN "Tag" AS g ON g. "articleId" = a. "id"
   WHERE
-	  lower(g.label) = lower('${safeLabel}')
+    lower(extensions.unaccent(g.label)) = lower(extensions.unaccent('${safeLabel}'))
     AND g. "articleId" IS NOT NULL
   ORDER BY a."publishedAt" DESC
   `

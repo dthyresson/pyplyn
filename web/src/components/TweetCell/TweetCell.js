@@ -49,6 +49,7 @@ export const QUERY = gql`
         confidence
         salience
         sentiment
+        entityTypes
       }
     }
   }
@@ -63,14 +64,14 @@ const sortUnique = (array) => {
 }
 
 const unique = (array) => {
-  return array?.filter((el, i, a) => i === a.indexOf(el))
+  return array?.filter((el, i, a) => i === a.indexOf(el)).filter((x) => x)
 }
 
 const categoryLabels = (tweet) => {
   return sortUnique(
     tweet.categories?.map((tag) => {
       return tag.label
-    })
+    }) || []
   )
 }
 
@@ -78,15 +79,19 @@ const priorityLabels = (tweet) => {
   return sortUnique(
     tweet.priorities?.map((tag) => {
       return tag.label
-    })
+    }) || []
   )
 }
 
 const tagLabels = (tweet) => {
   return unique(
     tweet.tags?.map((tag) => {
-      return `${tag.label} (${tag.mentions})`
-    })
+      if (!tag.entityTypes?.includes('date')) {
+        return tag.mentions && tag.mentions > 1
+          ? `${tag.label} (${tag.mentions})`
+          : tag.label
+      }
+    }) || []
   )
 }
 
@@ -95,7 +100,11 @@ const articleLabels = (tweet) => {
 
   tweet.articles.forEach((article) => {
     article.tags?.forEach((tag) => {
-      labels.push(`${tag.label} (${tag.mentions})`)
+      if (tag.mentions && tag.mentions > 1) {
+        labels.push(`${tag.label} (${tag.mentions})`)
+      } else {
+        labels.push(tag.label)
+      }
     })
   })
 

@@ -109,6 +109,8 @@ export const Success = ({ popularTags }) => {
                         <PercentChangeBadge
                           deltaDirection={ranking.deltaDirection}
                           pctChange={ranking.pctChange}
+                          total={ranking.total}
+                          previousTotal={ranking.previousTotal}
                         />
                       </td>
                     </tr>

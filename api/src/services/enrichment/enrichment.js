@@ -215,7 +215,7 @@ export const enrichTweetContext = async ({ tweetContextId }) => {
       )
     } catch (e) {
       logger.error(
-        e,
+        { e, tag },
         `Error creating tag ${tag.label} for tweetId ${tweetContext.tweetId} `
       )
     }
@@ -238,22 +238,23 @@ export const createArticleSummaries = async (article) => {
   if (article.entry?.document?.leoSummary === undefined) {
     logger.warn(
       { articleId: article.id },
-      `createArticlePriorities missing summary for article: ${article.id}`
+      `createArticleSummaries missing summary for article: ${article.id}`
     )
   }
 
-  article.entry?.document?.leoSummary?.sentences.forEach(async (summary) => {
+  article.entry?.document?.leoSummary?.sentences?.forEach(async (summary) => {
+    logger.debug(summary, 'createArticleSummaries summary details')
     try {
       await db.articleSummary.create({
         data: {
+          article: { connect: { id: article.id } },
           sentenceText: summary.text,
           sentenceScore: summary.score || 0,
           sentencePostion: summary.position || 0,
         },
-        connect: { article: { id: article.id } },
       })
     } catch (e) {
-      logger.error({ e }, 'createArticlePriorities error')
+      logger.error({ e, summary }, 'createArticleSummaries error')
     }
   })
 

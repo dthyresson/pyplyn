@@ -1,3 +1,4 @@
+import transliterate from '@sindresorhus/transliterate'
 import { db } from 'src/lib/db'
 
 const TAG_SUMMARIES_SQL = `
@@ -31,10 +32,7 @@ const TAG_SUMMARIES_SQL = `
 `
 
 const tagSummariesForLabelQuery = ({ label }) => {
-  const safeLabel = unescape(label)
-    .replace("'", "''")
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+  const safeLabel = transliterate(decodeURI(label))
 
   return `
     SELECT
@@ -57,7 +55,7 @@ const tagSummariesForLabelQuery = ({ label }) => {
     FROM
     "Tag" t
     WHERE
-    lower(label) = lower('${safeLabel}')
+    lower(extensions.unaccent(label)) = lower(extensions.unaccent('${safeLabel}'))
     AND NOT('date' = ANY ("entityTypes"))
     GROUP BY
     1,

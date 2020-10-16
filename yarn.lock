@@ -1949,6 +1949,13 @@
   dependencies:
     pkg-up "^3.1.0"
 
+"@prisma/debug@2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@prisma/debug/-/debug-2.7.0.tgz#22230d5959f42935221d7fdbe8ccbe3e0e7fde7e"
+  integrity sha512-5nRDWpCPRnm/IAHa557jqaXACSOj8i1WBz/6bVvg2iDaAyQJSjQLPF1gFx5J4oeVDgwFzMU7DcKiILGQz/LWIg==
+  dependencies:
+    debug "^4.1.1"
+
 "@prisma/debug@2.9.0":
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/@prisma/debug/-/debug-2.9.0.tgz#6b2d176f3ae587499bea5eef0e304181d7561775"
@@ -1997,6 +2004,16 @@
     rimraf "^3.0.2"
     temp-dir "^2.0.0"
     tempy "^0.7.0"
+
+"@prisma/generator-helper@2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@prisma/generator-helper/-/generator-helper-2.7.0.tgz#f124ddf98030e728ba1033a69e3e6e8e9e5ea6d1"
+  integrity sha512-wQcAuvA4Pib3WRUpF7Co0dYQn7g9PEQFAhZaDqlnmpNjq1KsI2httvzcg3ZkGa2bnBZcM0sK6/D9uJgv0ErbSg==
+  dependencies:
+    "@prisma/debug" "2.7.0"
+    "@types/cross-spawn" "^6.0.1"
+    chalk "^4.0.0"
+    cross-spawn "^7.0.2"
 
 "@prisma/generator-helper@2.9.0":
   version "2.9.0"
@@ -2353,6 +2370,22 @@
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-3.1.2.tgz#548650de521b344e3781fbdb0ece4aa6f729afb8"
   integrity sha512-JiX9vxoKMmu8Y3Zr2RVathBL1Cdu4Nt4MuNWemt1Nc06A0RAin9c5FArkhGsyMBWfCu4zj+9b+GxtjAnE4qqLQ==
+
+"@sindresorhus/slugify@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@sindresorhus/slugify/-/slugify-1.1.0.tgz#2f195365d9b953384305b62664b44b4036c49430"
+  integrity sha512-ujZRbmmizX26yS/HnB3P9QNlNa4+UvHh+rIse3RbOXLp8yl6n1TxB4t7NHggtVgS8QmmOtzXo48kCxZGACpkPw==
+  dependencies:
+    "@sindresorhus/transliterate" "^0.1.1"
+    escape-string-regexp "^4.0.0"
+
+"@sindresorhus/transliterate@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@sindresorhus/transliterate/-/transliterate-0.1.1.tgz#779b31244781d3c898f185b61d58c89e7c782674"
+  integrity sha512-QSdIQ5keUFAZ3KLbfbsntW39ox0Ym8183RqTwBq/ZEFoN3NQAtGV+qWaNdzKpIDHgj9J2CQ2iNDRVU11Zyr7MQ==
+  dependencies:
+    escape-string-regexp "^2.0.0"
+    lodash.deburr "^4.1.0"
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.1"
@@ -7379,6 +7412,11 @@ escape-string-regexp@^2.0.0:
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
   integrity sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==
 
+escape-string-regexp@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
+  integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
+
 escodegen@^1.14.1, escodegen@^1.8.0:
   version "1.14.3"
   resolved "https://registry.yarnpkg.com/escodegen/-/escodegen-1.14.3.tgz#4e7b81fba61581dc97582ed78cab7f0e8d63f503"
@@ -10907,6 +10945,11 @@ lodash.debounce@^4.0.8:
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
 
+lodash.deburr@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/lodash.deburr/-/lodash.deburr-4.1.0.tgz#ddb1bbb3ef07458c0177ba07de14422cb033ff9b"
+  integrity sha1-3bG7s+8HRYwBd7oH3hRCLLAz/5s=
+
 lodash.defaults@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lodash.defaults/-/lodash.defaults-4.2.0.tgz#d09178716ffea4dde9e5fb7b37f6f0802274580c"
@@ -12834,6 +12877,13 @@ prettysize@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/prettysize/-/prettysize-2.0.0.tgz#902c02480d865d9cc0813011c9feb4fa02ce6996"
   integrity sha512-VVtxR7sOh0VsG8o06Ttq5TrI1aiZKmC+ClSn4eBPaNf4SHr5lzbYW+kYGX3HocBL/MfpVrRfFZ9V3vCbLaiplg==
+
+prisma-dbml-generator@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/prisma-dbml-generator/-/prisma-dbml-generator-0.3.1.tgz#18f5de0b41307fe6759a25ab0c508d2e36fcc6c6"
+  integrity sha512-J52q3hB2UO3AsAo15rWrI82Ph+/bbrQU3stUHoGAgNGS4YUniOAi/FKHzAIxNS/ZIwF7evxCv6Qjo1n3XpodTQ==
+  dependencies:
+    "@prisma/generator-helper" "2.7.0"
 
 prismjs@^1.8.4:
   version "1.22.0"

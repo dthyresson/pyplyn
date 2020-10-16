@@ -11,6 +11,10 @@ generator client {
   previewFeatures = ["connectOrCreate"]
 }
 
+generator dbml {
+ provider = "prisma-dbml-generator"
+}
+
 enum DocumentType {
   ARTICLE
   TWEET

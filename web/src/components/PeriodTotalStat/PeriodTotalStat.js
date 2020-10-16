@@ -21,6 +21,8 @@ const PeriodTotalStat = ({
         <PercentChangeBadge
           deltaDirection={periodTotalStat.deltaDirection}
           pctChange={periodTotalStat.pctChange}
+          total={periodTotalStat.currentPeriodTotal}
+          previousTotal={periodTotalStat.priorPeriodTotal}
         />
       </dd>
     </dl>

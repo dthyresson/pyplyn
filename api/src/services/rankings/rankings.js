@@ -4,7 +4,7 @@ const popularTagsQuery = ({
   top = 10,
   entityType = 'food',
   period = 'month',
-  score = 0.8,
+  score = 0.5,
 }) => {
   return `
   WITH t1 AS (
@@ -12,7 +12,8 @@ const popularTagsQuery = ({
       lower(g.label) AS "label",
       date_trunc('${period}',
         coalesce(t. "publishedAt",
-          a. "publishedAt")) AS date
+          a. "publishedAt")) AS date,
+      sum(g.mentions) as mentions
     FROM
       "Tag" AS g
     LEFT JOIN "Tweet" AS t ON t.id = g. "tweetId"
@@ -22,6 +23,7 @@ const popularTagsQuery = ({
     AND NOT('date' = ANY (g. "entityTypes"))
     AND('${entityType}' = ANY (g. "entityTypes"))
     AND label != 'wine'
+  GROUP BY 1, 2
   ORDER BY
     2,
     1
@@ -30,8 +32,8 @@ const popularTagsQuery = ({
     SELECT
       label,
       date,
-      count(label) AS total,
-      rank() OVER (PARTITION BY date ORDER BY count(label)
+      sum(mentions) AS total,
+      rank() OVER (PARTITION BY date ORDER BY sum(mentions)
         DESC) AS ranking
     FROM
       t1

@@ -16,6 +16,7 @@ export const scheduleEntryStreamJob = async ({
   count,
   continuation,
   newerThan,
+  action = '',
 }) => {
   const repeater = new Repeater(process.env.REPEATER_API_KEY)
 
@@ -36,7 +37,7 @@ export const scheduleEntryStreamJob = async ({
 
   try {
     const job = await repeater.enqueueOrUpdate({
-      name: `${camelCase(entryStream.name)}PaginateJob`,
+      name: `${camelCase(entryStream.name)}${action}Job`,
       runAt: runAt(count),
       endpoint: process.env.FEEB_JOB_ENDPOINT,
       verb: 'POST',

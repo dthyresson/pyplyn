@@ -62,14 +62,18 @@ export const createArticleCategories = async (article) => {
     `createArticleCategories for article: ${article.id}`
   )
 
+  let categories = article.entry?.document?.categories || []
+
   if (article.entry?.document?.categories === undefined) {
     logger.warn(
       { articleId: article.id },
       `createArticleCategories missing categories for article: ${article.id}`
     )
+
+    categories = article.tweet?.entry?.document?.categories || []
   }
 
-  article.entry?.document?.categories?.map(async (category) => {
+  categories?.map(async (category) => {
     try {
       await createArticleCategory({
         articleId: article.id,
@@ -119,14 +123,18 @@ export const createArticlePriorities = async (article) => {
     `createArticlePriorities for article: ${article.id}`
   )
 
+  let priorities = article.entry?.document?.priorities || []
+
   if (article.entry?.document?.priorities === undefined) {
     logger.warn(
       { articleId: article.id },
       `createArticlePriorities missing priorities for article: ${article.id}`
     )
+
+    priorities = article.tweet?.entry?.document?.priorities
   }
 
-  article.entry?.document?.priorities?.map(async (priority) => {
+  priorities?.map(async (priority) => {
     try {
       const articlePriority = await createArticlePriority({
         articleId: article.id,

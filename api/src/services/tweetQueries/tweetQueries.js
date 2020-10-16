@@ -1,3 +1,5 @@
+import transliterate from '@sindresorhus/transliterate'
+
 import { db } from 'src/lib/db'
 
 export const tweetById = ({ id }) => {
@@ -33,17 +35,14 @@ export const tweetByEntryId = ({ entryId }) => {
 }
 
 export const tweetsForLabel = async ({ label }) => {
-  const safeLabel = unescape(label)
-    .replace("'", "''")
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+  const safeLabel = transliterate(decodeURI(label))
 
   const SQL = `SELECT t.*
   FROM
 	  "Tweet" t
 	JOIN "Tag" AS g ON g. "tweetId" = t. "id"
   WHERE
-	  lower(g.label) = lower('${safeLabel}')
+	  lower(extensions.unaccent(g.label)) = lower(extensions.unaccent('${safeLabel}'))
     AND g. "tweetId" IS NOT NULL
   ORDER BY t."publishedAt" DESC
   `

@@ -70,6 +70,14 @@ export const traverseFeedlyEntryStream = async ({
 
     const { id, updated, continuation, newerThan } = searchParams
 
+    logger.debug('About to updateEntryStreamStatus')
+    await updateEntryStreamStatus({
+      streamIdentifier: streamId,
+      continuation,
+      newerThan,
+      updated,
+    })
+
     if (continuation) {
       logger.debug('About to scheduleEntryStreamJob')
       await scheduleEntryStreamJob({
@@ -77,14 +85,7 @@ export const traverseFeedlyEntryStream = async ({
         count,
         continuation,
         newerThan,
-      })
-
-      logger.debug('About to updateEntryStreamStatus')
-      await updateEntryStreamStatus({
-        streamIdentifier: streamId,
-        continuation,
-        newerThan,
-        updated,
+        action: 'Paginate',
       })
 
       return { response: { id, updated, continuation, newerThan } }

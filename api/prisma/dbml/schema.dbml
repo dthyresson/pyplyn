@@ -1,0 +1,232 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Entry {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  uid String [unique, not null]
+  documentType DocumentType [not null, default: 'TWEET']
+  document Json [not null]
+  tweet Tweet
+  article Article
+}
+
+Table Article {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  publishedAt DateTime [default: `now()`, not null]
+  entry Entry [not null]
+  entryId String [unique, not null]
+  author String [not null]
+  siteName String
+  title String [not null]
+  description String
+  articleText String
+  language String
+  sentiment Float [not null, default: 0]
+  tagLabels String
+  url String [unique, not null]
+  articleContext ArticleContext
+  tags Tag
+  tweets Tweet
+  articleCategories ArticleCategory
+  summaries ArticleSummary
+  articlePriorities ArticlePriority
+}
+
+Table ArticleCategory {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  article Article [not null]
+  articleId String [not null]
+  uid String [not null]
+  label String [not null]
+}
+
+Table ArticleContext {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  article Article [not null]
+  articleId String [not null]
+  content Json [not null]
+}
+
+Table ArticlePriority {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  article Article [not null]
+  articleId String [not null]
+  uid String [not null]
+  label String [not null]
+  articlePriorityTerms ArticlePriorityTerm
+}
+
+Table ArticlePriorityTerm {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  articlePriority ArticlePriority
+  articlePriorityId String
+  uid String [not null]
+  label String [not null]
+}
+
+Table ArticleSummary {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  article Article [not null]
+  articleId String [not null]
+  sentenceText String [not null]
+  sentenceScore Float [not null, default: 0]
+  sentencePosition Int [not null, default: 0]
+}
+
+Table EntryStream {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  lastAccessedAt DateTime
+  streamSource StreamSource [not null, default: 'FEEDLY']
+  streamType StreamType [not null, default: 'CATEGORY']
+  name String [unique, not null]
+  description String
+  streamIdentifier String [unique, not null]
+  continuation String
+}
+
+Table Tag {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  documentType DocumentType [not null, default: 'TWEET']
+  article Article
+  articleId String
+  tweet Tweet
+  tweetId String
+  label String [not null]
+  uri String [not null]
+  diffbotUris String
+  dbpediaUris String
+  rdfTypes String
+  entityTypes String
+  mentions Int [not null, default: 0]
+  confidence Float [not null, default: 0]
+  salience Float [not null, default: 0]
+  sentiment Float [not null, default: 0]
+  hasLocation Boolean [not null, default: false]
+  latitude Float
+  longitude Float
+  precision Float
+}
+
+Table Tweet {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  publishedAt DateTime [not null]
+  entry Entry [not null]
+  entryId String [unique, not null]
+  author String [not null]
+  title String [not null]
+  content String [not null]
+  url String [unique, not null]
+  sentiment Float [not null, default: 0]
+  tweetContext TweetContext
+  tweetCategories TweetCategory
+  tweetPriorities TweetPriority
+  tags Tag
+  articles Article
+}
+
+Table TweetCategory {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  tweet Tweet [not null]
+  tweetId String [not null]
+  uid String [not null]
+  label String [not null]
+}
+
+Table TweetContext {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  tweet Tweet [not null]
+  tweetId String [not null]
+  content Json [not null]
+}
+
+Table TweetPriority {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  tweet Tweet [not null]
+  tweetId String [not null]
+  uid String [not null]
+  label String [not null]
+  tweetPriorityTerms TweetPriorityTerm
+}
+
+Table TweetPriorityTerm {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  tweetPriority TweetPriority
+  tweetPriorityId String
+  uid String [not null]
+  label String [not null]
+}
+
+Table ArticleToTweet {
+  tweetsId String [ref: > Tweet.id]
+  articlesId String [ref: > Article.id]
+}
+
+Enum DocumentType {
+  ARTICLE
+  TWEET
+}
+
+Enum StreamSource {
+  FEEDLY
+}
+
+Enum StreamType {
+  CATEGORY
+  BOARD
+  PRIORITY
+}
+
+Ref: Article.entryId - Entry.id
+
+Ref: ArticleCategory.articleId > Article.id
+
+Ref: ArticleContext.articleId - Article.id
+
+Ref: ArticlePriority.articleId > Article.id
+
+Ref: ArticlePriorityTerm.articlePriorityId > ArticlePriority.id
+
+Ref: ArticleSummary.articleId > Article.id
+
+Ref: Tag.articleId > Article.id
+
+Ref: Tag.tweetId > Tweet.id
+
+Ref: Tweet.entryId - Entry.id
+
+Ref: TweetCategory.tweetId > Tweet.id
+
+Ref: TweetContext.tweetId - Tweet.id
+
+Ref: TweetPriority.tweetId > Tweet.id
+
+Ref: TweetPriorityTerm.tweetPriorityId > TweetPriority.id
