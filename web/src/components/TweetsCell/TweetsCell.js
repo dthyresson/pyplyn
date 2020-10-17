@@ -130,7 +130,12 @@ export const Success = ({ results }) => {
                     return (
                       <tr key={tweet.id} className={rowColor}>
                         <td className="px-6 py-4 text-sm leading-5 font-medium text-gray-900">
-                          {tweet.title}
+                          <Link
+                            to={routes.tweet({ id: tweet.id })}
+                            className="text-gray-900 hover:text-gray-700"
+                          >
+                            {tweet.title}
+                          </Link>
                         </td>
                         <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
                           {tweet.author}
@@ -142,7 +147,9 @@ export const Success = ({ results }) => {
                                 key={`${tweet.id}-${label}-${index}`}
                                 className="m-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-blue-100 text-blue-800"
                               >
-                                {label}
+                                <Link to={routes.tag({ label: label })}>
+                                  {label}
+                                </Link>
                               </span>
                             )
                           })}

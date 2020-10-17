@@ -121,7 +121,12 @@ export const Success = ({ results }) => {
                     return (
                       <tr key={article.id} className={rowColor}>
                         <td className="px-6 py-4 w-1/4 text-sm leading-5 font-medium text-gray-900">
-                          {article.title}
+                          <Link
+                            to={routes.article({ id: article.id })}
+                            className="text-gray-900 hover:text-gray-700"
+                          >
+                            {article.title}
+                          </Link>
                         </td>
                         <td className="px-6 py-4 text-sm leading-5 text-gray-500">
                           {article.author}
@@ -136,7 +141,9 @@ export const Success = ({ results }) => {
                                 key={`${article.id}-${label}-${index}`}
                                 className="m-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-blue-100 text-blue-800"
                               >
-                                {label}
+                                <Link to={routes.tag({ label: label })}>
+                                  {label}
+                                </Link>
                               </span>
                             )
                           })}

@@ -21,12 +21,12 @@ const HomePage = () => {
         </div>
 
         <div className="mb-4 flex flex-wrap">
-          <PopularTagsCell period="week" entityType="food" top={10} />
-          <PopularTagsCell period="week" entityType="product" top={10} />
-          <PopularTagsCell period="week" entityType="place" top={5} />
-          <PopularTagsCell period="week" entityType="person" top={5} />
-          <PopularTagsCell period="week" entityType="activity" top={5} />
-          <PopularTagsCell period="week" entityType="event" top={5} />
+          <PopularTagsCell period="week" entityType="food" top={20} />
+          <PopularTagsCell period="week" entityType="product" top={20} />
+          <PopularTagsCell period="week" entityType="place" top={10} />
+          <PopularTagsCell period="week" entityType="person" top={10} />
+          <PopularTagsCell period="week" entityType="activity" top={10} />
+          <PopularTagsCell period="week" entityType="event" top={10} />
         </div>
 
         <div className="mb-4">

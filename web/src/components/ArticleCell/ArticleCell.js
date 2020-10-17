@@ -80,11 +80,11 @@ const priorityLabels = (article) => {
 }
 
 const tagLabels = (article) => {
-  return unique(
+  return sortUnique(
     article.tags?.map((tag) => {
-      return tag.mentions && tag.mentions > 1
-        ? `${tag.label} (${tag.mentions})`
-        : tag.label
+      if (!tag.entityTypes?.includes('date')) {
+        return tag.label
+      }
     }) || []
   )
 }
@@ -258,7 +258,7 @@ export const Success = ({ article }) => {
                         key={`${article.id}-${label}-${index}`}
                         className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-green-100 text-green-800"
                       >
-                        {label}
+                        <Link to={routes.tag({ label: label })}>{label}</Link>
                       </span>
                     </li>
                   )

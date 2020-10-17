@@ -1,4 +1,4 @@
-import transliterate from '@sindresorhus/transliterate'
+import deburr from 'lodash.deburr'
 
 import { db } from 'src/lib/db'
 
@@ -17,19 +17,19 @@ export const articleByDocumentId = ({ documentId }) => {
 }
 
 export const articlesForLabel = async ({ label }) => {
-  const safeLabel = transliterate(decodeURI(label))
+  const safeLabel = deburr(decodeURI(label))
 
   const SQL = `SELECT a.*
   FROM
 	  "Article" a
 	JOIN "Tag" AS g ON g. "articleId" = a. "id"
   WHERE
-    lower(extensions.unaccent(g.label)) = lower(extensions.unaccent('${safeLabel}'))
+    lower(extensions.unaccent(g.label)) = lower(extensions.unaccent($1))
     AND g. "articleId" IS NOT NULL
   ORDER BY a."publishedAt" DESC
   `
 
-  return await db.$queryRaw(SQL)
+  return await db.$queryRaw(SQL, safeLabel)
 }
 
 export const paginateArticles = async ({

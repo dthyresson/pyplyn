@@ -1,4 +1,4 @@
-import transliterate from '@sindresorhus/transliterate'
+import transliterate from 'lodash.deburr'
 import { db } from 'src/lib/db'
 
 const TAG_SUMMARIES_SQL = `
@@ -30,12 +30,8 @@ const TAG_SUMMARIES_SQL = `
     4 DESC,
     1
 `
-
-const tagSummariesForLabelQuery = ({ label }) => {
-  const safeLabel = transliterate(decodeURI(label))
-
-  return `
-    SELECT
+const TAG_SUMMARIES_FOR_LABEL_SQL = `
+  SELECT
     label,
     "entityTypes",
     count(label) AS "totalCount",
@@ -52,26 +48,32 @@ const tagSummariesForLabelQuery = ({ label }) => {
     avg(sentiment) AS "avgSentiment",
     min(sentiment) AS "minSentiment",
     max(sentiment) AS "maxSentiment"
-    FROM
+  FROM
     "Tag" t
     WHERE
-    lower(extensions.unaccent(label)) = lower(extensions.unaccent('${safeLabel}'))
+    lower(extensions.unaccent(label)) = lower(extensions.unaccent($1))
     AND NOT('date' = ANY ("entityTypes"))
-    GROUP BY
+  GROUP BY
     1,
     2
-    ORDER BY
+  ORDER BY
     4 DESC,
     1
 `
+
+const tagSummariesForLabelQuery = ({ label }) => {
+  const safeLabel = transliterate(decodeURI(label))
+
+  return db.$queryRaw(TAG_SUMMARIES_FOR_LABEL_SQL, safeLabel)
 }
+
 export const tagSummaries = async () => {
   const summary = await db.$queryRaw(TAG_SUMMARIES_SQL)
   return summary
 }
 
 export const tagSummariesForLabel = async ({ label }) => {
-  return await db.$queryRaw(tagSummariesForLabelQuery({ label }))
+  return await tagSummariesForLabelQuery({ label })
 }
 
 export const tagTotals = async () => {

@@ -1,4 +1,4 @@
-import transliterate from '@sindresorhus/transliterate'
+import deburr from 'lodash.deburr'
 
 import { db } from 'src/lib/db'
 
@@ -35,19 +35,19 @@ export const tweetByEntryId = ({ entryId }) => {
 }
 
 export const tweetsForLabel = async ({ label }) => {
-  const safeLabel = transliterate(decodeURI(label))
+  const safeLabel = deburr(decodeURI(label))
 
   const SQL = `SELECT t.*
   FROM
 	  "Tweet" t
 	JOIN "Tag" AS g ON g. "tweetId" = t. "id"
   WHERE
-	  lower(extensions.unaccent(g.label)) = lower(extensions.unaccent('${safeLabel}'))
+	  lower(extensions.unaccent(g.label)) = lower(extensions.unaccent($1))
     AND g. "tweetId" IS NOT NULL
   ORDER BY t."publishedAt" DESC
   `
 
-  return await db.$queryRaw(SQL)
+  return await db.$queryRaw(SQL, safeLabel)
 }
 
 export const paginateTweets = async ({
