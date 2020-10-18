@@ -61,7 +61,7 @@ const MyResponsiveLine = ({ data /* see data tab */ }) => (
       legendPosition: 'middle',
     }}
     colors={{ scheme: 'paired' }}
-    curve={'natural'}
+    curve={'cardinal'}
     lineWidth={2}
     pointSize={4}
     pointColor={{ theme: 'background' }}

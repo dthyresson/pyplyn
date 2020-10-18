@@ -11,10 +11,29 @@ WITH t1 AS (
 		"TweetPriority" g
 		JOIN "Tweet" t ON t.id = g. "tweetId"
 	WHERE
-		g.label != 'Wine'
+    g.label != 'Wine' AND
+    t."publishedAt" >= CURRENT_TIMESTAMP - interval '7 days'
+	GROUP BY
+		1,
+    2
+
+    UNION
+
+    SELECT
+		(date_trunc('day'::text,
+				t. "publishedAt"))::date AS tweet_date,
+		g.label,
+		count(g.label) as total
+	FROM
+		"ArticlePriority" g
+		JOIN "Article" t ON t.id = g. "articleId"
+	WHERE
+    g.label != 'Wine' AND
+    t."publishedAt" >= CURRENT_TIMESTAMP - interval '7 days'
 	GROUP BY
 		1,
 		2
+
 ),
 
 all_dates as (
