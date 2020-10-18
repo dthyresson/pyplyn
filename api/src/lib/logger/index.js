@@ -16,7 +16,7 @@ export const logger = pino(
     name: 'pyplyn',
     level: 'debug',
     base: {
-      env: process.env.ENV || 'development',
+      env: process.env.DOPPLER_ENVIRONMENT,
       name: 'pyplyn',
     },
     nestedKey: 'logPayload',

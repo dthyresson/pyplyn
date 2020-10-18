@@ -10,3 +10,13 @@ functions = "api/dist/functions"
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/undefined/auth/v1/token?grant_type=password"
+  to = "/"
+  status = 200
+
+[[redirects]]
+  from = "/undefined/auth/v1/signup"
+  to = "/"
+  status = 200
