@@ -8,15 +8,10 @@
 [web]
   port = 8910
   apiProxyPath = "/.netlify/functions"
+  includeEnvironmentVariables = ['SUPABASE_URL', 'SUPABASE_KEY']
 [api]
   name = "pyplyn"
   port = 8911
-  [api.log]
-    [api.log.development]
-      file = "../logs/api-dev.log"
-      level = "debug"
-    [api.log.production]
-      file = "../logs/api.log"
-      level = "debug"
+
 [browser]
   open = false
