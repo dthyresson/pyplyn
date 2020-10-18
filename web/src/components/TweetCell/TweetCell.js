@@ -99,9 +99,9 @@ const articleLabels = (tweet) => {
   tweet.articles.forEach((article) => {
     article.tags?.forEach((tag) => {
       if (tag.mentions && tag.mentions > 1) {
-        labels.push(`${tag.label} (${tag.mentions})`)
-      } else {
-        labels.push(tag.label)
+        if (!tag.entityTypes?.includes('date')) {
+          labels.push(tag.label)
+        }
       }
     })
   })
@@ -293,7 +293,7 @@ export const Success = ({ tweet }) => {
                         key={`${tweet.id}-art-${label}-${index}`}
                         className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-teal-100 text-teal-800"
                       >
-                        {label}
+                        <Link to={routes.tag({ label: label })}>{label}</Link>
                       </span>
                     </li>
                   )
