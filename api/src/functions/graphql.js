@@ -10,7 +10,7 @@ import services from 'src/services/**/*.{js,ts}'
 import { getCurrentUser } from 'src/lib/auth'
 
 import { applyMiddleware } from 'graphql-middleware'
-import { allow, deny, rule, shield } from 'graphql-shield'
+import { allow, deny, _rule, shield } from 'graphql-shield'
 
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
@@ -55,7 +55,7 @@ const permissions = shield(
   },
   {
     fallbackRule: allow, // this allows the nested types in a query to be resolved
-    fallbackError: (thrownThing, _parent, args, context, info) => {
+    fallbackError: (thrownThing, _parent, args, _context, info) => {
       if (thrownThing instanceof ApolloError) {
         // expected errors
         logger.error({ args, thrownThing }, 'Not permitted')
@@ -66,7 +66,7 @@ const permissions = shield(
         return new ApolloError('Internal server error', 'ERR_INTERNAL_SERVER')
       } else {
         logger.error(
-          { args, thrownThing },
+          { args, thrownThing, info },
           'The resolver threw something that is not an error.'
         )
         return new Error('Not permitted')
@@ -89,7 +89,7 @@ export const handler = createGraphQLHandler({
     preflightContinue: false,
     optionsSuccessStatus: 204,
   },
-  onException: () => {
+  onException: (e) => {
     // Disconnect from your database with an unhandled exception.
     db.$disconnect()
   },

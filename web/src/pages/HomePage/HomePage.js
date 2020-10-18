@@ -20,7 +20,7 @@ const HomePage = () => {
           </p>
         </div>
 
-        <div className="mb-4 flex flex-wrap">
+        <div className="mb-4 lg:flex lg:flex-wrap">
           <PopularTagsCell period="week" entityType="food" top={20} />
           <PopularTagsCell period="week" entityType="product" top={20} />
           <PopularTagsCell period="week" entityType="place" top={10} />

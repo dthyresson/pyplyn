@@ -54,7 +54,7 @@ export const Failure = ({ error }) => <div>Error: {error.message}</div>
 export const Success = ({ popularTags }) => {
   const { entityType, period, top } = { ...popularTags[0] }
   return (
-    <div className="w-1/2 pr-4 mb-4">
+    <div className="lg:w-1/2 pr-4 mb-4">
       <h2 className="capitalize mb-2 text-lg leading-6 font-medium text-cool-gray-900">
         Top {top} {pluralize(entityType)}
       </h2>

@@ -47,9 +47,9 @@ export const persistTweetCategories = async ({ id }) => {
     logger.warn(`persistTweetCategories has undefined tweet for id ${id}`)
   }
 
-  await createTweetCategories(tweet)
+  const result = await createTweetCategories(tweet)
 
-  return
+  return result
 }
 
 export const createTweetCategories = async (tweet) => {
@@ -72,11 +72,13 @@ export const createTweetCategories = async (tweet) => {
 
   tweet.entry?.document?.categories?.map(async (category) => {
     try {
-      await createTweetCategory({
+      let result = await createTweetCategory({
         tweetId: tweet.id,
         uid: category.id,
         label: category.label,
       })
+
+      logger.debug({ result }, 'createTweetCategory')
     } catch (e) {
       logger.error(e, `createTweetCategory error: ${e.message}`)
       logger.warn(e.stack, 'createTweetCategory error stack')
@@ -98,9 +100,9 @@ export const persistTweetPriorities = async ({ id }) => {
     )
   }
 
-  await createTweetPriorities(tweet)
+  const priorities = await createTweetPriorities(tweet)
 
-  return
+  return priorities
 }
 
 export const createTweetPriorities = async (tweet) => {
@@ -131,10 +133,12 @@ export const createTweetPriorities = async (tweet) => {
         label: priority.label,
       })
 
+      let result = undefined
+
       priority.searchTerms?.parts?.forEach(async (term) => {
         const label = term.label || term.text || term.id?.split('/').pop()
 
-        await db.tweetPriorityTerm.create({
+        result = await db.tweetPriorityTerm.create({
           data: {
             tweetPriority: {
               connect: { id: tweetPriority.id },
@@ -144,6 +148,11 @@ export const createTweetPriorities = async (tweet) => {
           },
           include: { tweetPriority: true },
         })
+
+        logger.warn(
+          { result: result, id: tweetPriority.id, label: label },
+          'Added tweetPriorityTerm'
+        )
       })
     } catch (e) {
       logger.error(e, `createTweetPriority error: ${e.message}`)
@@ -199,8 +208,9 @@ export const persistLinkedArticle = async (linkedArticle, tweet) => {
       { articleId: article.id, article: article },
       `Linking article ${article.id} to tweet ${tweet.id}`
     )
+    let result = undefined
 
-    await db.tweet.update({
+    result = await db.tweet.update({
       where: { id: tweet.id },
       data: { articles: { connect: [{ id: article.id }] } },
     })
@@ -210,10 +220,13 @@ export const persistLinkedArticle = async (linkedArticle, tweet) => {
       `Linked article ${article.id} to tweet ${tweet.id}`
     )
 
-    await createArticleCategories(article)
-    await createArticlePriorities(article)
+    result = await createArticleCategories(article)
 
-    await enrichArticleId({ id: article.id })
+    result = await createArticlePriorities(article)
+
+    result = await enrichArticleId({ id: article.id })
+
+    logger.debug(result, 'Completed persistLinkedArticle')
 
     return article
   } catch (e) {
@@ -286,16 +299,18 @@ export const persistTweet = async ({ entry }) => {
       include: { entry: true },
     })
 
-    await createTweetCategories(tweet)
+    let result = undefined
 
-    await createTweetPriorities(tweet)
+    result = await createTweetCategories(tweet)
 
-    await enrichTweet(tweet)
+    result = await createTweetPriorities(tweet)
 
-    await persistLinkedArticles(entry, tweet)
+    result = await enrichTweet(tweet)
+
+    result = await persistLinkedArticles(entry, tweet)
 
     logger.debug(
-      { tweet: { id: tweet.id, title: tweet.title } },
+      { result, tweet: { id: tweet.id, title: tweet.title } },
       `Successfully persistTweet: ${tweet.id}`
     )
   } catch (e) {

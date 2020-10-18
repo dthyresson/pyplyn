@@ -1,5 +1,5 @@
 # See the full yml reference at https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml/
-service: app
+service: jobs
 
 # Uncomment org and app if you want to integrate your deployment with the serverless dashboard. See https://www.serverless.com/framework/docs/dashboard/ for more details.
 org: dthyresson
@@ -11,7 +11,18 @@ plugins:
 custom:
   dotenv:
     include:
-      - # List the environment variables you want to include from your .env file here.
+      - DATABASE_URL
+      - DIFFBOT_API_BASE_URL
+      - DIFFBOT_NLP_API_BASE_URL
+      - DIFFBOT_API_TOKEN
+      - FEEDLY_BASE_URL
+      - FEEDLY_API_TOKEN
+      - LOGFLARE_API_KEY
+      - LOGFLARE_SOURCE_TOKEN
+      - REPEATER_API_KEY
+      - FEED_JOB_SECRET
+      - FEED_JOB_ENDPOINT
+      - DOPPLER_ENVIRONMENT
 
 provider:
   name: aws
@@ -30,63 +41,6 @@ package:
   individually: true
 
 functions:
-  article:
-    description: article function deployed on AWS Lambda
-    package:
-      artifact: api/dist/zipball/article.zip # This is the default location of the zip file generated during the deploy command.
-    memorySize: 1024 # mb
-    timeout: 25 # seconds (max: 29)
-    tags: # Tags for this specific lambda function
-      endpoint: /.redwood/functions/article
-    # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
-    # environment:
-    #   YOUR_FIRST_ENV_VARIABLE: ${env:YOUR_FIRST_ENV_VARIABLE}
-    handler: article.handler
-    events:
-      - httpApi:
-          path: /.redwood/functions/article
-          method: GET
-      - httpApi:
-          path: /.redwood/functions/article
-          method: POST
-  entries:
-    description: entries function deployed on AWS Lambda
-    package:
-      artifact: api/dist/zipball/entries.zip # This is the default location of the zip file generated during the deploy command.
-    memorySize: 1024 # mb
-    timeout: 25 # seconds (max: 29)
-    tags: # Tags for this specific lambda function
-      endpoint: /.redwood/functions/entries
-    # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
-    # environment:
-    #   YOUR_FIRST_ENV_VARIABLE: ${env:YOUR_FIRST_ENV_VARIABLE}
-    handler: entries.handler
-    events:
-      - httpApi:
-          path: /.redwood/functions/entries
-          method: GET
-      - httpApi:
-          path: /.redwood/functions/entries
-          method: POST
-  entry:
-    description: entry function deployed on AWS Lambda
-    package:
-      artifact: api/dist/zipball/entry.zip # This is the default location of the zip file generated during the deploy command.
-    memorySize: 1024 # mb
-    timeout: 25 # seconds (max: 29)
-    tags: # Tags for this specific lambda function
-      endpoint: /.redwood/functions/entry
-    # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
-    # environment:
-    #   YOUR_FIRST_ENV_VARIABLE: ${env:YOUR_FIRST_ENV_VARIABLE}
-    handler: entry.handler
-    events:
-      - httpApi:
-          path: /.redwood/functions/entry
-          method: GET
-      - httpApi:
-          path: /.redwood/functions/entry
-          method: POST
   entryStream:
     description: entryStream function deployed on AWS Lambda
     package:
@@ -94,17 +48,16 @@ functions:
     memorySize: 1024 # mb
     timeout: 25 # seconds (max: 29)
     tags: # Tags for this specific lambda function
-      endpoint: /.redwood/functions/entryStream
+      endpoint: /.netlify/functions/entryStream
     # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
     # environment:
-    #   YOUR_FIRST_ENV_VARIABLE: ${env:YOUR_FIRST_ENV_VARIABLE}
     handler: entryStream.handler
     events:
       - httpApi:
-          path: /.redwood/functions/entryStream
+          path: /.netlify/functions/entryStream
           method: GET
       - httpApi:
-          path: /.redwood/functions/entryStream
+          path: /.netlify/functions/entryStream
           method: POST
   feed:
     description: feed function deployed on AWS Lambda
@@ -113,54 +66,32 @@ functions:
     memorySize: 1024 # mb
     timeout: 25 # seconds (max: 29)
     tags: # Tags for this specific lambda function
-      endpoint: /.redwood/functions/feed
+      endpoint: /.netlify/functions/feed
     # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
     # environment:
-    #   YOUR_FIRST_ENV_VARIABLE: ${env:YOUR_FIRST_ENV_VARIABLE}
     handler: feed.handler
     events:
       - httpApi:
-          path: /.redwood/functions/feed
+          path: /.netlify/functions/feed
           method: GET
       - httpApi:
-          path: /.redwood/functions/feed
+          path: /.netlify/functions/feed
           method: POST
-  graphql:
-    description: graphql function deployed on AWS Lambda
+  test:
+    description: feed function deployed on AWS Lambda
     package:
-      artifact: api/dist/zipball/graphql.zip # This is the default location of the zip file generated during the deploy command.
+      artifact: api/dist/zipball/test.zip # This is the default location of the zip file generated during the deploy command.
     memorySize: 1024 # mb
     timeout: 25 # seconds (max: 29)
     tags: # Tags for this specific lambda function
-      endpoint: /.redwood/functions/graphql
+      endpoint: /.netlify/functions/test
     # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
     # environment:
-    #   YOUR_FIRST_ENV_VARIABLE: ${env:YOUR_FIRST_ENV_VARIABLE}
-    handler: graphql.handler
+    handler: test.handler
     events:
       - httpApi:
-          path: /.redwood/functions/graphql
+          path: /.netlify/functions/test
           method: GET
       - httpApi:
-          path: /.redwood/functions/graphql
+          path: /.netlify/functions/test
           method: POST
-  nlp:
-    description: nlp function deployed on AWS Lambda
-    package:
-      artifact: api/dist/zipball/nlp.zip # This is the default location of the zip file generated during the deploy command.
-    memorySize: 1024 # mb
-    timeout: 25 # seconds (max: 29)
-    tags: # Tags for this specific lambda function
-      endpoint: /.redwood/functions/nlp
-    # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
-    # environment:
-    #   YOUR_FIRST_ENV_VARIABLE: ${env:YOUR_FIRST_ENV_VARIABLE}
-    handler: nlp.handler
-    events:
-      - httpApi:
-          path: /.redwood/functions/nlp
-          method: GET
-      - httpApi:
-          path: /.redwood/functions/nlp
-          method: POST
-

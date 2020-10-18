@@ -52,3 +52,29 @@ You can solve this in two ways -
 2 - just add the "extensions" namespace to your query:
 
 `SELECT extensions.unaccent('côtes du rhône aoc');`
+
+
+## Serverless
+
+### Dashboard
+
+`serverless dashboard`
+
+### Get endpoints
+
+`serverless info`
+
+### Invoke function
+
+`serverless invoke --function test`
+
+
+### endpoints
+
+endpoints:
+  GET - https://me2vxkutca.execute-api.us-east-2.amazonaws.com/.netlify/functions/entryStream
+  POST - https://me2vxkutca.execute-api.us-east-2.amazonaws.com/.netlify/functions/entryStream
+  GET - https://me2vxkutca.execute-api.us-east-2.amazonaws.com/.netlify/functions/feed
+  POST - https://me2vxkutca.execute-api.us-east-2.amazonaws.com/.netlify/functions/feed
+  GET - https://me2vxkutca.execute-api.us-east-2.amazonaws.com/.netlify/functions/test
+  POST - https://me2vxkutca.execute-api.us-east-2.amazonaws.com/.netlify/functions/test

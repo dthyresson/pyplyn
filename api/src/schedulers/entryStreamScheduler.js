@@ -39,7 +39,7 @@ export const scheduleEntryStreamJob = async ({
     const job = await repeater.enqueueOrUpdate({
       name: `${camelCase(entryStream.name)}${action}Job`,
       runAt: runAt(count),
-      endpoint: process.env.FEEB_JOB_ENDPOINT,
+      endpoint: process.env.FEED_JOB_ENDPOINT,
       verb: 'POST',
       json: payload,
       headers: {

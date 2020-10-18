@@ -14,7 +14,8 @@ import { tweetContextDataBuilder } from 'src/lib/parsers/tweetParser'
 
 export const enrichArticleId = async ({ id }) => {
   const article = await articleById({ id: id })
-  return await enrichArticle(article)
+  const result = await enrichArticle(article)
+  return result
 }
 
 export const enrichArticle = async (article) => {
@@ -39,7 +40,7 @@ export const enrichArticle = async (article) => {
       },
       `Enriching article articleContext`
     )
-    await db.articleContext.create({
+    let result = await db.articleContext.create({
       data: {
         article: {
           connect: { id: article.id },
@@ -47,6 +48,11 @@ export const enrichArticle = async (article) => {
         content,
       },
     })
+
+    logger.debug(
+      { result, articleId: article.id, articleUrl: article.url },
+      'Enriched article articleContex'
+    )
 
     const data = articleDataBuilder(content)
 
@@ -57,7 +63,7 @@ export const enrichArticle = async (article) => {
       },
       `Updating article with enriched info`
     )
-    await db.article.update({
+    let update = await db.article.update({
       where: { id: article.id },
       data: {
         articleText: data.articleText,
@@ -72,6 +78,7 @@ export const enrichArticle = async (article) => {
 
     logger.debug(
       {
+        update,
         articleId: article.id,
         articleUrl: article.url,
       },
@@ -113,7 +120,8 @@ export const enrichArticle = async (article) => {
     })
   }
 
-  await createArticleSummaries(article)
+  let summaries = await createArticleSummaries(article)
+  logger.debug({ summaries }, 'createArticleSummaries')
 
   return db.article.findOne({
     where: { id: article.id },
@@ -123,7 +131,8 @@ export const enrichArticle = async (article) => {
 
 export const enrichTweetId = async ({ id }) => {
   const tweet = await tweetById({ id: id })
-  return await enrichTweet(tweet)
+  const result = await enrichTweet(tweet)
+  return result
 }
 
 export const enrichTweet = async (tweet) => {
@@ -141,10 +150,12 @@ export const enrichTweet = async (tweet) => {
   })
 
   if (content !== undefined) {
-    await db.tweet.update({
+    const tweetUpdate = await db.tweet.update({
       where: { id: tweet.id },
       data: { sentiment: content.sentiment },
     })
+
+    logger.debug({ tweetUpdate }, 'tweetUpdate')
 
     const tweetContext = await db.tweetContext.create({
       data: {
@@ -154,7 +165,8 @@ export const enrichTweet = async (tweet) => {
         content,
       },
     })
-    await enrichTweetContext({ tweetContextId: tweetContext.id })
+    let result = await enrichTweetContext({ tweetContextId: tweetContext.id })
+    logger.debug(result, 'enrichTweetContext')
   }
 
   return
@@ -244,8 +256,9 @@ export const createArticleSummaries = async (article) => {
 
   article.entry?.document?.leoSummary?.sentences?.forEach(async (summary) => {
     logger.debug(summary, 'createArticleSummaries summary details')
+
     try {
-      await db.articleSummary.create({
+      let result = await db.articleSummary.create({
         data: {
           article: { connect: { id: article.id } },
           sentenceText: summary.text,
@@ -253,6 +266,11 @@ export const createArticleSummaries = async (article) => {
           sentencePosition: summary.position || 0,
         },
       })
+
+      logger.error(
+        { result },
+        'Completed createArticleSummaries summary details'
+      )
     } catch (e) {
       logger.error({ e, summary }, 'createArticleSummaries error')
     }

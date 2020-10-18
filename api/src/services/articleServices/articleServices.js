@@ -17,6 +17,8 @@ export const persistArticle = async ({ entry }) => {
   logger.debug({ parsedArticle }, `parsedArticle for entry: ${entry.id}`)
 
   try {
+    let result = undefined
+
     const article = await db.article.create({
       data: {
         entry: {
@@ -35,14 +37,20 @@ export const persistArticle = async ({ entry }) => {
       include: { entry: true },
     })
 
-    await createArticleCategories(article)
+    result = await createArticleCategories(article)
 
-    await createArticlePriorities(article)
+    result = await createArticlePriorities(article)
 
-    await enrichArticleId({ id: article.id })
+    result = await enrichArticleId({ id: article.id })
 
     logger.debug(
-      { article: { id: article.id, title: article.title } },
+      {
+        article: {
+          id: article.id,
+          title: article.title,
+          result: result !== undefined,
+        },
+      },
       `Successfully persistArticle: ${article.id}`
     )
   } catch (e) {
@@ -73,13 +81,25 @@ export const createArticleCategories = async (article) => {
     categories = article.tweet?.entry?.document?.categories || []
   }
 
+  let result = undefined
+
   categories?.map(async (category) => {
     try {
-      await createArticleCategory({
+      result = await createArticleCategory({
         articleId: article.id,
         uid: category.id,
         label: category.label,
       })
+
+      logger.debug(
+        {
+          result,
+          articleId: article.id,
+          uid: category.id,
+          label: category.label,
+        },
+        'Created createArticleCategory'
+      )
     } catch (e) {
       logger.error(e, `createArticleCategory error: ${e.message}`)
       logger.warn(e.stack, 'createArticleCategory error stack')
@@ -142,10 +162,12 @@ export const createArticlePriorities = async (article) => {
         label: priority.label,
       })
 
+      let result = undefined
+
       priority.searchTerms?.parts?.forEach(async (term) => {
         const label = term.label || term.text || term.id?.split('/').pop()
 
-        await db.articlePriorityTerm.create({
+        result = await db.articlePriorityTerm.create({
           data: {
             articlePriority: {
               connect: { id: articlePriority.id },
@@ -156,9 +178,11 @@ export const createArticlePriorities = async (article) => {
           include: { articlePriority: true },
         })
       })
+
+      logger.debug(result, 'Added articlePriorityTerm')
     } catch (e) {
-      logger.error(e, `createArticlePriority error: ${e.message}`)
-      logger.warn(e.stack, 'createArticlePriority error stack')
+      logger.error({ e }, `createArticlePriority error: ${e.message}`)
+      logger.warn({ stack: e.stack }, 'createArticlePriority error stack')
     }
   })
 
