@@ -1,5 +1,6 @@
 import { backOff } from 'exponential-backoff'
 import got from 'got'
+import { logger } from 'src/lib/logger'
 
 export const extractArticle = async ({
   discussion = false,
@@ -11,6 +12,8 @@ export const extractArticle = async ({
 }) => {
   try {
     const endpoint = `${process.env.DIFFBOT_API_BASE_URL}/v3/article`
+
+    logger.debug({ endpoint, url }, 'Invoke extractArticle')
 
     const result = await backOff(
       async () => {
@@ -27,13 +30,22 @@ export const extractArticle = async ({
         }).json()
 
         if (response.errorCode) {
+          logger.error(
+            { errorCode: response.errorCode, url },
+            'Error in extractArticle'
+          )
+
           throw new Error(response.error)
         }
+
+        logger.debug({ endpoint, url }, 'Success extractArticle')
 
         return response.objects?.[0] || null
       },
       { jitter: 'full' }
     )
+
+    logger.debug({ endpoint, url }, 'Completed extractArticle')
 
     return result
   } catch (e) {
@@ -45,6 +57,8 @@ export const extractArticle = async ({
 export const extractText = async ({ content, lang }) => {
   try {
     const endpoint = `${process.env.DIFFBOT_NLP_API_BASE_URL}/`
+
+    logger.debug({ endpoint, content }, 'Invoked extractText')
 
     const result = await backOff(
       async () => {
@@ -58,14 +72,20 @@ export const extractText = async ({ content, lang }) => {
           })
           .json()
 
+        logger.debug({ endpoint, content }, 'Success extractText')
+
         return response
       },
       { jitter: 'full' }
     )
 
+    logger.debug({ endpoint, content }, 'Completed extractText')
+
     return result
   } catch (e) {
     console.error(e)
+    logger.error({ e, content }, 'Error in extractText')
+
     return null
   }
 }
