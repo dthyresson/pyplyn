@@ -7,6 +7,8 @@ import {
 import schemas from 'src/graphql/**/*.{js,ts}'
 import services from 'src/services/**/*.{js,ts}'
 
+import { getCurrentUser } from 'src/lib/auth'
+
 import { applyMiddleware } from 'graphql-middleware'
 import { allow, deny, rule, shield } from 'graphql-shield'
 
@@ -73,6 +75,7 @@ const permissions = shield(
   }
 )
 export const handler = createGraphQLHandler({
+  getCurrentUser,
   schema: applyMiddleware(
     makeMergedSchema({
       schemas,

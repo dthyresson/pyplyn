@@ -14,7 +14,7 @@ export const handler = async (event, _context) => {
 
     const { name, count } = JSON.parse(event.body)
 
-    logger.debug({ name, count }, `Request for entryStream ${entryStream.name}`)
+    logger.debug({ name, count }, `Request for entryStream ${name}`)
 
     if (name === undefined) {
       logger.error({ name }, `No entryStream name specified: ${name}`)
