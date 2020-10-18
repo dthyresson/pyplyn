@@ -15,11 +15,11 @@ import { allow, deny, rule, shield } from 'graphql-shield'
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
 
-const requireAuth = rule({ cache: 'contextual' })(
-  async (_parent, _args, _ctx, _info) => {
-    return true
-  }
-)
+// const requireAuth = rule({ cache: 'contextual' })(
+//   async (_parent, _args, _ctx, _info) => {
+//     return true
+//   }
+// )
 
 const queryPermissions = {
   '*': deny,
@@ -36,7 +36,7 @@ const queryPermissions = {
   tweetsForLabel: allow,
   paginateTweets: allow,
   bumpChart: allow,
-  lineChart: requireAuth,
+  lineChart: allow,
   repeaterJobs: allow,
   repeaterJob: allow,
   repeaterJobResults: allow,
@@ -55,7 +55,7 @@ const permissions = shield(
   },
   {
     fallbackRule: allow, // this allows the nested types in a query to be resolved
-    fallbackError: (thrownThing, _parent, args, _context, _info) => {
+    fallbackError: (thrownThing, _parent, args, context, info) => {
       if (thrownThing instanceof ApolloError) {
         // expected errors
         logger.error({ args, thrownThing }, 'Not permitted')
