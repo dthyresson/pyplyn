@@ -1,5 +1,6 @@
-import { db } from 'src/lib/db'
 import { DocumentType } from '@prisma/client'
+import { db } from 'src/lib/db'
+import { logger } from 'src/lib/logger'
 
 const documentTypeLastDurationPeriodTotalStatsQuery = ({
   duration = 7,
@@ -260,19 +261,21 @@ export const lastDurationPeriodTotalStats = async ({
   duration = 7,
   period = 'day',
 }) => {
+  logger.debug({ duration, period }, 'Query lastDurationPeriodTotalStats')
+
   const tweetPeriodTotalStat =
     (
       await db.$queryRaw(
         tweetLastDurationPeriodTotalStatsQuery({ duration, period })
       )
-    )[0] || emptyLastDurationPeriodTotalStat
+    )[0] || emptyPeriodTotalStat
 
   const articlePeriodTotalStat =
     (
       await db.$queryRaw(
         articleLastDurationPeriodTotalStatsQuery({ duration, period })
       )
-    )[0] || emptyLastDurationPeriodTotalStat
+    )[0] || emptyPeriodTotalStat
 
   const tagPeriodTotalStat =
     (

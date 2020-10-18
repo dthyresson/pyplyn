@@ -1,5 +1,6 @@
-import { db } from 'src/lib/db'
 import { DocumentType } from '@prisma/client'
+import { db } from 'src/lib/db'
+import { logger } from 'src/lib/logger'
 
 const documentTypePeriodTotalStatsQuery = ({
   period = 'month',
@@ -257,6 +258,8 @@ const emptyPeriodTotalStat = {
 }
 
 export const periodTotalStats = async ({ period = 'month' }) => {
+  logger.debug({ period }, 'Query periodTotalStats')
+
   const tweetPeriodTotalStat =
     (await db.$queryRaw(tweetPeriodTotalStatsQuery({ period })))[0] ||
     emptyPeriodTotalStat

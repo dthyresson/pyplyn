@@ -1,5 +1,6 @@
 import transliterate from 'lodash.deburr'
 import { db } from 'src/lib/db'
+import { logger } from 'src/lib/logger'
 
 const TAG_SUMMARIES_SQL = `
   SELECT
@@ -85,6 +86,8 @@ export const tagTotals = async () => {
 }
 
 export const paginateTagSummaries = async ({ page = 1, limit = 20 }) => {
+  logger.debug({ page, limit }, 'Query paginateTagSummaries')
+
   page = page < 1 ? 1 : page
 
   const offset = (page - 1) * limit

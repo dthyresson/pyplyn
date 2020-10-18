@@ -1,6 +1,7 @@
 import deburr from 'lodash.deburr'
 
 import { db } from 'src/lib/db'
+import { logger } from 'src/lib/logger'
 
 export const tweetById = ({ id }) => {
   return db.tweet.findOne({
@@ -37,6 +38,8 @@ export const tweetByEntryId = ({ entryId }) => {
 export const tweetsForLabel = async ({ label }) => {
   const safeLabel = deburr(decodeURI(label))
 
+  logger.debug({ label, safeLabel }, 'Query tweetsForLabel')
+
   const SQL = `SELECT t.*
   FROM
 	  "Tweet" t
@@ -55,6 +58,8 @@ export const paginateTweets = async ({
   limit = 20,
   order = { publishedAt: 'desc' },
 }) => {
+  logger.debug({ page, limit, order }, 'Query paginateTweets')
+
   page = page < 1 ? 1 : page
 
   const offset = (page - 1) * limit

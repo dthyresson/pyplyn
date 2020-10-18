@@ -1,4 +1,5 @@
 import { db } from 'src/lib/db'
+import { logger } from 'src/lib/logger'
 
 const popularTagsQuery = ({
   top = 10,
@@ -98,6 +99,8 @@ export const popularTags = async ({
   period = 'month',
   score = 0.8,
 }) => {
+  logger.debug({ top, entityType, period, score }, 'Query popularTags')
+
   return await db.$queryRaw(
     popularTagsQuery({ top, entityType, period, score })
   )
