@@ -1,31 +1,31 @@
-import merge from 'deepmerge'
+// import merge from 'deepmerge'
 
-import { getConfig } from '@redwoodjs/internal'
+// import { getConfig } from '@redwoodjs/internal'
 
-const dbLogOptions = {
-  log: [
-    {
-      emit: 'event',
-      level: 'info',
-    },
-    {
-      emit: 'event',
-      level: 'warn',
-    },
-    {
-      emit: 'event',
-      level: 'query',
-    },
-  ],
-}
+// const dbLogOptions = {
+//   log: [
+//     {
+//       emit: 'event',
+//       level: 'info',
+//     },
+//     {
+//       emit: 'event',
+//       level: 'warn',
+//     },
+//     {
+//       emit: 'event',
+//       level: 'query',
+//     },
+//   ],
+// }
 
-const DEFAULT_LOG_CONFIG = {
-  file: './logs/app.log',
-  level: 'debug',
-  dbLogOptions,
-}
+// const DEFAULT_LOG_CONFIG = {
+//   file: './logs/app.log',
+//   level: 'debug',
+//   dbLogOptions,
+// }
 
-export const config = merge(
-  DEFAULT_LOG_CONFIG,
-  getConfig().api?.log?.development || {}
-)
+// export const config = merge(
+//   DEFAULT_LOG_CONFIG,
+//   getConfig().api?.log?.development || {}
+// )

@@ -1,10 +1,10 @@
 import pino from 'pino'
 import { createWriteStream } from 'pino-logflare'
 
-import { config } from 'src/lib/logger/config'
+// import { config } from 'src/lib/logger/config'
 import { db } from 'src/lib/db'
 
-const isDevEnv = process.env.ENV !== 'production'
+const isDevEnv = process.env.DOPPLER_ENVIRONMENT !== 'prd'
 
 const logflareStream = createWriteStream({
   apiKey: process.env.LOGFLARE_API_KEY,
@@ -13,15 +13,15 @@ const logflareStream = createWriteStream({
 
 export const logger = pino(
   {
-    name: config.name,
-    level: config.level,
+    name: 'pyplyn',
+    level: 'debug',
     base: {
       env: process.env.ENV || 'development',
-      name: config.name,
+      name: 'pyplyn',
     },
     nestedKey: 'logPayload',
   },
-  isDevEnv ? pino.destination(config.file) : logflareStream
+  isDevEnv ? pino.destination('../logs/api-dev.log') : logflareStream
 )
 
 const setupPrismaLoggingEvents = () => {
