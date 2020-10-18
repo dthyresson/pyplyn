@@ -249,10 +249,12 @@ export const persistLinkedArticlesForEntryId = async ({ id, tweetId }) => {
 export const persistLinkedArticles = async (entry, tweet) => {
   const articles = linkedEntriesParser(entry).map(async (linkedArticle) => {
     const article = await persistLinkedArticle(linkedArticle, tweet)
-    logger.debug(
-      { articleId: article.id },
-      `persistLinkedArticles ${article.id}`
-    )
+    if (article !== undefined) {
+      logger.debug(
+        { articleId: article.id },
+        `persistLinkedArticles ${article.id}`
+      )
+    }
     return article
   })
 
