@@ -35,14 +35,16 @@ export const Failure = ({ error }) => <div>Error: {error.message}</div>
 
 export const Success = ({ tagSummaries }) => {
   return (
-    <div className="lg:flex lg:flex-wrap">
-      {tagSummaries.map((tag) => {
-        return (
-          <div className="pb-4 pr-4 lg:w-1/2" key={`tag-summary-${tag}`}>
-            <TagSummary tag={tag} />
-          </div>
-        )
-      })}
+    <div className="p-2">
+      <div className="mt-2 lg:flex lg:flex-wrap">
+        {tagSummaries.map((tag) => {
+          return (
+            <div className="pb-4 pr-4 lg:w-1/2" key={`tag-summary-${tag}`}>
+              <TagSummary tag={tag} />
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

@@ -16,8 +16,10 @@ export const persistArticle = async ({ entry }) => {
   logger.debug({ uid: parsedEntry.uid }, `parsedEntry entry: ${entry.id}`)
   logger.debug({ parsedArticle }, `parsedArticle for entry: ${entry.id}`)
 
+  let article
+
   try {
-    const article = await db.article.create({
+    article = await db.article.create({
       data: {
         entry: {
           connectOrCreate: {
@@ -39,18 +41,32 @@ export const persistArticle = async ({ entry }) => {
       { id: article.id },
       `Successfully persistArticle created article for entry: ${entry.id}`
     )
+  } catch (e) {
+    logger.warning(
+      { id: entry.id },
+      `Could not create article in persistArticle for entry: ${entry.id}`
+    )
 
+    article = db.entry.findOne({ where: { uid: entry.id } }).article()
+
+    logger.debug(
+      { id: article?.id },
+      `Successfully fetched article for entry: ${entry.id}`
+    )
+  }
+
+  try {
     let resultArticleCategories = await createArticleCategories(article)
 
     logger.debug(
       {
         article: {
-          id: article.id,
-          title: article.title,
+          id: article?.id,
+          title: article?.title,
         },
         resultArticleCategories,
       },
-      `Successfully createArticleCategories: ${article.id}`
+      `Successfully createArticleCategories: ${article?.id}`
     )
 
     let resultArticlePriorities = await createArticlePriorities(article)
@@ -58,12 +74,12 @@ export const persistArticle = async ({ entry }) => {
     logger.debug(
       {
         article: {
-          id: article.id,
-          title: article.title,
+          id: article?.id,
+          title: article?.title,
         },
         resultArticlePriorities,
       },
-      `Successfully createArticlePriorities: ${article.id}`
+      `Successfully createArticlePriorities: ${article?.id}`
     )
 
     let resultEnrichArticle = await enrichArticle({ article })
@@ -71,22 +87,22 @@ export const persistArticle = async ({ entry }) => {
     logger.debug(
       {
         article: {
-          id: article.id,
-          title: article.title,
+          id: article?.id,
+          title: article?.title,
         },
         resultEnrichArticle,
       },
-      `Successfully resultEnrichArticle: ${article.id}`
+      `Successfully resultEnrichArticle: ${article?.id}`
     )
 
     logger.debug(
       {
         article: {
-          id: article.id,
-          title: article.title,
+          id: article?.id,
+          title: article?.title,
         },
       },
-      `Successfully persistArticle: ${article.id}`
+      `Successfully persistArticle: ${article?.id}`
     )
   } catch (e) {
     logger.error(e, `persistArticle error: ${e.message}`)
@@ -95,7 +111,7 @@ export const persistArticle = async ({ entry }) => {
 }
 
 export const createArticleCategories = async (article) => {
-  if (article == undefined) {
+  if (article === undefined) {
     logger.error(`createArticleCategories has undefined article`)
     return
   }
@@ -116,11 +132,9 @@ export const createArticleCategories = async (article) => {
     categories = article.tweet?.entry?.document?.categories || []
   }
 
-  let result = undefined
-
   categories?.map(async (category) => {
     try {
-      result = await createArticleCategory({
+      const result = await createArticleCategory({
         articleId: article.id,
         uid: category.id,
         label: category.label,

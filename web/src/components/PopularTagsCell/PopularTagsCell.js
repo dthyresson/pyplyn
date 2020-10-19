@@ -54,12 +54,12 @@ export const Failure = ({ error }) => <div>Error: {error.message}</div>
 export const Success = ({ popularTags }) => {
   const { entityType, period, top } = { ...popularTags[0] }
   return (
-    <div className="lg:w-1/2 pr-4 mb-4">
-      <h2 className="capitalize mb-2 text-lg leading-6 font-medium text-cool-gray-900">
+    <div className="mb-4">
+      <h2 className="capitalize mb-4 text-lg leading-6 font-medium text-cool-gray-900">
         Top {top} {pluralize(entityType)}
       </h2>
 
-      <div className="flex flex-col">
+      <div className="">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">

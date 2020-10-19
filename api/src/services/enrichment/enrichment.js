@@ -25,8 +25,8 @@ export const enrichArticleId = async ({ id }) => {
 
     logger.debug(
       {
-        articleId: article.id,
-        title: article.title,
+        articleId: article?.id,
+        title: article?.title,
       },
       `Fetched article for enrichArticleId ${id}`
     )
@@ -48,12 +48,17 @@ export const enrichArticleId = async ({ id }) => {
 }
 
 export const enrichArticle = async (article) => {
+  if (article === undefined) {
+    logger.error('enrichArticle article undefined')
+    return
+  }
+
   logger.info(
     {
-      articleId: article.id,
-      articleUrl: article.url,
+      articleId: article?.id,
+      articleUrl: article?.url,
     },
-    `Enriching article ${article.url}`
+    `Enriching article ${article?.url}`
   )
 
   try {
@@ -168,6 +173,11 @@ export const enrichTweetId = async ({ id }) => {
 }
 
 export const enrichTweet = async (tweet) => {
+  if (tweet === undefined) {
+    logger.error('enrichTweet tweet undefined')
+    return
+  }
+
   logger.info(
     {
       tweetId: tweet.id,
@@ -267,7 +277,7 @@ export const enrichTweetContext = async ({ tweetContextId }) => {
 }
 
 export const createArticleSummaries = async (article) => {
-  if (article == undefined) {
+  if (article === undefined) {
     logger.error(
       { articleId: undefined }`createArticleSummaries has undefined article`
     )

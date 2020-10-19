@@ -8,7 +8,7 @@ import PopularTagsCell from 'src/components/PopularTagsCell'
 const HomePage = () => {
   return (
     <AppLayout>
-      <div className="mt-8">
+      <div className="p-2">
         <div className="mb-4">
           <h2 className="text-lg leading-6 font-medium text-cool-gray-900">
             Rankings
@@ -20,7 +20,7 @@ const HomePage = () => {
           </p>
         </div>
 
-        <div className="mb-4 lg:flex lg:flex-wrap">
+        <div className="mb-4">
           <PopularTagsCell period="week" entityType="food" top={20} />
           <PopularTagsCell period="week" entityType="product" top={20} />
           <PopularTagsCell period="week" entityType="place" top={10} />

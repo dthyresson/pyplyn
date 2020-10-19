@@ -1,6 +1,6 @@
 const TagSummaryRow = ({ caption, content, fixed = 3 }) => {
   return (
-    <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+    <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5 capitalize">
       <dt className="text-sm leading-5 font-medium text-gray-500">{caption}</dt>
       <dd className="text-right mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
         {content.toFixed(fixed)}
@@ -43,44 +43,44 @@ const Tag = ({ tag }) => {
         <div className="px-4 py-5 sm:p-0">
           <dl>
             <TagSummaryRow
-              caption="totalCount"
-              content={tag.totalCount}
-              fixed={0}
-            />
-            <TagSummaryRow
-              caption="totalMentions"
+              caption="total Mentions"
               content={tag.totalMentions}
               fixed={0}
             />
             <TagSummaryRow
-              caption="minMentions"
-              content={tag.minMentions}
+              caption="total Count"
+              content={tag.totalCount}
               fixed={0}
             />
             <TagSummaryRow
-              caption="maxMentions"
+              caption="max Mentions"
               content={tag.maxMentions}
+              fixed={0}
+            />
+            <TagSummaryRow
+              caption="min Mentions"
+              content={tag.minMentions}
               fixed={0}
             />
             <TagSummaryRow caption="avgMentions" content={tag.avgMentions} />
             <TagSummaryRow
-              caption="minConfidence"
-              content={tag.minConfidence}
-            />
-            <TagSummaryRow
-              caption="maxConfidence"
+              caption="max Confidence"
               content={tag.maxConfidence}
             />
             <TagSummaryRow
-              caption="avgConfidence"
+              caption="min Confidence"
+              content={tag.minConfidence}
+            />
+            <TagSummaryRow
+              caption="avg Confidence"
               content={tag.avgConfidence}
             />
-            <TagSummaryRow caption="minSalience" content={tag.minSalience} />
-            <TagSummaryRow caption="maxSalience" content={tag.maxSalience} />
-            <TagSummaryRow caption="avgSalience" content={tag.avgSalience} />
-            <TagSummaryRow caption="minSentiment" content={tag.minSentiment} />
-            <TagSummaryRow caption="maxSentiment" content={tag.maxSentiment} />
-            <TagSummaryRow caption="avgSentiment" content={tag.avgSentiment} />
+            <TagSummaryRow caption="max Salience" content={tag.maxSalience} />
+            <TagSummaryRow caption="min Salience" content={tag.minSalience} />
+            <TagSummaryRow caption="avg Salience" content={tag.avgSalience} />
+            <TagSummaryRow caption="max Sentiment" content={tag.maxSentiment} />
+            <TagSummaryRow caption="min Sentiment" content={tag.minSentiment} />
+            <TagSummaryRow caption="avg Sentiment" content={tag.avgSentiment} />
           </dl>
         </div>
       </div>
