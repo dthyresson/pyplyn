@@ -13,9 +13,38 @@ import { articleDataBuilder } from 'src/lib/parsers/articleParser'
 import { tweetContextDataBuilder } from 'src/lib/parsers/tweetParser'
 
 export const enrichArticleId = async ({ id }) => {
-  const article = await articleById({ id: id })
-  const result = await enrichArticle(article)
-  return result
+  logger.info(
+    {
+      articleId: id,
+    },
+    `Enriching enrichArticleId ${id}`
+  )
+
+  try {
+    const article = await articleById({ id: id })
+
+    logger.debug(
+      {
+        articleId: article.id,
+        title: article.title,
+      },
+      `Fetched article for enrichArticleId ${id}`
+    )
+
+    const result = await enrichArticle(article)
+
+    logger.debug(
+      {
+        articleId: article.id,
+        title: article.title,
+      },
+      `Completed enrichArticleId ${id}`
+    )
+
+    return result
+  } catch (e) {
+    logger.error({ article: id }, 'Error in enrichArticleId')
+  }
 }
 
 export const enrichArticle = async (article) => {
@@ -27,106 +56,109 @@ export const enrichArticle = async (article) => {
     `Enriching article ${article.url}`
   )
 
-  // TODO: This is the super long running task
-  const content = await extractArticle({
-    url: article.url,
-  })
+  try {
+    const content = await extractArticle({
+      url: article.url,
+    })
 
-  if (content !== undefined) {
-    logger.debug(
-      {
-        articleId: article.id,
-        articleUrl: article.url,
-      },
-      `Enriching article articleContext`
-    )
-    let result = await db.articleContext.create({
-      data: {
-        article: {
-          connect: { id: article.id },
+    if (content !== undefined) {
+      logger.debug(
+        {
+          articleId: article.id,
+          articleUrl: article.url,
         },
-        content,
-      },
-    })
+        `Enriching article articleContext`
+      )
+      let result = await db.articleContext.create({
+        data: {
+          article: {
+            connect: { id: article.id },
+          },
+          content,
+        },
+      })
 
-    logger.debug(
-      { result, articleId: article.id, articleUrl: article.url },
-      'Enriched article articleContex'
-    )
+      logger.debug(
+        { result, articleId: article.id, articleUrl: article.url },
+        'Enriched article articleContex'
+      )
 
-    const data = articleDataBuilder(content)
-
-    logger.debug(
-      {
-        articleId: article.id,
-        articleUrl: article.url,
-      },
-      `Updating article with enriched info`
-    )
-    let update = await db.article.update({
-      where: { id: article.id },
-      data: {
-        articleText: data.articleText,
-        author: data.author,
-        description: data.description,
-        language: data.language,
-        sentiment: data.sentiment,
-        siteName: data.siteName,
-        tagLabels: { set: data.tagLabels },
-      },
-    })
-
-    logger.debug(
-      {
-        update,
-        articleId: article.id,
-        articleUrl: article.url,
-      },
-      `Enriching article tags`
-    )
-
-    data.tags?.forEach(async (tag) => {
-      const entityTypes = tag.rdfTypes
-        ?.map((t) => {
-          return t.split('/').pop().toLowerCase()
-        })
-        .filter((x) => x !== undefined)
+      const data = articleDataBuilder(content)
 
       logger.debug(
         {
           articleId: article.id,
           articleUrl: article.url,
-          tag,
         },
-        `Enriching tag ${tag.label} to article ${article.id}`
+        `Updating article with enriched info`
       )
-
-      const t = await db.tag.create({
+      let update = await db.article.update({
+        where: { id: article.id },
         data: {
-          article: { connect: { id: article.id } },
-          documentType: DocumentType.ARTICLE,
-          label: tag.label,
-          uri: tag.uri || tag.label,
-          mentions: tag.count,
-          confidence: tag.score,
-          dbpediaUris: { set: tag.rdfTypes || [] },
-          rdfTypes: { set: tag.rdfTypes || [] },
-          entityTypes: { set: entityTypes || [] },
-          sentiment: tag.sentiment,
+          articleText: data.articleText,
+          author: data.author,
+          description: data.description,
+          language: data.language,
+          sentiment: data.sentiment,
+          siteName: data.siteName,
+          tagLabels: { set: data.tagLabels },
         },
       })
 
-      logger.info(t, `Created tag ${t.label} for articleId ${article.id} `)
+      logger.debug(
+        {
+          update,
+          articleId: article.id,
+          articleUrl: article.url,
+        },
+        `Enriching article tags`
+      )
+
+      data.tags?.forEach(async (tag) => {
+        const entityTypes = tag.rdfTypes
+          ?.map((t) => {
+            return t.split('/').pop().toLowerCase()
+          })
+          .filter((x) => x !== undefined)
+
+        logger.debug(
+          {
+            articleId: article.id,
+            articleUrl: article.url,
+            tag,
+          },
+          `Enriching tag ${tag.label} to article ${article.id}`
+        )
+
+        const t = await db.tag.create({
+          data: {
+            article: { connect: { id: article.id } },
+            documentType: DocumentType.ARTICLE,
+            label: tag.label,
+            uri: tag.uri || tag.label,
+            mentions: tag.count,
+            confidence: tag.score,
+            dbpediaUris: { set: tag.rdfTypes || [] },
+            rdfTypes: { set: tag.rdfTypes || [] },
+            entityTypes: { set: entityTypes || [] },
+            sentiment: tag.sentiment,
+          },
+        })
+
+        logger.info(t, `Created tag ${t.label} for articleId ${article.id} `)
+      })
+    }
+
+    let summaries = await createArticleSummaries(article)
+    logger.debug({ summaries }, 'createArticleSummaries')
+
+    return db.article.findOne({
+      where: { id: article.id },
+      include: { articleContext: true, tags: true },
     })
+  } catch (e) {
+    logger.error({ error: e, articleId: article.id }, 'Error in enrichArticle')
   }
-
-  let summaries = await createArticleSummaries(article)
-  logger.debug({ summaries }, 'createArticleSummaries')
-
-  return db.article.findOne({
-    where: { id: article.id },
-    include: { articleContext: true, tags: true },
-  })
 }
 
 export const enrichTweetId = async ({ id }) => {

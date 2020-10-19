@@ -35,6 +35,11 @@ export const persistArticle = async ({ entry }) => {
       include: { entry: true },
     })
 
+    logger.debug(
+      { id: article.id },
+      `Successfully persistArticle created article for entry: ${entry.id}`
+    )
+
     let resultArticleCategories = await createArticleCategories(article)
 
     logger.debug(
