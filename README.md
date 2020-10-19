@@ -56,6 +56,10 @@ You can solve this in two ways -
 
 ## Serverless
 
+### Deploy
+
+`yarn rw deploy api aws_serverless`
+
 ### Dashboard
 
 `serverless dashboard`

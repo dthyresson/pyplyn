@@ -20,6 +20,7 @@ export const logger = pino(
       name: 'pyplyn',
     },
     nestedKey: 'logPayload',
+    redact: ['logPayload.token', 'logPayload.decoded', 'token', 'decoded'],
   },
   isDevEnv ? pino.destination('../logs/api-dev.log') : logflareStream
 )
