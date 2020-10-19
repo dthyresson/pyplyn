@@ -80,42 +80,43 @@ export const Success = ({ popularTags }) => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200"></tbody>
-                {popularTags.map((ranking, index) => {
-                  return (
-                    <tr
-                      key={`tag-${ranking.label}-${ranking.label}-${ranking.period}-${index}`}
-                    >
-                      <td className="text-center px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                        {ranking.ranking}
-                      </td>
-                      <td className="px-6 py-4 text-sm leading-5 font-medium text-gray-900">
-                        <Link
-                          className="text-purple-600 hover:text-purple-900"
-                          to={routes.tag({ label: ranking.label })}
-                        >
-                          {ranking.label}
-                        </Link>
-                      </td>
-                      <td className="text-right px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                        <span className="font-medium text-gray-500">
-                          {ranking.total}
-                        </span>{' '}
-                        <span className="text-xs">
-                          from {ranking.previousTotal}
-                        </span>
-                      </td>
-                      <td className="text-right px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                        <PercentChangeBadge
-                          deltaDirection={ranking.deltaDirection}
-                          pctChange={ranking.pctChange}
-                          total={ranking.total}
-                          previousTotal={ranking.previousTotal}
-                        />
-                      </td>
-                    </tr>
-                  )
-                })}
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {popularTags.map((ranking, index) => {
+                    return (
+                      <tr
+                        key={`tag-${ranking.label}-${ranking.label}-${ranking.period}-${index}`}
+                      >
+                        <td className="text-center px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                          {ranking.ranking}
+                        </td>
+                        <td className="px-6 py-4 text-sm leading-5 font-medium text-gray-900">
+                          <Link
+                            className="text-purple-600 hover:text-purple-900"
+                            to={routes.tag({ label: ranking.label })}
+                          >
+                            {ranking.label}
+                          </Link>
+                        </td>
+                        <td className="text-right px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                          <span className="font-medium text-gray-500">
+                            {ranking.total}
+                          </span>{' '}
+                          <span className="text-xs">
+                            from {ranking.previousTotal}
+                          </span>
+                        </td>
+                        <td className="text-right px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                          <PercentChangeBadge
+                            deltaDirection={ranking.deltaDirection}
+                            pctChange={ranking.pctChange}
+                            total={ranking.total}
+                            previousTotal={ranking.previousTotal}
+                          />
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
               </table>
             </div>
           </div>
