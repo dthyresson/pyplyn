@@ -2,7 +2,7 @@ import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
 
 import { articleDetailParser, entryParser } from 'src/lib/parsers/entryParser'
-import { enrichArticleId } from 'src/services/enrichment'
+import { enrichArticle } from 'src/services/enrichment'
 
 export const persistArticle = async ({ entry }) => {
   logger.debug(
@@ -17,8 +17,6 @@ export const persistArticle = async ({ entry }) => {
   logger.debug({ parsedArticle }, `parsedArticle for entry: ${entry.id}`)
 
   try {
-    let result = undefined
-
     const article = await db.article.create({
       data: {
         entry: {
@@ -37,18 +35,50 @@ export const persistArticle = async ({ entry }) => {
       include: { entry: true },
     })
 
-    result = await createArticleCategories(article)
-
-    result = await createArticlePriorities(article)
-
-    result = await enrichArticleId({ id: article.id })
+    let resultArticleCategories = await createArticleCategories(article)
 
     logger.debug(
       {
         article: {
           id: article.id,
           title: article.title,
-          result: result !== undefined,
+        },
+        resultArticleCategories,
+      },
+      `Successfully createArticleCategories: ${article.id}`
+    )
+
+    let resultArticlePriorities = await createArticlePriorities(article)
+
+    logger.debug(
+      {
+        article: {
+          id: article.id,
+          title: article.title,
+        },
+        resultArticlePriorities,
+      },
+      `Successfully createArticlePriorities: ${article.id}`
+    )
+
+    let resultEnrichArticle = await enrichArticle({ article })
+
+    logger.debug(
+      {
+        article: {
+          id: article.id,
+          title: article.title,
+        },
+        resultEnrichArticle,
+      },
+      `Successfully resultEnrichArticle: ${article.id}`
+    )
+
+    logger.debug(
+      {
+        article: {
+          id: article.id,
+          title: article.title,
         },
       },
       `Successfully persistArticle: ${article.id}`
@@ -106,7 +136,7 @@ export const createArticleCategories = async (article) => {
     }
   })
 
-  return
+  return true
 }
 
 export const createArticleCategory = async ({ articleId, uid, label }) => {
@@ -186,7 +216,7 @@ export const createArticlePriorities = async (article) => {
     }
   })
 
-  return
+  return true
 }
 
 export const createArticlePriority = async ({ articleId, uid, label }) => {

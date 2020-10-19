@@ -12,7 +12,7 @@ import {
   tweetEntryParser,
   linkedEntriesParser,
 } from 'src/lib/parsers/entryParser'
-import { enrichArticleId, enrichTweet } from 'src/services/enrichment'
+import { enrichArticle, enrichTweet } from 'src/services/enrichment'
 
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
@@ -224,7 +224,7 @@ export const persistLinkedArticle = async (linkedArticle, tweet) => {
 
     result = await createArticlePriorities(article)
 
-    result = await enrichArticleId({ id: article.id })
+    result = await enrichArticle({ article })
 
     logger.debug(result, 'Completed persistLinkedArticle')
 
@@ -299,19 +299,32 @@ export const persistTweet = async ({ entry }) => {
       include: { entry: true },
     })
 
-    let result = undefined
-
-    result = await createTweetCategories(tweet)
-
-    result = await createTweetPriorities(tweet)
-
-    result = await enrichTweet(tweet)
-
-    result = await persistLinkedArticles(entry, tweet)
+    let resultCategories = await createTweetCategories(tweet)
 
     logger.debug(
-      { result, tweet: { id: tweet.id, title: tweet.title } },
-      `Successfully persistTweet: ${tweet.id}`
+      { resultCategories, tweet: { id: tweet.id, title: tweet.title } },
+      `Successfully createTweetCategories: ${tweet.id}`
+    )
+
+    let resultPriorities = await createTweetPriorities(tweet)
+
+    logger.debug(
+      { resultPriorities, tweet: { id: tweet.id, title: tweet.title } },
+      `Successfully createTweetPriorities: ${tweet.id}`
+    )
+
+    let resultEnrichTweet = await enrichTweet(tweet)
+
+    logger.debug(
+      { resultEnrichTweet, tweet: { id: tweet.id, title: tweet.title } },
+      `Successfully enrichTweet: ${tweet.id}`
+    )
+
+    let resultLinkedArticles = await persistLinkedArticles(entry, tweet)
+
+    logger.debug(
+      { resultLinkedArticles, tweet: { id: tweet.id, title: tweet.title } },
+      `Successfully persistLinkedArticles: ${tweet.id}`
     )
   } catch (e) {
     logger.error(e, `persistTweet error: ${e.message}`)
