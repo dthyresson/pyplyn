@@ -71,8 +71,8 @@ const popularTagsQuery = ({
   FROM
     t4
   WHERE
-    date = date_trunc('${period}',
-    CURRENT_TIMESTAMP) - INTERVAL '0 ${period}'
+    (date >= (date_trunc('${period}', CURRENT_TIMESTAMP) - INTERVAL '1 ${period}')
+      AND date <= (date_trunc('${period}', CURRENT_TIMESTAMP) + INTERVAL '1 ${period}'))
     AND ranking <= ${top} ORDER BY
       date,
       ranking ASC
