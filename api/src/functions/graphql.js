@@ -85,10 +85,6 @@ export const handler = createGraphQLHandler({
     }),
     permissions
   ),
-  // schema: makeMergedSchema({
-  //   schemas,
-  //   services: makeServices({ services }),
-  // }),
   cors: {
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
