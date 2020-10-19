@@ -4,6 +4,23 @@
 
 # Local Dev
 
+## Invoke Netlify Function
+
+```
+netlify functions:invoke test --port 8910
+```
+
+```
+# no prompting (good for CI)
+netlify functions:invoke --name myfunction --identity # invoke a specific function with netlify identity headers
+netlify functions:invoke --name myfunction --no-identity # invoke a specific function without netlify identity headers
+
+# sending payloads
+netlify functions:invoke myfunction --payload '{"foo": 1}'
+netlify functions:invoke myfunction --querystring "foo=1"
+netlify functions:invoke myfunction --payload "./pathTo.json"
+```
+
 ## Tunneling for repeater.dev Functions
 
 `ngrok http -subdomain=XXXXX 8911`

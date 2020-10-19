@@ -114,14 +114,22 @@ export const persistEntryStream = async ({ data }) => {
 
       if (isTweet) {
         try {
-          await persistTweet({ entry: item })
+          const result = await persistTweet({ entry: item })
+          logger.debug(
+            { result, entry: item },
+            'Completed persistEntryStream persistTweet'
+          )
         } catch (e) {
           logger.error(e, `persistEntryStream persistTweet error: ${e.message}`)
           logger.warn(e.stack, 'persistEntryStream persistTweet error stack')
         }
       } else {
         try {
-          await persistArticle({ entry: item })
+          const result = await persistArticle({ entry: item })
+          logger.debug(
+            { result, entry: item },
+            'Completed persistEntryStream persistArticle'
+          )
         } catch (e) {
           logger.error(
             e,

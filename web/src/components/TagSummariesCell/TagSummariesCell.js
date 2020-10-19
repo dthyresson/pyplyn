@@ -1,5 +1,9 @@
 import TagSummary from 'src/components/TagSummary'
 
+import EmptyMessage from 'src/components/EmptyMessage'
+import FailureMessage from 'src/components/FailureMessage'
+import LoadingMessage from 'src/components/LoadingMessage'
+
 export const beforeQuery = ({ label }) => {
   return { variables: { label } }
 }
@@ -26,12 +30,11 @@ export const QUERY = gql`
     }
   }
 `
+export const Loading = () => <LoadingMessage />
 
-export const Loading = () => <div>Loading...</div>
+export const Empty = () => <EmptyMessage />
 
-export const Empty = () => <div>Empty</div>
-
-export const Failure = ({ error }) => <div>Error: {error.message}</div>
+export const Failure = ({ error }) => <FailureMessage message={error.message} />
 
 export const Success = ({ tagSummaries }) => {
   return (

@@ -194,7 +194,7 @@ export const enrichTweet = async (tweet) => {
   if (content !== undefined) {
     const tweetUpdate = await db.tweet.update({
       where: { id: tweet.id },
-      data: { sentiment: content.sentiment },
+      data: { sentiment: content?.sentiment },
     })
 
     logger.debug({ tweetUpdate }, 'tweetUpdate')

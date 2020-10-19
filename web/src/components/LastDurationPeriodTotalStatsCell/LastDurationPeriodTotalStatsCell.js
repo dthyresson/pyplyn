@@ -1,4 +1,9 @@
 import { routes } from '@redwoodjs/router'
+
+import EmptyMessage from 'src/components/EmptyMessage'
+import FailureMessage from 'src/components/FailureMessage'
+import LoadingMessage from 'src/components/LoadingMessage'
+
 import PeriodTotalStat from 'src/components/PeriodTotalStat'
 
 export const beforeQuery = ({ duration = 7, period = 'day' }) => {
@@ -51,11 +56,11 @@ export const QUERY = gql`
   }
 `
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => <LoadingMessage />
 
-export const Empty = () => <div>Empty</div>
+export const Empty = () => <EmptyMessage />
 
-export const Failure = ({ error }) => <div>Error: {error.message}</div>
+export const Failure = ({ error }) => <FailureMessage message={error.message} />
 
 export const Success = ({ duration, period, periodTotalStats }) => {
   return (

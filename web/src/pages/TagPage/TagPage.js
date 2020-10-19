@@ -24,7 +24,7 @@ const TagPage = ({ label, show = 'tweets' }) => {
       <div className="mt-2 m-2 pb-5 border-b border-gray-200 space-y-3 sm:space-y-4 sm:pb-0">
         <div className="-ml-2 -mt-2 flex flex-wrap items-baseline">
           <h3 className="capitalize ml-2 mt-2 text-lg leading-6 font-medium text-gray-900">
-            {unescape(label)}
+            {decodeURI(label)}
           </h3>
           <p className="ml-2 mt-1 text-sm leading-5 text-gray-500 truncate">
             seen in <span className="capitalize">{show}</span> data
