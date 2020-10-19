@@ -100,13 +100,29 @@ const LoginPage = () => {
                     } else if (email.length && password.length) {
                       try {
                         event.preventDefault()
-                        await logIn({ email, password })
+                        const _res = await logIn({ email, password })
                         navigate(routes.home())
-                      } catch (e) {
-                        resetForm()
-                        console.log(e)
-                        const supabaseError = JSON.parse(e.message)
-                        alert(supabaseError.error_description)
+                      } catch (error) {
+                        if (error.response === undefined) {
+                          // No response from server
+                          console.log('No response from server')
+                        } else {
+                          const serverResponse = error.response
+                          // Here you can further process the response ..
+                          console.log(serverResponse)
+                        }
+
+                        if (error.status === undefined) {
+                          console.log('No HTTP status code')
+                        } else {
+                          const httpCode = error.status
+                          console.log(`HTTP status code ${httpCode}`)
+
+                          resetForm()
+                          console.log(error)
+                          const supabaseError = JSON.parse(e.message)
+                          alert(supabaseError.error_description)
+                        }
                       }
                     }
                   }}
