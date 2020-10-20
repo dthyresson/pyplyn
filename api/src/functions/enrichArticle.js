@@ -13,7 +13,12 @@ export const handler = async (event, _context) => {
 
     logger.info({ articleId }, 'Invoked enrichArticle function with articleId')
 
-    const result = enrichArticleId({ id: articleId })
+    const result = await enrichArticleId({ id: articleId })
+
+    logger.info(
+      { articleId, result },
+      'Completed enrichArticle function with articleId'
+    )
 
     return {
       statusCode: 200,
