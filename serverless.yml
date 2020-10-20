@@ -59,7 +59,24 @@ functions:
       - httpApi:
           path: /.netlify/functions/enrichArticle
           method: POST
-
+  enrichTweet:
+    description: feed function deployed on AWS Lambda
+    package:
+      artifact: api/dist/zipball/enrichTweet.zip # This is the default location of the zip file generated during the deploy command.
+    memorySize: 1024 # mb
+    timeout: 29 # seconds (max: 29)
+    tags: # Tags for this specific lambda function
+      endpoint: /.netlify/functions/enrichTweet
+    # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
+    # environment:
+    handler: enrichTweet.handler
+    events:
+      - httpApi:
+          path: /.netlify/functions/enrichTweet
+          method: GET
+      - httpApi:
+          path: /.netlify/functions/enrichTweet
+          method: POST
   entryStream:
     description: entryStream function deployed on AWS Lambda
     package:

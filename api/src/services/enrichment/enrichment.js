@@ -66,11 +66,23 @@ export const enrichArticle = async (article) => {
       url: article.url,
     })
 
+    if (content === undefined) {
+      logger.warn(
+        {
+          articleId: article.id,
+          articleUrl: article.url,
+          content,
+        },
+        'Missing extracted text for tweet to create tweetContext'
+      )
+    }
+
     if (content !== undefined) {
       logger.debug(
         {
           articleId: article.id,
           articleUrl: article.url,
+          content,
         },
         `Enriching article articleContext`
       )
@@ -198,6 +210,17 @@ export const enrichTweet = async (tweet) => {
     content: tweet.content,
     lang: 'en',
   })
+
+  if (content === undefined) {
+    logger.warn(
+      {
+        tweetId: tweet.id,
+        tweetContent: tweet.content,
+        content,
+      },
+      'Missing extracted text for tweet to create tweetContext'
+    )
+  }
 
   if (content !== undefined) {
     const tweetUpdate = await db.tweet.update({
