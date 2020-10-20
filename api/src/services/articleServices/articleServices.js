@@ -5,21 +5,19 @@ import { articleDetailParser, entryParser } from 'src/lib/parsers/entryParser'
 import { enrichArticle } from 'src/services/enrichment'
 
 export const persistArticle = async ({ entry }) => {
-  logger.debug(
-    { entryId: entry.id, documumentType: entry.DocumentType },
-    `persistArticle for entry: ${entry.id}`
-  )
-
-  const parsedEntry = entryParser(entry)
-  const parsedArticle = articleDetailParser(entry)
-
-  logger.debug({ uid: parsedEntry.uid }, `parsedEntry entry: ${entry.id}`)
-  logger.debug({ parsedArticle }, `parsedArticle for entry: ${entry.id}`)
-
-  let article
-
   try {
-    article = await db.article.create({
+    logger.debug(
+      { entryId: entry.id, documumentType: entry.DocumentType },
+      `persistArticle for entry: ${entry.id}`
+    )
+
+    const parsedEntry = entryParser(entry)
+    const parsedArticle = articleDetailParser(entry)
+
+    logger.debug({ uid: parsedEntry.uid }, `parsedEntry entry: ${entry.id}`)
+    logger.debug({ parsedArticle }, `parsedArticle for entry: ${entry.id}`)
+
+    const article = await db.article.create({
       data: {
         entry: {
           connectOrCreate: {
@@ -41,22 +39,8 @@ export const persistArticle = async ({ entry }) => {
       { id: article.id },
       `Successfully persistArticle created article for entry: ${entry.id}`
     )
-  } catch (e) {
-    logger.warning(
-      { id: entry.id },
-      `Could not create article in persistArticle for entry: ${entry.id}`
-    )
 
-    article = db.entry.findOne({ where: { uid: entry.id } }).article()
-
-    logger.debug(
-      { id: article?.id },
-      `Successfully fetched article for entry: ${entry.id}`
-    )
-  }
-
-  try {
-    let resultArticleCategories = await createArticleCategories(article)
+    const resultArticleCategories = await createArticleCategories(article)
 
     logger.debug(
       {
@@ -69,7 +53,7 @@ export const persistArticle = async ({ entry }) => {
       `Successfully createArticleCategories: ${article?.id}`
     )
 
-    let resultArticlePriorities = await createArticlePriorities(article)
+    const resultArticlePriorities = await createArticlePriorities(article)
 
     logger.debug(
       {
@@ -82,7 +66,8 @@ export const persistArticle = async ({ entry }) => {
       `Successfully createArticlePriorities: ${article?.id}`
     )
 
-    let resultEnrichArticle = await enrichArticle({ article })
+    // TODO: Make this a repeater function
+    const resultEnrichArticle = await enrichArticle({ article })
 
     logger.debug(
       {

@@ -224,6 +224,7 @@ export const persistLinkedArticle = async (linkedArticle, tweet) => {
 
     result = await createArticlePriorities(article)
 
+    // Make this a repeater job
     result = await enrichArticle({ article })
 
     logger.debug(result, 'Completed persistLinkedArticle')
@@ -313,6 +314,7 @@ export const persistTweet = async ({ entry }) => {
       `Successfully createTweetPriorities: ${tweet.id}`
     )
 
+    // Make this a repeater job
     let resultEnrichTweet = await enrichTweet(tweet)
 
     logger.debug(
