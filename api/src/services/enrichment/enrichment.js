@@ -107,6 +107,7 @@ export const enrichArticle = async (article) => {
           sentiment: data.sentiment,
           siteName: data.siteName,
           tagLabels: { set: data.tagLabels },
+          updatedAt: Date.now(),
         },
       })
 
@@ -167,6 +168,13 @@ export const enrichArticle = async (article) => {
 }
 
 export const enrichTweetId = async ({ id }) => {
+  logger.info(
+    {
+      tweetId: id,
+    },
+    `Enriching enrichTweetId ${id}`
+  )
+
   const tweet = await tweetById({ id: id })
   const result = await enrichTweet(tweet)
   return result
@@ -194,7 +202,7 @@ export const enrichTweet = async (tweet) => {
   if (content !== undefined) {
     const tweetUpdate = await db.tweet.update({
       where: { id: tweet.id },
-      data: { sentiment: content?.sentiment },
+      data: { sentiment: content?.sentiment, updatedAt: Date.now() },
     })
 
     logger.debug({ tweetUpdate }, 'tweetUpdate')
