@@ -267,19 +267,34 @@ export const enrichTweet = async (tweet) => {
 
     logger.debug({ tweetUpdate }, 'tweetUpdate')
 
-    const tweetContext = await db.tweetContext.create({
-      data: {
-        tweet: {
-          connect: { id: tweet.id },
+    try {
+      const tweetContext = await db.tweetContext.create({
+        data: {
+          tweet: {
+            connect: { id: tweet.id },
+          },
+          content,
         },
-        content,
-      },
-    })
-    let result = await enrichTweetContext({ tweetContextId: tweetContext.id })
-    logger.debug(result, 'enrichTweetContext')
+      })
+
+      const result = await enrichTweetContext({
+        tweetContextId: tweetContext.id,
+      })
+      logger.debug(result, 'enrichTweetContext')
+    } catch (e) {
+      logger.warn(
+        { error: { e, message: e.message }, tweetId: tweet.id },
+        'Could not save Tweet context. Could be that it already exists.'
+      )
+
+      const result = await enrichTweetContext({
+        tweetContextId: tweet.tweetContext.id,
+      })
+      logger.debug(result, 'enrichTweetContext')
+    }
   }
 
-  return
+  return content
 }
 
 export const enrichTweetContext = async ({ tweetContextId }) => {
