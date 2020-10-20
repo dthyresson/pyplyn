@@ -41,12 +41,31 @@ package:
   individually: true
 
 functions:
+  enrichArticle:
+    description: feed function deployed on AWS Lambda
+    package:
+      artifact: api/dist/zipball/enrichArticle.zip # This is the default location of the zip file generated during the deploy command.
+    memorySize: 1024 # mb
+    timeout: 29 # seconds (max: 29)
+    tags: # Tags for this specific lambda function
+      endpoint: /.netlify/functions/enrichArticle
+    # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
+    # environment:
+    handler: enrichArticle.handler
+    events:
+      - httpApi:
+          path: /.netlify/functions/enrichArticle
+          method: GET
+      - httpApi:
+          path: /.netlify/functions/enrichArticle
+          method: POST
+
   entryStream:
     description: entryStream function deployed on AWS Lambda
     package:
       artifact: api/dist/zipball/entryStream.zip # This is the default location of the zip file generated during the deploy command.
     memorySize: 1024 # mb
-    timeout: 25 # seconds (max: 29)
+    timeout: 29 # seconds (max: 29)
     tags: # Tags for this specific lambda function
       endpoint: /.netlify/functions/entryStream
     # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
@@ -64,7 +83,7 @@ functions:
     package:
       artifact: api/dist/zipball/feed.zip # This is the default location of the zip file generated during the deploy command.
     memorySize: 1024 # mb
-    timeout: 25 # seconds (max: 29)
+    timeout: 29 # seconds (max: 29)
     tags: # Tags for this specific lambda function
       endpoint: /.netlify/functions/feed
     # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
@@ -82,7 +101,7 @@ functions:
     package:
       artifact: api/dist/zipball/test.zip # This is the default location of the zip file generated during the deploy command.
     memorySize: 1024 # mb
-    timeout: 25 # seconds (max: 29)
+    timeout: 29 # seconds (max: 29)
     tags: # Tags for this specific lambda function
       endpoint: /.netlify/functions/test
     # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params

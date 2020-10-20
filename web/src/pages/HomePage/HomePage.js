@@ -40,7 +40,7 @@ const HomePage = ({ show = 'rankings' }) => {
                 )
               }
             >
-              <option selected={show === 'tweets'}>Tweets</option>
+              <option selected={show === 'tweets'}>Rankings</option>
 
               <option selected={show === 'stats'}>Stats</option>
 

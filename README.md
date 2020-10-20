@@ -68,6 +68,10 @@ You can solve this in two ways -
 ### Invoke function
 
 `serverless invoke --function test`
+`serverless invoke --function enrichArticle --data '{"articleId": "ckghgyecj00060ul2rf1mos22"}'`
+
+### on Netlify Local
+`netlify functions:invoke enrichArticle --port 8910 --no-identity --payload '{"articleId": "1"}'`
 
 
 ### endpoints
