@@ -15,37 +15,39 @@ export const extractArticle = async ({
 
     logger.debug({ endpoint, url }, 'Invoke extractArticle')
 
-    const result = await backOff(
-      async () => {
-        const response = await got(endpoint, {
-          searchParams: {
-            discussion,
-            fields,
-            maxTags,
-            tagConfidence,
-            url,
-            timeout,
-            token: process.env.DIFFBOT_API_TOKEN,
-          },
-        }).json()
-
-        if (response.errorCode) {
-          logger.error(
-            { errorCode: response.errorCode, url },
-            'Error in extractArticle'
-          )
-
-          throw new Error(response.error)
-        }
-
-        logger.debug({ endpoint, url }, 'Success extractArticle')
-
-        return response.objects?.[0] || null
+    const response = await got(endpoint, {
+      searchParams: {
+        discussion,
+        fields,
+        maxTags,
+        tagConfidence,
+        url,
+        timeout,
+        token: process.env.DIFFBOT_API_TOKEN,
       },
-      { jitter: 'full' }
-    )
+    }).json()
 
-    logger.debug({ endpoint, url }, 'Completed extractArticle')
+    if (response.errorCode) {
+      logger.error(
+        { errorCode: response.errorCode, url },
+        'Error in extractArticle'
+      )
+
+      throw new Error(response.error)
+    }
+
+    logger.debug({ endpoint, url, response }, 'Success extractArticle')
+
+    const result = response.objects?.[0] || null
+
+    if (result === undefined) {
+      logger.warn(
+        { endpoint, url, result },
+        'Warning extractArticle result missing'
+      )
+    }
+
+    logger.debug({ endpoint, url, result }, 'Completed extractArticle')
 
     return result
   } catch (e) {
@@ -60,28 +62,28 @@ export const extractText = async ({ content, lang }) => {
 
     logger.debug({ endpoint, content }, 'Invoked extractText')
 
-    const result = await backOff(
-      async () => {
-        const response = await got
-          .post(endpoint, {
-            json: { content, lang },
-            searchParams: {
-              fields: 'entities,sentiment,facts,openFacts,records',
-              token: process.env.DIFFBOT_API_TOKEN,
-            },
-          })
-          .json()
+    const response = await got
+      .post(endpoint, {
+        json: { content, lang },
+        searchParams: {
+          fields: 'entities,sentiment,facts,openFacts,records',
+          token: process.env.DIFFBOT_API_TOKEN,
+        },
+      })
+      .json()
 
-        logger.debug({ endpoint, content }, 'Success extractText')
+    logger.debug({ endpoint, content, response }, 'Success extractText')
 
-        return response
-      },
-      { jitter: 'full' }
-    )
+    if (response === undefined) {
+      logger.warn(
+        { endpoint, content, response },
+        'Warning extractText response missing'
+      )
+    }
 
     logger.debug({ endpoint, content }, 'Completed extractText')
 
-    return result
+    return response
   } catch (e) {
     console.error(e)
     logger.error({ e, content }, 'Error in extractText')

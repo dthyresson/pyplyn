@@ -1,3 +1,4 @@
+import { toDate } from 'date-fns'
 import { logger } from 'src/lib/logger'
 
 import { db } from 'src/lib/db'
@@ -61,31 +62,32 @@ export const enrichArticle = async (article) => {
     `Enriching article ${article?.url}`
   )
 
-  try {
-    const content = await extractArticle({
-      url: article.url,
-    })
+  const content = await extractArticle({
+    url: article.url,
+  })
 
-    if (content === undefined) {
-      logger.warn(
-        {
-          articleId: article.id,
-          articleUrl: article.url,
-          content,
-        },
-        'Missing extracted text for tweet to create tweetContext'
-      )
-    }
+  if (content === undefined) {
+    logger.warn(
+      {
+        articleId: article.id,
+        articleUrl: article.url,
+        content,
+      },
+      'Missing extracted text for tweet to create tweetContext'
+    )
+  }
 
-    if (content !== undefined) {
-      logger.debug(
-        {
-          articleId: article.id,
-          articleUrl: article.url,
-          content,
-        },
-        `Enriching article articleContext`
-      )
+  if (content !== undefined) {
+    logger.debug(
+      {
+        articleId: article.id,
+        articleUrl: article.url,
+        content,
+      },
+      `Enriching article articleContext`
+    )
+
+    try {
       let result = await db.articleContext.create({
         data: {
           article: {
@@ -97,76 +99,108 @@ export const enrichArticle = async (article) => {
 
       logger.debug(
         { result, articleId: article.id, articleUrl: article.url },
-        'Enriched article articleContex'
+        'Enriched article articleContext'
       )
-
-      const data = articleDataBuilder(content)
-
-      logger.debug(
-        {
-          articleId: article.id,
-          articleUrl: article.url,
-        },
-        `Updating article with enriched info`
+    } catch (e) {
+      logger.warn(
+        { id: article.id },
+        'Could not save Article Context. It could already exist.'
       )
-      let update = await db.article.update({
-        where: { id: article.id },
-        data: {
-          articleText: data.articleText,
-          author: data.author,
-          description: data.description,
-          language: data.language,
-          sentiment: data.sentiment,
-          siteName: data.siteName,
-          tagLabels: { set: data.tagLabels },
-          updatedAt: Date.now(),
-        },
-      })
-
-      logger.debug(
-        {
-          update,
-          articleId: article.id,
-          articleUrl: article.url,
-        },
-        `Enriching article tags`
-      )
-
-      data.tags?.forEach(async (tag) => {
-        const entityTypes = tag.rdfTypes
-          ?.map((t) => {
-            return t.split('/').pop().toLowerCase()
-          })
-          .filter((x) => x !== undefined)
-
-        logger.debug(
-          {
-            articleId: article.id,
-            articleUrl: article.url,
-            tag,
-          },
-          `Enriching tag ${tag.label} to article ${article.id}`
-        )
-
-        const t = await db.tag.create({
-          data: {
-            article: { connect: { id: article.id } },
-            documentType: DocumentType.ARTICLE,
-            label: tag.label,
-            uri: tag.uri || tag.label,
-            mentions: tag.count,
-            confidence: tag.score,
-            dbpediaUris: { set: tag.rdfTypes || [] },
-            rdfTypes: { set: tag.rdfTypes || [] },
-            entityTypes: { set: entityTypes || [] },
-            sentiment: tag.sentiment,
-          },
-        })
-
-        logger.info(t, `Created tag ${t.label} for articleId ${article.id} `)
-      })
     }
+  }
 
+  const data = articleDataBuilder(content)
+
+  try {
+    logger.debug(
+      {
+        articleId: article.id,
+        articleUrl: article.url,
+      },
+      `Updating article with enriched info`
+    )
+    const result = await db.article.update({
+      where: { id: article.id },
+      data: {
+        articleText: data.articleText,
+        author: data.author,
+        description: data.description,
+        language: data.language,
+        sentiment: data.sentiment,
+        siteName: data.siteName,
+        tagLabels: { set: data.tagLabels },
+        updatedAt: toDate(Date.now()),
+      },
+    })
+    logger.debug(
+      {
+        articleId: article.id,
+        articleUrl: article.url,
+        result,
+      },
+      `Updated article after enrichment`
+    )
+  } catch (e) {
+    logger.error(
+      {
+        error: e.message,
+        articleId: article.id,
+        articleUrl: article.url,
+      },
+      `Error updating article after enrichment`
+    )
+  }
+
+  try {
+    logger.debug(
+      {
+        articleId: article.id,
+        articleUrl: article.url,
+      },
+      `Enriching article tags`
+    )
+
+    data.tags?.forEach(async (tag) => {
+      const entityTypes = tag.rdfTypes
+        ?.map((t) => {
+          return t.split('/').pop().toLowerCase()
+        })
+        .filter((x) => x !== undefined)
+
+      logger.debug(
+        {
+          articleId: article.id,
+          articleUrl: article.url,
+          tag,
+        },
+        `Enriching tag ${tag.label} to article ${article.id}`
+      )
+
+      const t = await db.tag.create({
+        data: {
+          article: { connect: { id: article.id } },
+          documentType: DocumentType.ARTICLE,
+          label: tag.label,
+          uri: tag.uri || tag.label,
+          mentions: tag.count,
+          confidence: tag.score,
+          dbpediaUris: { set: tag.rdfTypes || [] },
+          rdfTypes: { set: tag.rdfTypes || [] },
+          entityTypes: { set: entityTypes || [] },
+          sentiment: tag.sentiment,
+        },
+      })
+
+      logger.info(t, `Created tag ${t.label} for articleId ${article.id} `)
+    })
+  } catch (e) {
+    logger.warn(
+      { error: e.message, articleId: article.id },
+      'Unable to create article tags'
+    )
+  }
+
+  try {
     let summaries = await createArticleSummaries(article)
     logger.debug({ summaries }, 'createArticleSummaries')
 
@@ -175,7 +209,10 @@ export const enrichArticle = async (article) => {
       include: { articleContext: true, tags: true },
     })
   } catch (e) {
-    logger.error({ error: e, articleId: article.id }, 'Error in enrichArticle')
+    logger.error(
+      { error: e, articleId: article.id },
+      'Error in createArticleSummaries'
+    )
   }
 }
 
@@ -225,7 +262,7 @@ export const enrichTweet = async (tweet) => {
   if (content !== undefined) {
     const tweetUpdate = await db.tweet.update({
       where: { id: tweet.id },
-      data: { sentiment: content?.sentiment, updatedAt: Date.now() },
+      data: { sentiment: content?.sentiment, updatedAt: toDate(Date.now()) },
     })
 
     logger.debug({ tweetUpdate }, 'tweetUpdate')
