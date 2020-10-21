@@ -103,7 +103,9 @@ export const Success = ({ repeaterJob }) => {
               Body
             </dt>
             <dd className="mt-1 text-xs leading-5 text-gray-700">
-              <code>{repeaterJob.body}</code>
+              <pre className="whitespace-pre-wrap">
+                {JSON.stringify(JSON.parse(repeaterJob.body), null, 4)}
+              </pre>
             </dd>
           </div>
           <div className="sm:col-span-1">
@@ -111,7 +113,9 @@ export const Success = ({ repeaterJob }) => {
               Headers
             </dt>
             <dd className="mt-1 text-xs leading-5 text-gray-700">
-              <code>{JSON.stringify(repeaterJob.headers)}</code>
+              <pre className="whitespace-pre-wrap">
+                {JSON.stringify(repeaterJob.headers, null, 4)}
+              </pre>
             </dd>
           </div>
         </dl>

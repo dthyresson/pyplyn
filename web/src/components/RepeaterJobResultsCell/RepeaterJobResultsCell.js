@@ -11,6 +11,7 @@ export const QUERY = gql`
       duration
       run
       runAt
+      body
     }
   }
 `
@@ -42,6 +43,9 @@ export const Success = ({ repeaterJobResults }) => {
                     </th>
                     <th className="px-6 py-3 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                       Duration
+                    </th>
+                    <th className="px-6 py-3 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                      Body
                     </th>
                     <th className="px-6 py-3 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                       Status
@@ -89,6 +93,11 @@ export const Success = ({ repeaterJobResults }) => {
                         </td>
                         <td className="text-right px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
                           {(result.duration / 1000).toFixed(3)}
+                        </td>
+                        <td className="text-left py-4 text-xs leading-5 text-gray-500">
+                          <pre className="whitespace-pre-wrap">
+                            {JSON.stringify(JSON.parse(result.body), null, 4)}
+                          </pre>
                         </td>
                         <td className="text-right px-6 py-4 text-sm leading-5 font-medium text-gray-900">
                           <span

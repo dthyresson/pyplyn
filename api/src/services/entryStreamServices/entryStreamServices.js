@@ -67,8 +67,6 @@ export const traverseFeedlyEntryStream = async ({
       newerThan,
     })
 
-    console.log(response)
-    console.log(searchParams)
     logger.debug(
       {
         streamId,
