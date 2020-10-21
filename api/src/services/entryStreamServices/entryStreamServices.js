@@ -60,8 +60,6 @@ export const traverseFeedlyEntryStream = async ({
   newerThan,
 }) => {
   try {
-    console.log(`Hi ${continuation}`)
-
     const { response, searchParams } = await streamContents({
       streamId,
       count,
@@ -117,7 +115,7 @@ export const traverseFeedlyEntryStream = async ({
       const rescheduledJob = await scheduleEntryStreamJob({
         streamId: searchParams.streamId,
         count,
-        continuation: searchParams.continuationd,
+        continuation: searchParams.continuation,
         newerThan: searchParams.newerThan,
         action: 'Paginate',
       })
@@ -135,7 +133,6 @@ export const traverseFeedlyEntryStream = async ({
     }
     return
   } catch (e) {
-    console.log(e)
     logger.error(
       { error: e.message, continuation, newerThan },
       'Error in traverseFeedlyEntryStream'
