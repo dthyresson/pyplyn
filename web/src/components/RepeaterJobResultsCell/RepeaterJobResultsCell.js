@@ -16,6 +16,20 @@ export const QUERY = gql`
   }
 `
 
+const RepeaterJobResultBody = ({ jobResult }) => {
+  try {
+    return (
+      jobResult.body && (
+        <pre className="whitespace-pre-wrap">
+          {JSON.stringify(JSON.parse(jobResult.body), null, 4)}
+        </pre>
+      )
+    )
+  } catch {
+    return <div></div>
+  }
+}
+
 export const Loading = () => <LoadingMessage />
 
 export const Empty = () => <EmptyMessage />
@@ -95,9 +109,7 @@ export const Success = ({ repeaterJobResults }) => {
                           {(result.duration / 1000).toFixed(3)}
                         </td>
                         <td className="text-left py-4 text-xs leading-5 text-gray-500">
-                          <pre className="whitespace-pre-wrap">
-                            {JSON.stringify(JSON.parse(result.body), null, 4)}
-                          </pre>
+                          <RepeaterJobResultBody jobResult={result} />
                         </td>
                         <td className="text-right px-6 py-4 text-sm leading-5 font-medium text-gray-900">
                           <span
