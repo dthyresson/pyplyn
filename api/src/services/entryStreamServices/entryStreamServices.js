@@ -59,24 +59,28 @@ export const traverseFeedlyEntryStream = async ({
   continuation,
   newerThan,
 }) => {
-  const { response, searchParams } = await streamContents({
-    streamId,
-    count,
-    continuation,
-    newerThan,
-  })
+  try {
+    console.log(`Hi ${continuation}`)
 
-  logger.debug(
-    {
+    const { response, searchParams } = await streamContents({
       streamId,
       count,
       continuation,
       newerThan,
-    },
-    'In traverseFeedlyEntryStream'
-  )
+    })
 
-  try {
+    console.log(response)
+    console.log(searchParams)
+    logger.debug(
+      {
+        streamId,
+        count,
+        continuation,
+        newerThan,
+      },
+      'In traverseFeedlyEntryStream'
+    )
+
     const _result = await persistEntryStream({ data: response })
 
     logger.debug(
@@ -89,54 +93,49 @@ export const traverseFeedlyEntryStream = async ({
       'Completed traverseFeedlyEntryStream > persistEntryStream'
     )
 
-    const { id, updated, continuation, newerThan } = searchParams
-
     logger.debug(
-      { id, updated, continuation, newerThan },
-      'About to updateEntryStreamStatus'
+      {
+        streamId: searchParams.streamId,
+        count,
+        continuation: searchParams.continuation,
+        newerThan: searchParams.newerThan,
+      },
+      'Completed traverseFeedlyEntryStream > persistEntryStream'
     )
 
     const updatedEntryStream = await updateEntryStreamStatus({
-      streamIdentifier: streamId,
-      continuation,
-      newerThan,
-      updated,
+      streamIdentifier: searchParams.streamId,
+      continuation: searchParams.continuation,
+      newerThan: searchParams.newerThan,
+      updated: searchParams.updated,
     })
 
     logger.debug(updatedEntryStream, 'Completed updateEntryStreamStatus')
 
-    logger.debug(
-      {
-        streamId,
-        count,
-        continuation,
-        newerThan,
-      },
-      'Completed traverseFeedlyEntryStream'
-    )
-
-    if (continuation) {
+    if (searchParams.continuation) {
       logger.debug('About to scheduleEntryStreamJob')
       const rescheduledJob = await scheduleEntryStreamJob({
-        streamId,
+        streamId: searchParams.streamId,
         count,
-        continuation,
-        newerThan,
+        continuation: searchParams.continuationd,
+        newerThan: searchParams.newerThan,
         action: 'Paginate',
       })
 
       logger.debug(rescheduledJob, 'Completed scheduleEntryStreamJob')
 
-      return { response: { id, updated, continuation, newerThan } }
-    } else {
-      logger.info(
-        { streamId: streamId },
-        `Reached end of streamId: ${streamId}`
-      )
-
-      return { response: { streamId, id, updated, continuation, newerThan } }
+      return {
+        response: {
+          id: searchParams.streamId,
+          updated: searchParams.updated,
+          continuation: searchParams.continuation,
+          newerThan: searchParams.newerThan,
+        },
+      }
     }
+    return
   } catch (e) {
+    console.log(e)
     logger.error(
       { error: e.message, continuation, newerThan },
       'Error in traverseFeedlyEntryStream'

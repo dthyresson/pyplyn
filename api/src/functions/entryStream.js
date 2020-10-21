@@ -7,9 +7,9 @@ import { traverseFeedlyEntryStream } from 'src/services/entryStreamServices'
 import { entryStreamByName } from 'src/services/entryStreamQueries'
 
 export const handler = async (event, _context) => {
+  logger.info('Invoked entryStream')
   try {
     isAuthorized(event)
-
     await db.$connect
 
     const { name, count } = JSON.parse(event.body)
@@ -44,15 +44,8 @@ export const handler = async (event, _context) => {
     })
 
     return {
-      statusCode: 202,
-      body: JSON.stringify({
-        data: {
-          id: response.id || response.streamId,
-          updated: response.updated,
-          continuation: response.continuation,
-          newerThan: response.newerThan,
-        },
-      }),
+      statusCode: 200,
+      body: JSON.stringify({ data: { name: entryStream.name, count } }),
     }
   } catch (e) {
     logger.error({ e, functionName: 'entryStream' }, 'Function Handler Error')
@@ -66,3 +59,34 @@ export const handler = async (event, _context) => {
     await db.$disconnect()
   }
 }
+
+//     const { response } = await traverseFeedlyEntryStream({
+//       streamId: entryStream.streamIdentifier,
+//       count: count || 3,
+//       continuation: entryStream.continuation,
+//       newerThan: entryStream.lastAccessedAt,
+//     })
+
+//     return {
+//       statusCode: 202,
+//       body: JSON.stringify({
+//         data: {
+//           id: response.id || response.streamId,
+//           updated: response.updated,
+//           continuation: response.continuation,
+//           newerThan: response.newerThan,
+//         },
+//       }),
+//     }
+//   } catch (e) {
+//     logger.error({ e, functionName: 'entryStream' }, 'Function Handler Error')
+//     return {
+//       statusCode: 400,
+//       body: JSON.stringify({
+//         error: e,
+//       }),
+//     }
+//   } finally {
+//     await db.$disconnect()
+//   }
+// }
