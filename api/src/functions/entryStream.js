@@ -36,7 +36,7 @@ export const handler = async (event, _context) => {
 
     logger.info(entryStream, `Processing entryStream ${entryStream.name}`)
 
-    const { response } = await traverseFeedlyEntryStream({
+    const { _response } = await traverseFeedlyEntryStream({
       streamId: entryStream.streamIdentifier,
       count: count || 3,
       continuation: entryStream.continuation,
@@ -48,6 +48,7 @@ export const handler = async (event, _context) => {
       body: JSON.stringify({ data: { name: entryStream.name, count } }),
     }
   } catch (e) {
+    console.log(e)
     logger.error({ e, functionName: 'entryStream' }, 'Function Handler Error')
     return {
       statusCode: 400,
@@ -59,34 +60,3 @@ export const handler = async (event, _context) => {
     await db.$disconnect()
   }
 }
-
-//     const { response } = await traverseFeedlyEntryStream({
-//       streamId: entryStream.streamIdentifier,
-//       count: count || 3,
-//       continuation: entryStream.continuation,
-//       newerThan: entryStream.lastAccessedAt,
-//     })
-
-//     return {
-//       statusCode: 202,
-//       body: JSON.stringify({
-//         data: {
-//           id: response.id || response.streamId,
-//           updated: response.updated,
-//           continuation: response.continuation,
-//           newerThan: response.newerThan,
-//         },
-//       }),
-//     }
-//   } catch (e) {
-//     logger.error({ e, functionName: 'entryStream' }, 'Function Handler Error')
-//     return {
-//       statusCode: 400,
-//       body: JSON.stringify({
-//         error: e,
-//       }),
-//     }
-//   } finally {
-//     await db.$disconnect()
-//   }
-// }

@@ -119,7 +119,15 @@ export const traverseFeedlyEntryStream = async ({
       })
 
       logger.debug(rescheduledJob, 'Completed scheduleEntryStreamJob')
-
+      return {
+        response: {
+          id: searchParams.streamId,
+          updated: searchParams.updated,
+          continuation: searchParams.continuation,
+          newerThan: searchParams.newerThan,
+        },
+      }
+    } else {
       return {
         response: {
           id: searchParams.streamId,
@@ -129,8 +137,8 @@ export const traverseFeedlyEntryStream = async ({
         },
       }
     }
-    return
   } catch (e) {
+    console.log(e)
     logger.error(
       { error: e.message, continuation, newerThan },
       'Error in traverseFeedlyEntryStream'
