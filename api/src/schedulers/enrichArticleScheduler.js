@@ -4,8 +4,8 @@ import { signPayload } from 'src/lib/authorization'
 
 import { logger } from 'src/lib/logger'
 
-const runAt = (seconds = 10) => {
-  return addSeconds(Date.now(), Math.ceil(seconds + Math.random() * 10))
+const runAt = ({ seconds = 10 }) => {
+  return addSeconds(Date.now(), seconds)
 }
 
 export const enrichArticleScheduler = async ({ articleId, seconds = 10 }) => {
