@@ -5,7 +5,7 @@ import {
   createArticlePriorities,
 } from 'src/services/articleServices'
 import { entryById } from 'src/services/entryQueries'
-import { tweetById } from 'src/services/tweetQueries'
+import { tweetById, tweetByDocumentId } from 'src/services/tweetQueries'
 
 import {
   entryParser,
@@ -297,8 +297,9 @@ export const persistTweet = async ({ entry }) => {
 
   logger.debug({ uid: parsedEntry.uid }, `parsedEntry entry: ${entry.id}`)
 
+  let tweet = undefined
   try {
-    const tweet = await db.tweet.create({
+    tweet = await db.tweet.create({
       data: {
         entry: {
           connectOrCreate: {
@@ -310,7 +311,25 @@ export const persistTweet = async ({ entry }) => {
       },
       include: { entry: true },
     })
+  } catch (e) {
+    logger.warn(
+      { error: e.message, entry: entry.id },
+      'Entry already associated to tweet'
+    )
 
+    tweet = tweetByDocumentId({ documentId: parsedEntry.uid })
+
+    if (tweet !== undefined) {
+      logger.debug(
+        { entryId: entry.id, tweetId: tweet.id },
+        'Found tweet associated with entry'
+      )
+    } else {
+      return tweet
+    }
+  }
+
+  try {
     let resultCategories = await createTweetCategories(tweet)
 
     logger.debug(

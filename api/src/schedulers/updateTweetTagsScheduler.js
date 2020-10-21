@@ -8,27 +8,27 @@ const runAt = () => {
   return addSeconds(Date.now(), Math.ceil(10 * (Math.random() * 10)))
 }
 
-export const enrichArticleScheduler = async ({ articleId }) => {
-  if (articleId === undefined) {
-    logger.warn('Tried to schedule article enrichment without id')
+export const updateTweetTagsScheduler = async ({ tweetId }) => {
+  if (tweetId === undefined) {
+    logger.warn('Tried to schedule tweet tags without id')
     return
   }
 
   const repeater = new Repeater(process.env.REPEATER_API_KEY)
 
   const payload = {
-    articleId,
+    tweetId,
   }
 
-  logger.info({ payload }, 'Scheduled Enrich Article Job payload')
+  logger.info({ payload }, 'Scheduled Update Tweet Tags Job payload')
 
   const token = signPayload({ payload })
 
   try {
     const job = await repeater.enqueueOrUpdate({
-      name: `enrich-article-${articleId}-job`,
+      name: `update-tweet-tags-${tweetId}-job`,
       runAt: runAt(),
-      endpoint: process.env.ENRICH_ARTICLE_JOB_ENDPOINT,
+      endpoint: process.env.UPDATE_TWEET_TAGS_JOB_ENDPOINT,
       verb: 'POST',
       json: payload,
       headers: {
@@ -36,9 +36,9 @@ export const enrichArticleScheduler = async ({ articleId }) => {
       },
     })
 
-    logger.info(job, 'Scheduled Enrich Article Job')
+    logger.info(job, 'Scheduled Update Tweet Tags Job')
   } catch (e) {
-    logger.error({ e, ...payload }, `Failed to Schedule Enrich Article Job`)
+    logger.error({ e, ...payload }, `Failed to Schedule Update Tweet Tags Job`)
   }
 
   return

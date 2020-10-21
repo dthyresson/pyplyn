@@ -77,9 +77,17 @@ export const traverseFeedlyEntryStream = async ({
   )
 
   try {
-    const result = await persistEntryStream({ data: response })
+    const _result = await persistEntryStream({ data: response })
 
-    logger.debug(result, 'Completed persistEntryStream')
+    logger.debug(
+      {
+        streamId,
+        count,
+        continuation,
+        newerThan,
+      },
+      'Completed traverseFeedlyEntryStream > persistEntryStream'
+    )
 
     const { id, updated, continuation, newerThan } = searchParams
 
@@ -96,6 +104,16 @@ export const traverseFeedlyEntryStream = async ({
     })
 
     logger.debug(updatedEntryStream, 'Completed updateEntryStreamStatus')
+
+    logger.debug(
+      {
+        streamId,
+        count,
+        continuation,
+        newerThan,
+      },
+      'Completed traverseFeedlyEntryStream'
+    )
 
     if (continuation) {
       logger.debug('About to scheduleEntryStreamJob')

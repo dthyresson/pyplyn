@@ -1,5 +1,4 @@
-import { formatISO9075, parseISO } from 'date-fns'
-
+import { formatDistanceStrict, formatISO9075, parseISO } from 'date-fns'
 import { Link, routes } from '@redwoodjs/router'
 
 import EmptyMessage from 'src/components/EmptyMessage'
@@ -90,6 +89,14 @@ export const Success = ({ repeaterJobs }) => {
                         <td className="text px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
                           {job.nextRunAt &&
                             formatISO9075(parseISO(job.nextRunAt))}
+                          <time className="mx-1 text-xs text-gray-500">
+                            in{' '}
+                            {job.nextRunAt &&
+                              formatDistanceStrict(
+                                parseISO(job.nextRunAt),
+                                Date.now()
+                              )}
+                          </time>
                         </td>
                         <td className="text px-6 py-4 text-sm leading-5 font-medium text-gray-900">
                           <span

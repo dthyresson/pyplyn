@@ -8,9 +8,9 @@ const runAt = () => {
   return addSeconds(Date.now(), Math.ceil(10 * (Math.random() * 10)))
 }
 
-export const enrichArticleScheduler = async ({ articleId }) => {
+export const updateArticleTagsScheduler = async ({ articleId }) => {
   if (articleId === undefined) {
-    logger.warn('Tried to schedule article enrichment without id')
+    logger.warn('Tried to schedule article tags without id')
     return
   }
 
@@ -20,15 +20,15 @@ export const enrichArticleScheduler = async ({ articleId }) => {
     articleId,
   }
 
-  logger.info({ payload }, 'Scheduled Enrich Article Job payload')
+  logger.info({ payload }, 'Scheduled Update Article Tags Job payload')
 
   const token = signPayload({ payload })
 
   try {
     const job = await repeater.enqueueOrUpdate({
-      name: `enrich-article-${articleId}-job`,
+      name: `update-article-yags-${articleId}-job`,
       runAt: runAt(),
-      endpoint: process.env.ENRICH_ARTICLE_JOB_ENDPOINT,
+      endpoint: process.env.UPDATE_ARTICLE_TAGS_JOB_ENDPOINT,
       verb: 'POST',
       json: payload,
       headers: {
@@ -36,9 +36,12 @@ export const enrichArticleScheduler = async ({ articleId }) => {
       },
     })
 
-    logger.info(job, 'Scheduled Enrich Article Job')
+    logger.info(job, 'Scheduled Update Article Tags Job')
   } catch (e) {
-    logger.error({ e, ...payload }, `Failed to Schedule Enrich Article Job`)
+    logger.error(
+      { e, ...payload },
+      `Failed to Schedule Update Article Tags Job`
+    )
   }
 
   return

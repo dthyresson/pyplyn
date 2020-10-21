@@ -3,11 +3,25 @@ import { logger } from 'src/lib/logger'
 
 const repeater = new Repeater(process.env.REPEATER_API_KEY)
 
-export const repeaterJobs = async () => {
+export const repeaterJobs = async ({ status = 'active' }) => {
   const jobs = await repeater.jobs()
 
-  logger.debug({ jobsCount: jobs.count }, 'Fetched repeater jobs')
-  return jobs
+  logger.debug({ status }, 'Fetching repeater jobs')
+
+  if (status === 'active') {
+    const activeJobs = jobs
+      .map((job) => {
+        if (job.enabled && (job.runEvery || job.nextRunAt)) {
+          return job
+        }
+      })
+      .filter((x) => x)
+
+    logger.debug({ jobsCount: activeJobs.count }, 'Fetched repeater jobs')
+    return activeJobs
+  } else {
+    return jobs
+  }
 }
 
 export const repeaterJob = async ({ name }) => {

@@ -1,4 +1,3 @@
-import { backOff } from 'exponential-backoff'
 import got from 'got'
 import { logger } from 'src/lib/logger'
 

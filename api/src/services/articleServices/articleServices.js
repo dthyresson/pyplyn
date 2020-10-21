@@ -1,7 +1,7 @@
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
 
-import { articleById } from 'src/services/articleQueries'
+import { articleById, articleByDocumentId } from 'src/services/articleQueries'
 import { articleDetailParser, entryParser } from 'src/lib/parsers/entryParser'
 import { enrichArticleScheduler } from 'src/schedulers/enrichArticleScheduler'
 
@@ -18,28 +18,48 @@ export const persistArticle = async ({ entry }) => {
     logger.debug({ uid: parsedEntry.uid }, `parsedEntry entry: ${entry.id}`)
     logger.debug({ parsedArticle }, `parsedArticle for entry: ${entry.id}`)
 
-    const article = await db.article.create({
-      data: {
-        entry: {
-          connectOrCreate: {
-            where: { uid: parsedEntry.uid },
-            create: parsedEntry,
-          },
-        },
-        author: parsedArticle.articleAuthor,
-        description: parsedArticle.description,
-        publishedAt: parsedArticle.articlePublishedAt,
-        title: parsedArticle.articleTitle,
-        url: parsedArticle.articleUrl,
-        tagLabels: { set: [''] },
-      },
-      include: { entry: true },
-    })
+    let article = undefined
 
-    logger.debug(
-      { id: article.id },
-      `Successfully persistArticle created article for entry: ${entry.id}`
-    )
+    try {
+      article = await db.article.create({
+        data: {
+          entry: {
+            connectOrCreate: {
+              where: { uid: parsedEntry.uid },
+              create: parsedEntry,
+            },
+          },
+          author: parsedArticle.articleAuthor,
+          description: parsedArticle.description,
+          publishedAt: parsedArticle.articlePublishedAt,
+          title: parsedArticle.articleTitle,
+          url: parsedArticle.articleUrl,
+          tagLabels: { set: [''] },
+        },
+        include: { entry: true },
+      })
+
+      logger.debug(
+        { id: article.id },
+        `Successfully persistArticle created article for entry: ${entry.id}`
+      )
+    } catch (e) {
+      logger.warn(
+        { error: e.message, entry: entry.id },
+        'Entry already associated to article'
+      )
+
+      article = articleByDocumentId({ documentId: parsedEntry.uid })
+
+      if (article !== undefined) {
+        logger.debug(
+          { entryId: entry.id, articleId: article.id },
+          'Found article associated with entry'
+        )
+      } else {
+        return article
+      }
+    }
 
     const resultArticleCategories = await createArticleCategories(article)
 

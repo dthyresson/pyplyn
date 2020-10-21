@@ -27,7 +27,7 @@ export const schema = gql`
   }
 
   type Query {
-    repeaterJobs: [RepeaterJob!]!
+    repeaterJobs(status: String): [RepeaterJob!]!
     repeaterJob(name: String!): RepeaterJob
     repeaterJobResults(name: String!): [RepeaterJobResult!]
     repeaterJobChart(name: String!): LineChart!

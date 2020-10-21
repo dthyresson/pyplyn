@@ -9,6 +9,11 @@ const runAt = () => {
 }
 
 export const enrichTweetScheduler = async ({ tweetId }) => {
+  if (tweetId === undefined) {
+    logger.warn('Tried to schedule tweet enrichment without id')
+    return
+  }
+
   const repeater = new Repeater(process.env.REPEATER_API_KEY)
 
   const payload = {

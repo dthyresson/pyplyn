@@ -6,9 +6,11 @@ import { logger } from 'src/lib/logger'
 
 export const isAuthorized = (event) => {
   try {
-    return requireAuthorization(event)
+    const result = requireAuthorization(event)
+    logger.debug({ requireAuthorization: result }, 'isAuthorized passed')
   } catch (e) {
-    return false
+    logger.error({ requireAuthorization: false }, 'isAuthorized failed')
+    throw new Error('Authorization failed.')
   }
 }
 
@@ -48,7 +50,7 @@ export const signPayload = ({ payload, expiresIn = '1h' }) => {
     .update(JSON.stringify(payload))
     .digest('base64')
 
-  logger.debug(digest, 'signPayload digest')
+  logger.debug({ digest }, 'signPayload digest')
 
   const token = jwt.sign(
     {
@@ -64,7 +66,7 @@ export const signPayload = ({ payload, expiresIn = '1h' }) => {
     }
   )
 
-  logger.debug(token, 'signPayload token')
+  logger.debug({ token }, 'signPayload token')
 
   return token
 }

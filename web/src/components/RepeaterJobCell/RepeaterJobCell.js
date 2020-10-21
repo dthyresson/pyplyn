@@ -98,6 +98,22 @@ export const Success = ({ repeaterJob }) => {
                 )}
             </dd>
           </div>
+          <div className="sm:col-span-1">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              Body
+            </dt>
+            <dd className="mt-1 text-xs leading-5 text-gray-700">
+              <code>{repeaterJob.body}</code>
+            </dd>
+          </div>
+          <div className="sm:col-span-1">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              Headers
+            </dt>
+            <dd className="mt-1 text-xs leading-5 text-gray-700">
+              <code>{JSON.stringify(repeaterJob.headers)}</code>
+            </dd>
+          </div>
         </dl>
       </div>
     </div>
