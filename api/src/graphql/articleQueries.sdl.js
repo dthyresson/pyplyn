@@ -13,4 +13,8 @@ export const schema = gql`
     paginateArticles(page: Int, limit: Int): ArticlesSet
     refreshArticle(id: String!): Article!
   }
+
+  type Mutation {
+    refreshArticle(id: String!): Article!
+  }
 `

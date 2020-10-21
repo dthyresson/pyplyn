@@ -35,7 +35,6 @@ const queryPermissions = {
   articleById: allow,
   articles: allow,
   articlesForLabel: allow,
-  refreshArticle: allow,
   paginateArticles: allow,
   tagSummaries: allow,
   tagSummariesForLabel: allow,
@@ -44,7 +43,6 @@ const queryPermissions = {
   tweets: allow,
   tweetStats: allow,
   tweetsForLabel: allow,
-  refreshTweet: allow,
   paginateTweets: allow,
   bumpChart: allow,
   lineChart: allow,
@@ -62,6 +60,8 @@ const permissions = shield(
     Query: queryPermissions,
     Mutation: {
       '*': deny,
+      refreshArticle: allow,
+      refreshTweet: allow,
     },
   },
   {

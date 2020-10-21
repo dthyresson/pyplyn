@@ -10,12 +10,12 @@ export const schema = gql`
     tweetByEntryId(entryId: String!): Tweet
     tweetByDocumentId(documentId: String!): Tweet
     tweetsForLabel(label: String!): [Tweet]
-    refreshTweet(id: String!): Tweet!
   }
 
   type Mutation {
     createTweet(tweet: CreateTweetInput!): Tweet!
     persistTweet(entry: CreateEntryInput!): Tweet!
     persistTweets(response: StreamResponse!): [Tweet!]!
+    refreshTweet(id: String!): Tweet!
   }
 `

@@ -13,12 +13,12 @@ export const refreshTweet = async ({ id }) => {
   if (tweet) {
     const enrichTweet = await enrichTweetScheduler({
       tweetId: tweet.id,
-      seconds: 20,
+      seconds: 3,
     })
 
     const updateTweetTags = await updateTweetTagsScheduler({
       tweetId: tweet.id,
-      seconds: 60,
+      seconds: 10,
     })
 
     logger.debug({ enrichTweet, updateTweetTags, id }, 'enrichTweetScheduler')
