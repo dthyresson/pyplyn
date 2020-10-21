@@ -2,7 +2,7 @@ import { db } from 'src/lib/db'
 
 export const entryStreamByName = ({ name }) => {
   return db.entryStream.findOne({
-    where: { name },
+    where: { name: name },
   })
 }
 

@@ -24,7 +24,7 @@ export const handler = async (event, _context) => {
       }
     }
 
-    const entryStream = await entryStreamByName({ name: name })
+    const entryStream = await entryStreamByName({ name })
 
     if (entryStream === undefined) {
       logger.warn({ name }, `Could not find entryStream for name: ${name}`)
