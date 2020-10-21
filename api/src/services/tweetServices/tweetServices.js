@@ -242,8 +242,10 @@ export const persistLinkedArticle = async (linkedArticle, tweet) => {
 
     return article
   } catch (e) {
-    logger.error(e.message)
-    logger.debug(e.stack)
+    logger.warn(
+      { error: e },
+      'Issue persistLinkedArticle. Could be that article exists'
+    )
     return
   }
 }
@@ -357,6 +359,8 @@ export const persistTweet = async ({ entry }) => {
       { resultLinkedArticles, tweet: { id: tweet.id, title: tweet.title } },
       `Successfully persistLinkedArticles: ${tweet.id}`
     )
+
+    return tweet
   } catch (e) {
     logger.error(e, `persistTweet error: ${e.message}`)
     logger.warn(e.stack, 'persistTweet error stack')
