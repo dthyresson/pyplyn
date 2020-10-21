@@ -4,11 +4,11 @@ import { signPayload } from 'src/lib/authorization'
 
 import { logger } from 'src/lib/logger'
 
-const runAt = () => {
-  return addSeconds(Date.now(), Math.ceil(10 * (Math.random() * 10)))
+const runAt = ({ seconds }) => {
+  return addSeconds(Date.now(), Math.ceil(seconds + Math.random() * 10))
 }
 
-export const updateArticleTagsScheduler = async ({ articleId }) => {
+export const updateArticleTagsScheduler = async ({ articleId, seconds }) => {
   if (articleId === undefined) {
     logger.warn('Tried to schedule article tags without id')
     return
@@ -24,22 +24,26 @@ export const updateArticleTagsScheduler = async ({ articleId }) => {
 
   const token = signPayload({ payload })
 
+  const jobOptions = {
+    name: `update-article-tags-${articleId}-job`,
+    runAt: runAt({ seconds }),
+    endpoint: process.env.UPDATE_ARTICLE_TAGS_JOB_ENDPOINT,
+    verb: 'POST',
+    json: payload,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+
   try {
-    const job = await repeater.enqueueOrUpdate({
-      name: `update-article-yags-${articleId}-job`,
-      runAt: runAt(),
-      endpoint: process.env.UPDATE_ARTICLE_TAGS_JOB_ENDPOINT,
-      verb: 'POST',
-      json: payload,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    logger.debug({ jobOptions }, 'Scheduling Update Article Tags Job')
+
+    const job = await repeater.enqueueOrUpdate({ ...jobOptions })
 
     logger.info(job, 'Scheduled Update Article Tags Job')
   } catch (e) {
     logger.error(
-      { e, ...payload },
+      { e, ...payload, ...jobOptions },
       `Failed to Schedule Update Article Tags Job`
     )
   }

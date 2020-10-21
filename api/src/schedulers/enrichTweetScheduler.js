@@ -4,11 +4,11 @@ import { signPayload } from 'src/lib/authorization'
 
 import { logger } from 'src/lib/logger'
 
-const runAt = () => {
-  return addSeconds(Date.now(), Math.ceil(10 * (Math.random() * 10)))
+const runAt = (seconds = 10) => {
+  return addSeconds(Date.now(), Math.ceil(seconds + Math.random() * 10))
 }
 
-export const enrichTweetScheduler = async ({ tweetId }) => {
+export const enrichTweetScheduler = async ({ tweetId, seconds = 10 }) => {
   if (tweetId === undefined) {
     logger.warn('Tried to schedule tweet enrichment without id')
     return
@@ -24,21 +24,28 @@ export const enrichTweetScheduler = async ({ tweetId }) => {
 
   const token = signPayload({ payload })
 
+  const jobOptions = {
+    name: `enrich-tweet-${tweetId}-job`,
+    runAt: runAt({ seconds }),
+    endpoint: process.env.ENRICH_TWEET_JOB_ENDPOINT,
+    verb: 'POST',
+    json: payload,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+
   try {
-    const job = await repeater.enqueueOrUpdate({
-      name: `enrich-tweet-${tweetId}-job`,
-      runAt: runAt(),
-      endpoint: process.env.ENRICH_TWEET_JOB_ENDPOINT,
-      verb: 'POST',
-      json: payload,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    logger.debug({ jobOptions }, 'Scheduling Enrich Tweet Job')
+
+    const job = await repeater.enqueueOrUpdate({ ...jobOptions })
 
     logger.info(job, 'Scheduled Enrich Tweet Job')
   } catch (e) {
-    logger.error({ e, ...payload }, `Failed to Schedule Enrich Tweet Job`)
+    logger.error(
+      { error: e, message: e.message, ...payload, ...jobOptions },
+      'Failed to Schedule Enrich Tweet Job'
+    )
   }
 
   return

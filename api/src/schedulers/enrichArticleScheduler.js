@@ -4,11 +4,11 @@ import { signPayload } from 'src/lib/authorization'
 
 import { logger } from 'src/lib/logger'
 
-const runAt = () => {
-  return addSeconds(Date.now(), Math.ceil(10 * (Math.random() * 10)))
+const runAt = (seconds = 10) => {
+  return addSeconds(Date.now(), Math.ceil(seconds + Math.random() * 10))
 }
 
-export const enrichArticleScheduler = async ({ articleId }) => {
+export const enrichArticleScheduler = async ({ articleId, seconds = 10 }) => {
   if (articleId === undefined) {
     logger.warn('Tried to schedule article enrichment without id')
     return
@@ -23,22 +23,27 @@ export const enrichArticleScheduler = async ({ articleId }) => {
   logger.info({ payload }, 'Scheduled Enrich Article Job payload')
 
   const token = signPayload({ payload })
-
+  const jobOptions = {
+    name: `enrich-article-${articleId}-job`,
+    runAt: runAt({ seconds }),
+    endpoint: process.env.ENRICH_ARTICLE_JOB_ENDPOINT,
+    verb: 'POST',
+    json: payload,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
   try {
-    const job = await repeater.enqueueOrUpdate({
-      name: `enrich-article-${articleId}-job`,
-      runAt: runAt(),
-      endpoint: process.env.ENRICH_ARTICLE_JOB_ENDPOINT,
-      verb: 'POST',
-      json: payload,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    logger.debug({ jobOptions }, 'Scheduling Enrich Article Job')
+
+    const job = await repeater.enqueueOrUpdate({ ...jobOptions })
 
     logger.info(job, 'Scheduled Enrich Article Job')
   } catch (e) {
-    logger.error({ e, ...payload }, `Failed to Schedule Enrich Article Job`)
+    logger.error(
+      { e, ...payload, ...jobOptions },
+      `Failed to Schedule Enrich Article Job`
+    )
   }
 
   return

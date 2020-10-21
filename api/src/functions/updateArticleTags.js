@@ -18,7 +18,10 @@ export const handler = async (event, _context) => {
 
     const { articleId } = JSON.parse(event.body)
 
-    logger.info({ articleId }, 'Invoked enrichTweet function with articleId')
+    logger.info(
+      { articleId },
+      'Invoked updateArticleTags function with articleId'
+    )
 
     const priorities = await persistArticlePriorities({ id: articleId })
     const categories = await persistArticleCategories({ id: articleId })

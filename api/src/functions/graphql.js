@@ -15,9 +15,17 @@ import { allow, deny, _rule, shield } from 'graphql-shield'
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
 
-// const requireAuth = rule({ cache: 'contextual' })(
+// import { requireAuth } from 'src/lib/auth'
+
+// const isAuthenticated = rule({ cache: 'contextual' })(
 //   async (_parent, _args, _ctx, _info) => {
-//     return true
+//     try {
+//       requireAuth()
+//       return true
+//     } catch (e) {
+//       logger.error('GraphQL unauthenticated')
+//       return false
+//     }
 //   }
 // )
 
@@ -27,6 +35,7 @@ const queryPermissions = {
   articleById: allow,
   articles: allow,
   articlesForLabel: allow,
+  refreshArticle: allow,
   paginateArticles: allow,
   tagSummaries: allow,
   tagSummariesForLabel: allow,
@@ -35,6 +44,7 @@ const queryPermissions = {
   tweets: allow,
   tweetStats: allow,
   tweetsForLabel: allow,
+  refreshTweet: allow,
   paginateTweets: allow,
   bumpChart: allow,
   lineChart: allow,

@@ -1,9 +1,12 @@
 import { Repeater } from 'repeaterdev-js'
+import { requireAuth } from 'src/lib/auth'
 import { logger } from 'src/lib/logger'
 
 const repeater = new Repeater(process.env.REPEATER_API_KEY)
 
 export const repeaterJobs = async ({ status = 'active' }) => {
+  requireAuth()
+
   const jobs = await repeater.jobs()
 
   logger.debug({ status }, 'Fetching repeater jobs')
@@ -25,6 +28,8 @@ export const repeaterJobs = async ({ status = 'active' }) => {
 }
 
 export const repeaterJob = async ({ name }) => {
+  requireAuth()
+
   const job = await repeater.job(name)
 
   logger.debug({ job: job, jobName: job.name }, 'Fetched repeater job')
@@ -32,6 +37,8 @@ export const repeaterJob = async ({ name }) => {
 }
 
 export const repeaterJobResults = async ({ name }) => {
+  requireAuth()
+
   const job = await repeaterJob({ name })
   const results = await job.results()
 
@@ -39,6 +46,8 @@ export const repeaterJobResults = async ({ name }) => {
 }
 
 export const repeaterJobChart = async ({ name }) => {
+  requireAuth()
+
   const job = await repeaterJob({ name })
   const results = await job.results()
 

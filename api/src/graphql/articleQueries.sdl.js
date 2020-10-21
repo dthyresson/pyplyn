@@ -11,5 +11,6 @@ export const schema = gql`
     articleByDocumentId(documentId: String!): Article
     articlesForLabel(label: String!): [Article]
     paginateArticles(page: Int, limit: Int): ArticlesSet
+    refreshArticle(id: String!): Article!
   }
 `

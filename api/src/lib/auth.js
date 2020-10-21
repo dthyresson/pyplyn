@@ -71,7 +71,7 @@ export const requireAuth = ({ role } = {}) => {
   logger.debug({ role }, 'in requireAuth')
 
   if (!context.currentUser) {
-    logger.error("You don't have permission to do that.")
+    logger.error("bYou don't have permission to do that.")
     throw new AuthenticationError("You don't have permission to do that.")
   }
 
