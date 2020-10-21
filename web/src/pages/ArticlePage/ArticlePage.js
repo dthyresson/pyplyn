@@ -19,16 +19,13 @@ const ArticlePage = ({ id }) => {
   const { addMessage } = useFlash()
 
   const RefreshArticle = () => {
-    const [refreshArticle, { loading, error, data }] = useMutation(
+    const [refreshArticle, { _loading, _error, _data }] = useMutation(
       REFRESH_ARTICLE,
       {
         onCompleted: ({ refreshArticle }) => {
           addMessage(`Request to refresh '${refreshArticle.title}'`, {
-            style: {
-              backgroundColor: 'green',
-              color: 'white',
-              padding: '1rem',
-            },
+            classes:
+              'animate-bounce my-4 rounded-md bg-green-50 p-4 text-sm leading-5 font-medium text-green-800 flex justify-between',
           })
         },
       }
@@ -56,7 +53,7 @@ const ArticlePage = ({ id }) => {
               clipRule="evenodd"
             ></path>
           </svg>
-          Refresh
+          Reprocess
         </button>
       </span>
     )

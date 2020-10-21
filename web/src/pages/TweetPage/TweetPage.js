@@ -24,11 +24,8 @@ const TweetPage = ({ id }) => {
       {
         onCompleted: ({ refreshTweet }) => {
           addMessage(`Request to refresh '${refreshTweet.title}'`, {
-            style: {
-              backgroundColor: 'green',
-              color: 'white',
-              padding: '1rem',
-            },
+            classes:
+              'animate-bounce my-4 rounded-md bg-green-50 p-4 text-sm leading-5 font-medium text-green-800 flex justify-between',
           })
         },
       }
@@ -56,7 +53,7 @@ const TweetPage = ({ id }) => {
               clipRule="evenodd"
             ></path>
           </svg>
-          Refresh
+          Reprocess
         </button>
       </span>
     )
