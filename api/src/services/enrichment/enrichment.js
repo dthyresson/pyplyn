@@ -111,6 +111,11 @@ export const enrichArticle = async (article) => {
 
   const data = articleDataBuilder(content)
 
+  if (data === undefined) {
+    logger.warn({ id: article.id, content }, 'Missing articleDataBuilder data')
+    return
+  }
+
   try {
     logger.debug(
       {
@@ -392,7 +397,7 @@ export const createArticleSummaries = async (article) => {
         },
       })
 
-      logger.error(
+      logger.debug(
         { result },
         'Completed createArticleSummaries summary details'
       )

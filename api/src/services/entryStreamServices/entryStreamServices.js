@@ -65,28 +65,49 @@ export const traverseFeedlyEntryStream = async ({
     continuation,
     newerThan,
   })
+
+  logger.debug(
+    {
+      streamId,
+      count,
+      continuation,
+      newerThan,
+    },
+    'In traverseFeedlyEntryStream'
+  )
+
   try {
-    await persistEntryStream({ data: response })
+    const result = await persistEntryStream({ data: response })
+
+    logger.debug(result, 'Completed persistEntryStream')
 
     const { id, updated, continuation, newerThan } = searchParams
 
-    logger.debug('About to updateEntryStreamStatus')
-    await updateEntryStreamStatus({
+    logger.debug(
+      { id, updated, continuation, newerThan },
+      'About to updateEntryStreamStatus'
+    )
+
+    const updatedEntryStream = await updateEntryStreamStatus({
       streamIdentifier: streamId,
       continuation,
       newerThan,
       updated,
     })
 
+    logger.debug(updatedEntryStream, 'Completed updateEntryStreamStatus')
+
     if (continuation) {
       logger.debug('About to scheduleEntryStreamJob')
-      await scheduleEntryStreamJob({
+      const rescheduledJob = await scheduleEntryStreamJob({
         streamId,
         count,
         continuation,
         newerThan,
         action: 'Paginate',
       })
+
+      logger.debug(rescheduledJob, 'Completed scheduleEntryStreamJob')
 
       return { response: { id, updated, continuation, newerThan } }
     } else {
@@ -99,7 +120,7 @@ export const traverseFeedlyEntryStream = async ({
     }
   } catch (e) {
     logger.error(
-      { e, continuation, newerThan },
+      { error: e.message, continuation, newerThan },
       'Error in traverseFeedlyEntryStream'
     )
   }

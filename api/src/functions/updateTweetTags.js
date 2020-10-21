@@ -1,12 +1,16 @@
 import { isAuthorized } from 'src/lib/authorization'
-import { enrichTweetId } from 'src/services/enrichment'
+
+import {
+  persistTweetCategories,
+  persistTweetPriorities,
+} from 'src/services/tweetServices'
 
 import { db } from 'src/lib/db'
 import { logger } from 'src/lib/logger'
 
 export const handler = async (event, _context) => {
   try {
-    logger.info('Invoked enrichTweet function')
+    logger.info('Invoked updateTweetTags function')
 
     isAuthorized(event)
 
@@ -16,21 +20,25 @@ export const handler = async (event, _context) => {
 
     logger.info({ tweetId }, 'Invoked enrichTweet function with tweetId')
 
-    const result = await enrichTweetId({ id: tweetId })
+    const priorities = await persistTweetPriorities({ id: tweetId })
+    const categories = await persistTweetCategories({ id: tweetId })
 
     logger.info(
-      { tweetId, result },
-      'Completed enrichTweet function with tweetId'
+      { tweetId, priorities, categories },
+      'Completed updateTweetTags function with tweetId'
     )
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: result,
+        data: { tweetId, priorities, categories },
       }),
     }
   } catch (e) {
-    logger.error({ e, functionName: 'enrichTweet' }, 'Function Handler Error')
+    logger.error(
+      { e, functionName: 'updateTweetTags' },
+      'Function Handler Error'
+    )
     return {
       statusCode: 400,
       body: JSON.stringify({

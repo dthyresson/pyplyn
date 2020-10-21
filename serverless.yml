@@ -22,6 +22,8 @@ custom:
       - REPEATER_API_KEY
       - FEED_JOB_SECRET
       - FEED_JOB_ENDPOINT
+      - ENRICH_ARTICLE_JOB_ENDPOINT
+      - ENRICH_TWEET_JOB_ENDPOINT
       - DOPPLER_ENVIRONMENT
 
 provider:
@@ -42,7 +44,7 @@ package:
 
 functions:
   enrichArticle:
-    description: feed function deployed on AWS Lambda
+    description: enrichArticle function deployed on AWS Lambda
     package:
       artifact: api/dist/zipball/enrichArticle.zip # This is the default location of the zip file generated during the deploy command.
     memorySize: 1024 # mb
@@ -60,7 +62,7 @@ functions:
           path: /.netlify/functions/enrichArticle
           method: POST
   enrichTweet:
-    description: feed function deployed on AWS Lambda
+    description: enrichTweet function deployed on AWS Lambda
     package:
       artifact: api/dist/zipball/enrichTweet.zip # This is the default location of the zip file generated during the deploy command.
     memorySize: 1024 # mb
@@ -113,8 +115,44 @@ functions:
       - httpApi:
           path: /.netlify/functions/feed
           method: POST
+  updateArticleTags:
+    description: updateArticleTags function deployed on AWS Lambda
+    package:
+      artifact: api/dist/zipball/updateArticleTags.zip # This is the default location of the zip file generated during the deploy command.
+    memorySize: 1024 # mb
+    timeout: 29 # seconds (max: 29)
+    tags: # Tags for this specific lambda function
+      endpoint: /.netlify/functions/updateArticleTags
+    # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
+    # environment:
+    handler: updateArticleTags.handler
+    events:
+      - httpApi:
+          path: /.netlify/functions/updateArticleTags
+          method: GET
+      - httpApi:
+          path: /.netlify/functions/updateArticleTags
+          method: POST
+  updateTweetTags:
+    description: updateTweetTags function deployed on AWS Lambda
+    package:
+      artifact: api/dist/zipball/updateTweetTags.zip # This is the default location of the zip file generated during the deploy command.
+    memorySize: 1024 # mb
+    timeout: 29 # seconds (max: 29)
+    tags: # Tags for this specific lambda function
+      endpoint: /.netlify/functions/updateTweetTags
+    # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
+    # environment:
+    handler: updateTweetTags.handler
+    events:
+      - httpApi:
+          path: /.netlify/functions/updateTweetTags
+          method: GET
+      - httpApi:
+          path: /.netlify/functions/updateTweetTags
+          method: POST
   test:
-    description: feed function deployed on AWS Lambda
+    description: test function deployed on AWS Lambda
     package:
       artifact: api/dist/zipball/test.zip # This is the default location of the zip file generated during the deploy command.
     memorySize: 1024 # mb

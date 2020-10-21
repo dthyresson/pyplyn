@@ -1,8 +1,9 @@
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
 
+import { articleById } from 'src/services/articleQueries'
 import { articleDetailParser, entryParser } from 'src/lib/parsers/entryParser'
-import { enrichArticle } from 'src/services/enrichment'
+import { enrichArticleScheduler } from 'src/schedulers/enrichArticleScheduler'
 
 export const persistArticle = async ({ entry }) => {
   try {
@@ -66,8 +67,9 @@ export const persistArticle = async ({ entry }) => {
       `Successfully createArticlePriorities: ${article?.id}`
     )
 
-    // TODO: Make this a repeater function
-    const resultEnrichArticle = await enrichArticle({ article })
+    const scheduledEnrichArticle = await enrichArticleScheduler({
+      articleId: article.id,
+    })
 
     logger.debug(
       {
@@ -75,9 +77,9 @@ export const persistArticle = async ({ entry }) => {
           id: article?.id,
           title: article?.title,
         },
-        resultEnrichArticle,
+        scheduledEnrichArticle,
       },
-      `Successfully resultEnrichArticle: ${article?.id}`
+      `Successfully schdeuled EnrichArticle: ${article?.id}`
     )
 
     logger.debug(
@@ -93,6 +95,23 @@ export const persistArticle = async ({ entry }) => {
     logger.error(e, `persistArticle error: ${e.message}`)
     logger.warn(e.stack, 'persistArticle error stack')
   }
+}
+
+export const persistArticleCategories = async ({ id }) => {
+  logger.debug(
+    { articleId: id },
+    `persistArticleCategories for articleId: ${id}`
+  )
+
+  const article = await articleById({ id: id })
+
+  if (article == undefined) {
+    logger.warn(`persistArticleCategories has undefined article for id ${id}`)
+  }
+
+  const result = await createArticleCategories(article)
+
+  return result
 }
 
 export const createArticleCategories = async (article) => {
@@ -162,6 +181,26 @@ export const createArticleCategory = async ({ articleId, uid, label }) => {
     logger.warn(e.stack, 'createArticleCategory error stack')
     return null
   }
+}
+
+export const persistArticlePriorities = async ({ id }) => {
+  logger.debug(
+    { articleId: id },
+    `persistArticlePriorities for articleId: ${id}`
+  )
+
+  const article = await articleById({ id: id })
+
+  if (article == undefined) {
+    logger.warn(
+      { articleId: id },
+      `persistArticlePriorities has undefined article for id ${id}`
+    )
+  }
+
+  const priorities = await createArticlePriorities(article)
+
+  return priorities
 }
 
 export const createArticlePriorities = async (article) => {

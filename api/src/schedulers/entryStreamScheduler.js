@@ -35,6 +35,8 @@ export const scheduleEntryStreamJob = async ({
     streamIdentifier: streamId,
   })
 
+  logger.debug(entryStream, 'Scheduled Entry Stream Job')
+
   try {
     const job = await repeater.enqueueOrUpdate({
       name: `${camelCase(entryStream.name)}${action}Job`,
@@ -52,5 +54,5 @@ export const scheduleEntryStreamJob = async ({
     logger.error({ e, ...payload }, `Failed to Schedule Entry Stream Job`)
   }
 
-  return
+  return entryStream
 }

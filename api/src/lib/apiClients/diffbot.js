@@ -28,9 +28,9 @@ export const extractArticle = async ({
     }).json()
 
     if (response.errorCode) {
-      logger.error(
+      logger.warn(
         { errorCode: response.errorCode, url },
-        'Error in extractArticle'
+        'Error from Diffbot request in extractArticle'
       )
 
       throw new Error(response.error)
@@ -51,7 +51,7 @@ export const extractArticle = async ({
 
     return result
   } catch (e) {
-    console.error(e)
+    logger.error({ e }, 'Error in extractArticle')
     return null
   }
 }

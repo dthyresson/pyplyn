@@ -1,3 +1,4 @@
+import { isAuthorized } from 'src/lib/authorization'
 import { enrichArticleId } from 'src/services/enrichment'
 
 import { db } from 'src/lib/db'
@@ -6,6 +7,8 @@ import { logger } from 'src/lib/logger'
 export const handler = async (event, _context) => {
   try {
     logger.info('Invoked enrichArticle function')
+
+    isAuthorized(event)
 
     await db.$connect
 

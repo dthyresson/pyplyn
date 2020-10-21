@@ -56,7 +56,8 @@ export const signPayload = ({ payload, expiresIn = '1h' }) => {
     },
     process.env.FEED_JOB_SECRET,
     {
-      subject: payload.streamId,
+      subject:
+        payload.streamId || payload.tweetId || payload.articleId || 'pyplyn',
       audience: 'repeater-dev',
       issuer: 'pyplyn',
       expiresIn,

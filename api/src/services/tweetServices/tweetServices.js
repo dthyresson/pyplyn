@@ -12,7 +12,9 @@ import {
   tweetEntryParser,
   linkedEntriesParser,
 } from 'src/lib/parsers/entryParser'
-import { enrichArticle, enrichTweet } from 'src/services/enrichment'
+
+import { enrichArticleScheduler } from 'src/schedulers/enrichArticleScheduler'
+import { enrichTweetScheduler } from 'src/schedulers/enrichTweetScheduler'
 
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
@@ -222,12 +224,21 @@ export const persistLinkedArticle = async (linkedArticle, tweet) => {
 
     result = await createArticleCategories(article)
 
+    logger.debug(
+      result,
+      'Completed persistLinkedArticle createArticleCategories'
+    )
+
     result = await createArticlePriorities(article)
 
-    // Make this a repeater job
-    result = await enrichArticle({ article })
+    logger.debug(
+      result,
+      'Completed persistLinkedArticle createArticlePriorities'
+    )
 
-    logger.debug(result, 'Completed persistLinkedArticle')
+    result = await enrichArticleScheduler({ articleId: article.id })
+
+    logger.debug(result, 'Completed persistLinkedArticle ')
 
     return article
   } catch (e) {
@@ -314,8 +325,7 @@ export const persistTweet = async ({ entry }) => {
       `Successfully createTweetPriorities: ${tweet.id}`
     )
 
-    // Make this a repeater job
-    let resultEnrichTweet = await enrichTweet(tweet)
+    let resultEnrichTweet = await enrichTweetScheduler({ tweetId: tweet.id })
 
     logger.debug(
       { resultEnrichTweet, tweet: { id: tweet.id, title: tweet.title } },
