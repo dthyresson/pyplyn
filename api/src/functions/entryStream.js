@@ -10,6 +10,7 @@ export const handler = async (event, _context) => {
   logger.info('Invoked entryStream')
   try {
     isAuthorized(event)
+
     await db.$connect
 
     const { name, count } = JSON.parse(event.body)

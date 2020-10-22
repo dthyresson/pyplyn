@@ -35,6 +35,7 @@ Table Article {
   articleCategories ArticleCategory
   summaries ArticleSummary
   articlePriorities ArticlePriority
+  notifications Notification
 }
 
 Table ArticleCategory {
@@ -101,6 +102,19 @@ Table EntryStream {
   continuation String
 }
 
+Table Notification {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+  documentType DocumentType [not null, default: 'TWEET']
+  action NotificationAction [not null, default: 'CREATE']
+  message String [not null]
+  tweet Tweet
+  article Article
+  tweetId String
+  articleId String
+}
+
 Table Tag {
   id String [pk]
   createdAt DateTime [default: `now()`, not null]
@@ -143,6 +157,7 @@ Table Tweet {
   tweetPriorities TweetPriority
   tags Tag
   articles Article
+  notifications Notification
 }
 
 Table TweetCategory {
@@ -195,6 +210,12 @@ Enum DocumentType {
   TWEET
 }
 
+Enum NotificationAction {
+  CREATE
+  UPDATE
+  VIEW
+}
+
 Enum StreamSource {
   FEEDLY
 }
@@ -216,6 +237,10 @@ Ref: ArticlePriority.articleId > Article.id
 Ref: ArticlePriorityTerm.articlePriorityId > ArticlePriority.id
 
 Ref: ArticleSummary.articleId > Article.id
+
+Ref: Notification.tweetId > Tweet.id
+
+Ref: Notification.articleId > Article.id
 
 Ref: Tag.articleId > Article.id
 

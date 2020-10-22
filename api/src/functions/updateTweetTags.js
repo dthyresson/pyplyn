@@ -20,8 +20,9 @@ export const handler = async (event, _context) => {
 
     logger.info({ tweetId }, 'Invoked updateTweetTags function with tweetId')
 
-    const priorities = await persistTweetPriorities({ id: tweetId })
     const categories = await persistTweetCategories({ id: tweetId })
+
+    const priorities = await persistTweetPriorities({ id: tweetId })
 
     logger.info(
       { tweetId, priorities, categories },

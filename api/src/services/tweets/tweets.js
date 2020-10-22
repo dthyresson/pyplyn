@@ -1,4 +1,8 @@
 import { db } from 'src/lib/db'
+import { logger } from 'src/lib/logger'
+
+import { enrichTweetScheduler } from 'src/schedulers/enrichTweetScheduler'
+import { entryParser, tweetEntryParser } from 'src/lib/parsers/entryParser'
 
 export const tweets = () => {
   return db.tweet.findMany()
@@ -14,6 +18,35 @@ export const createTweet = ({ input }) => {
   return db.tweet.create({
     data: input,
   })
+}
+
+export const createTweetFromEntry = async (entry) => {
+  const parsedTweet = tweetEntryParser(entry)
+  const parsedEntry = entryParser(entry)
+
+  logger.debug({ uid: parsedEntry.uid }, `parsedEntry entry: ${entry.id}`)
+
+  const tweet = await db.tweet.create({
+    data: {
+      entry: {
+        connectOrCreate: {
+          where: { uid: parsedEntry.uid },
+          create: parsedEntry,
+        },
+      },
+      ...parsedTweet,
+    },
+    include: { entry: true },
+  })
+
+  let resultEnrichTweet = await enrichTweetScheduler({ tweetId: tweet.id })
+
+  logger.debug(
+    { resultEnrichTweet, tweet: { id: tweet.id, title: tweet.title } },
+    `Successfully enrichTweet: ${tweet.id}`
+  )
+
+  return tweet
 }
 
 export const updateTweet = ({ id, input }) => {

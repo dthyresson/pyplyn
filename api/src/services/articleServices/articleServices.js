@@ -1,9 +1,8 @@
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
 
+import { createArticleFromEntry } from 'src/services/articles'
 import { articleById, articleByDocumentId } from 'src/services/articleQueries'
-import { articleDetailParser, entryParser } from 'src/lib/parsers/entryParser'
-import { enrichArticleScheduler } from 'src/schedulers/enrichArticleScheduler'
 
 export const persistArticle = async ({ entry }) => {
   try {
@@ -12,32 +11,10 @@ export const persistArticle = async ({ entry }) => {
       `persistArticle for entry: ${entry.id}`
     )
 
-    const parsedEntry = entryParser(entry)
-    const parsedArticle = articleDetailParser(entry)
-
-    logger.debug({ uid: parsedEntry.uid }, `parsedEntry entry: ${entry.id}`)
-    logger.debug({ parsedArticle }, `parsedArticle for entry: ${entry.id}`)
-
     let article = undefined
 
     try {
-      article = await db.article.create({
-        data: {
-          entry: {
-            connectOrCreate: {
-              where: { uid: parsedEntry.uid },
-              create: parsedEntry,
-            },
-          },
-          author: parsedArticle.articleAuthor,
-          description: parsedArticle.description,
-          publishedAt: parsedArticle.articlePublishedAt,
-          title: parsedArticle.articleTitle,
-          url: parsedArticle.articleUrl,
-          tagLabels: { set: [''] },
-        },
-        include: { entry: true },
-      })
+      article = await createArticleFromEntry(entry)
 
       logger.debug(
         { id: article.id },
@@ -48,8 +25,6 @@ export const persistArticle = async ({ entry }) => {
         { error: e.message, entry: entry.id },
         'Entry already associated to article'
       )
-
-      article = articleByDocumentId({ documentId: parsedEntry.uid })
 
       if (article !== undefined) {
         logger.debug(
@@ -86,10 +61,6 @@ export const persistArticle = async ({ entry }) => {
       },
       `Successfully createArticlePriorities: ${article?.id}`
     )
-
-    const scheduledEnrichArticle = await enrichArticleScheduler({
-      articleId: article.id,
-    })
 
     logger.debug(
       {

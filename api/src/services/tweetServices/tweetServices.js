@@ -1,20 +1,16 @@
-import { DocumentType } from '@prisma/client'
+import { createArticleLinkedArticle } from 'src/services/articles'
 
 import {
   createArticleCategories,
   createArticlePriorities,
 } from 'src/services/articleServices'
+
 import { entryById } from 'src/services/entryQueries'
+
+import { createTweetFromEntry } from 'src/services/tweets'
 import { tweetById, tweetByDocumentId } from 'src/services/tweetQueries'
 
-import {
-  entryParser,
-  tweetEntryParser,
-  linkedEntriesParser,
-} from 'src/lib/parsers/entryParser'
-
-import { enrichArticleScheduler } from 'src/schedulers/enrichArticleScheduler'
-import { enrichTweetScheduler } from 'src/schedulers/enrichTweetScheduler'
+import { linkedEntriesParser } from 'src/lib/parsers/entryParser'
 
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
@@ -188,23 +184,7 @@ export const createTweetPriority = async ({ tweetId, uid, label }) => {
 
 export const persistLinkedArticle = async (linkedArticle, tweet) => {
   try {
-    const article = await db.article.create({
-      data: {
-        entry: {
-          create: {
-            uid: linkedArticle.id,
-            documentType: DocumentType.ARTICLE,
-            document: linkedArticle,
-          },
-        },
-        author: linkedArticle.articleAuthor,
-        description: linkedArticle.description,
-        publishedAt: linkedArticle.articlePublishedAt,
-        title: linkedArticle.articleTitle,
-        url: linkedArticle.articleUrl,
-        tagLabels: { set: [''] },
-      },
-    })
+    const article = await createArticleLinkedArticle(linkedArticle)
 
     logger.debug(
       { articleId: article.id, article: article },
@@ -235,8 +215,6 @@ export const persistLinkedArticle = async (linkedArticle, tweet) => {
       result,
       'Completed persistLinkedArticle createArticlePriorities'
     )
-
-    result = await enrichArticleScheduler({ articleId: article.id })
 
     logger.debug(result, 'Completed persistLinkedArticle ')
 
@@ -294,25 +272,9 @@ export const persistTweet = async ({ entry }) => {
     `persistTweet for entry: ${entry.id}`
   )
 
-  const parsedTweet = tweetEntryParser(entry)
-  const parsedEntry = entryParser(entry)
-
-  logger.debug({ uid: parsedEntry.uid }, `parsedEntry entry: ${entry.id}`)
-
   let tweet = undefined
   try {
-    tweet = await db.tweet.create({
-      data: {
-        entry: {
-          connectOrCreate: {
-            where: { uid: parsedEntry.uid },
-            create: parsedEntry,
-          },
-        },
-        ...parsedTweet,
-      },
-      include: { entry: true },
-    })
+    tweet = await createTweetFromEntry(entry)
   } catch (e) {
     logger.warn(
       { error: e.message, entry: entry.id },
@@ -344,13 +306,6 @@ export const persistTweet = async ({ entry }) => {
     logger.debug(
       { resultPriorities, tweet: { id: tweet.id, title: tweet.title } },
       `Successfully createTweetPriorities: ${tweet.id}`
-    )
-
-    let resultEnrichTweet = await enrichTweetScheduler({ tweetId: tweet.id })
-
-    logger.debug(
-      { resultEnrichTweet, tweet: { id: tweet.id, title: tweet.title } },
-      `Successfully enrichTweet: ${tweet.id}`
     )
 
     let resultLinkedArticles = await persistLinkedArticles(entry, tweet)

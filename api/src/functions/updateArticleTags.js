@@ -22,9 +22,9 @@ export const handler = async (event, _context) => {
       { articleId },
       'Invoked updateArticleTags function with articleId'
     )
+    const categories = await persistArticleCategories({ id: articleId })
 
     const priorities = await persistArticlePriorities({ id: articleId })
-    const categories = await persistArticleCategories({ id: articleId })
 
     logger.info(
       { articleId, priorities, categories },
