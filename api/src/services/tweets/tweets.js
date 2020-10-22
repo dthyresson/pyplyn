@@ -1,5 +1,9 @@
+import { DocumentType, NotificationAction } from '@prisma/client'
+
 import { db } from 'src/lib/db'
 import { logger } from 'src/lib/logger'
+
+import { createNotification } from 'src/services/notifications'
 
 import { enrichTweetScheduler } from 'src/schedulers/enrichTweetScheduler'
 import { entryParser, tweetEntryParser } from 'src/lib/parsers/entryParser'
@@ -39,7 +43,22 @@ export const createTweetFromEntry = async (entry) => {
     include: { entry: true },
   })
 
-  let resultEnrichTweet = await enrichTweetScheduler({ tweetId: tweet.id })
+  const notification = await createNotification({
+    documentType: DocumentType.TWEET,
+    action: NotificationAction.CREATE,
+    message: tweet.title,
+    tweetId: tweet.id,
+  })
+
+  logger.debug(
+    { notification, tweet: { id: tweet.id, title: tweet.title } },
+    `Successfully added Tweet notification: ${tweet.id}`
+  )
+
+  let resultEnrichTweet = await enrichTweetScheduler({
+    tweetId: tweet.id,
+    seconds: 20,
+  })
 
   logger.debug(
     { resultEnrichTweet, tweet: { id: tweet.id, title: tweet.title } },

@@ -2,10 +2,12 @@ import { addSeconds } from 'date-fns'
 import { Repeater } from 'repeaterdev-js'
 import { signPayload } from 'src/lib/authorization'
 
+import { jitter } from 'src/lib/jitter'
+
 import { logger } from 'src/lib/logger'
 
 const runAt = ({ seconds = 10 }) => {
-  return addSeconds(Date.now(), seconds)
+  return addSeconds(Date.now(), jitter({ seconds }))
 }
 
 export const updateTweetTagsScheduler = async ({ tweetId, seconds }) => {

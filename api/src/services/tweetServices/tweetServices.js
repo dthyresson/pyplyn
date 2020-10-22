@@ -8,7 +8,7 @@ import {
 import { entryById } from 'src/services/entryQueries'
 
 import { createTweetFromEntry } from 'src/services/tweets'
-import { tweetById, tweetByDocumentId } from 'src/services/tweetQueries'
+import { tweetById } from 'src/services/tweetQueries'
 
 import { linkedEntriesParser } from 'src/lib/parsers/entryParser'
 
@@ -280,8 +280,6 @@ export const persistTweet = async ({ entry }) => {
       { error: e.message, entry: entry.id },
       'Entry already associated to tweet'
     )
-
-    tweet = tweetByDocumentId({ documentId: parsedEntry.uid })
 
     if (tweet !== undefined) {
       logger.debug(

@@ -1,7 +1,9 @@
+import { DocumentType, NotificationAction } from '@prisma/client'
+
 import { db } from 'src/lib/db'
 import { logger } from 'src/lib/logger'
 
-import { DocumentType } from '@prisma/client'
+import { createNotification } from 'src/services/notifications'
 
 import { articleDetailParser, entryParser } from 'src/lib/parsers/entryParser'
 import { enrichArticleScheduler } from 'src/schedulers/enrichArticleScheduler'
@@ -35,8 +37,20 @@ export const createArticleFromEntry = async (entry) => {
     include: { entry: true },
   })
 
+  const notification = await createNotification({
+    documentType: DocumentType.ARTICLE,
+    action: NotificationAction.CREATE,
+    message: article.title,
+    articleId: article.id,
+  })
+
+  logger.debug(
+    { notification, article: { id: article.id, title: article.title } },
+    `Successfully added Article notification: ${article.id}`
+  )
   const resultEnrichArticle = await enrichArticleScheduler({
     articleId: article.id,
+    seconds: 40,
   })
 
   logger.debug(

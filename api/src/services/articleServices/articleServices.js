@@ -2,7 +2,7 @@ import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
 
 import { createArticleFromEntry } from 'src/services/articles'
-import { articleById, articleByDocumentId } from 'src/services/articleQueries'
+import { articleById } from 'src/services/articleQueries'
 
 export const persistArticle = async ({ entry }) => {
   try {
@@ -60,17 +60,6 @@ export const persistArticle = async ({ entry }) => {
         resultArticlePriorities,
       },
       `Successfully createArticlePriorities: ${article?.id}`
-    )
-
-    logger.debug(
-      {
-        article: {
-          id: article?.id,
-          title: article?.title,
-        },
-        scheduledEnrichArticle,
-      },
-      `Successfully scheduled EnrichArticle: ${article?.id}`
     )
 
     logger.debug(

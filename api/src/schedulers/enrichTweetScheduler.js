@@ -4,10 +4,11 @@ import { signPayload } from 'src/lib/authorization'
 
 import { updateTweetTagsScheduler } from 'src/schedulers/updateTweetTagsScheduler'
 
+import { jitter } from 'src/lib/jitter'
 import { logger } from 'src/lib/logger'
 
 const runAt = ({ seconds = 10 }) => {
-  return addSeconds(Date.now(), seconds)
+  return addSeconds(Date.now(), jitter({ seconds }))
 }
 
 export const enrichTweetScheduler = async ({ tweetId, seconds = 10 }) => {
