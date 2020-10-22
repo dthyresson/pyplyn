@@ -99,7 +99,7 @@ export const persistArticle = async ({ entry }) => {
         },
         scheduledEnrichArticle,
       },
-      `Successfully schdeuled EnrichArticle: ${article?.id}`
+      `Successfully scheduled EnrichArticle: ${article?.id}`
     )
 
     logger.debug(

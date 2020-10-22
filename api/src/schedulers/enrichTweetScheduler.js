@@ -2,6 +2,8 @@ import { addSeconds } from 'date-fns'
 import { Repeater } from 'repeaterdev-js'
 import { signPayload } from 'src/lib/authorization'
 
+import { updateTweetTagsScheduler } from 'src/schedulers/updateTweetTagsScheduler'
+
 import { logger } from 'src/lib/logger'
 
 const runAt = ({ seconds = 10 }) => {
@@ -47,6 +49,19 @@ export const enrichTweetScheduler = async ({ tweetId, seconds = 10 }) => {
       'Failed to Schedule Enrich Tweet Job'
     )
   }
+
+  const updateTweetTags = await updateTweetTagsScheduler({
+    tweetId: tweetId,
+    seconds: 30,
+  })
+
+  logger.debug(
+    {
+      tweetId,
+      updateTweetTags,
+    },
+    `Successfully scheduled updateTweetTags: ${tweetId}`
+  )
 
   return
 }

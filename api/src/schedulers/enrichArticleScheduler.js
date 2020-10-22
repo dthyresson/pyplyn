@@ -2,6 +2,8 @@ import { addSeconds } from 'date-fns'
 import { Repeater } from 'repeaterdev-js'
 import { signPayload } from 'src/lib/authorization'
 
+import { updateArticleTagsScheduler } from 'src/schedulers/updateArticleTagsScheduler'
+
 import { logger } from 'src/lib/logger'
 
 const runAt = ({ seconds = 10 }) => {
@@ -33,6 +35,7 @@ export const enrichArticleScheduler = async ({ articleId, seconds = 10 }) => {
       Authorization: `Bearer ${token}`,
     },
   }
+
   try {
     logger.debug({ jobOptions }, 'Scheduling Enrich Article Job')
 
@@ -45,6 +48,19 @@ export const enrichArticleScheduler = async ({ articleId, seconds = 10 }) => {
       `Failed to Schedule Enrich Article Job`
     )
   }
+
+  const updateArticleTags = await updateArticleTagsScheduler({
+    articleId: articleId,
+    seconds: 60,
+  })
+
+  logger.debug(
+    {
+      articleId,
+      updateArticleTags,
+    },
+    `Successfully scheduled updateArticleTags: ${articleId}`
+  )
 
   return
 }
