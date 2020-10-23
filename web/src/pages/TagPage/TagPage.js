@@ -44,11 +44,11 @@ const TagPage = ({ label, show = 'tweets' }) => {
                 )
               }
             >
-              <option selected={show === 'tweets'}>Tweets</option>
+              <option defaultValue={show === 'tweets'}>Tweets</option>
 
-              <option selected={show === 'articles'}>Articles</option>
+              <option defaultValue={show === 'articles'}>Articles</option>
 
-              <option selected={show === 'summary'}>Summary</option>
+              <option defaultValue={show === 'summary'}>Summary</option>
             </select>
           </div>
           <div className="hidden sm:block">

@@ -1,7 +1,24 @@
+import { toDate, subMinutes } from 'date-fns'
+
 import { db } from 'src/lib/db'
 
+const recently = toDate(subMinutes(Date.now(), 31))
+
 export const notifications = async () => {
-  return await db.notification.findMany()
+  return await db.notification.findMany({ orderBy: { updatedAt: 'desc' } })
+}
+
+export const recentNotifications = async () => {
+  return await db.notification.findMany({
+    where: { updatedAt: { gte: recently } },
+    orderBy: { updatedAt: 'desc' },
+  })
+}
+
+export const recentNotificationCount = async () => {
+  return await db.notification.count({
+    where: { updatedAt: { gte: recently } },
+  })
 }
 
 export const notification = async ({ id }) => {

@@ -30,7 +30,7 @@ import { db } from 'src/lib/db'
 // )
 
 const queryPermissions = {
-  '*': allow,
+  '*': deny,
   redwood: allow,
   articleById: allow,
   articles: allow,
@@ -53,6 +53,8 @@ const queryPermissions = {
   periodTotalStats: allow,
   popularTags: allow,
   lastDurationPeriodTotalStats: allow,
+  recentNotificationCount: allow,
+  recentNotifications: allow,
 }
 
 const permissions = shield(

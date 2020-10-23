@@ -25,6 +25,8 @@ export const schema = gql`
   type Query {
     notifications: [Notification!]!
     notification(id: String!): Notification
+    recentNotificationCount: Int!
+    recentNotifications: [Notification!]!
   }
 
   input CreateNotificationInput {

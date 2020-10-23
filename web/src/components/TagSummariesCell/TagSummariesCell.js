@@ -42,7 +42,10 @@ export const Success = ({ tagSummaries }) => {
       <div className="mt-2 lg:flex lg:flex-wrap">
         {tagSummaries.map((tag) => {
           return (
-            <div className="pb-4 pr-4 lg:w-1/2" key={`tag-summary-${tag}`}>
+            <div
+              className="pb-4 pr-4 lg:w-1/2"
+              key={`tag-summary-${tag.label}-${tag.entityTypes}`}
+            >
               <TagSummary tag={tag} />
             </div>
           )

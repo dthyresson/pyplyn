@@ -6,7 +6,7 @@ export const extractArticle = async ({
   fields = 'meta,sentiment,quotes,tags,humanLanguage,diffbotUri,estimatedDate',
   maxTags = 30,
   tagConfidence = 0.3,
-  timeout = 60000,
+  timeout = 28000,
   url,
 }) => {
   try {

@@ -40,13 +40,13 @@ const HomePage = ({ show = 'rankings' }) => {
                 )
               }
             >
-              <option selected={show === 'tweets'}>Rankings</option>
+              <option defaultValue={show === 'tweets'}>Rankings</option>
 
-              <option selected={show === 'stats'}>Stats</option>
+              <option defaultValue={show === 'stats'}>Stats</option>
 
-              <option selected={show === 'mentions'}>Mentions</option>
+              <option defaultValue={show === 'mentions'}>Mentions</option>
 
-              <option selected={show === 'comparisons'}>Comparisons</option>
+              <option defaultValue={show === 'comparisons'}>Comparisons</option>
             </select>
           </div>
           <div className="hidden sm:block">

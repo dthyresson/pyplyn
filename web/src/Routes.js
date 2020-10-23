@@ -29,6 +29,11 @@ const Routes = () => {
       <Private unauthenticated="login">
         <Route path="/jobs" page={RepeaterJobsPage} name="jobs" />
         <Route path="/job/{name}" page={RepeaterJobPage} name="job" />
+        <Route
+          path="/notifications"
+          page={NotificationsPage}
+          name="notifications"
+        />
       </Private>
 
       <Route notfound page={NotFoundPage} />
