@@ -32,4 +32,8 @@ export const schema = gql`
     repeaterJobResults(name: String!): [RepeaterJobResult!]
     repeaterJobChart(name: String!): LineChart!
   }
+
+  type Mutation {
+    deleteCompletedRepeaterJobs: [RepeaterJob]!
+  }
 `

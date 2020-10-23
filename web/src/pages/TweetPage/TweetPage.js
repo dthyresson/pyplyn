@@ -1,5 +1,5 @@
-import { Flash, useFlash, useMutation } from '@redwoodjs/web'
 import { useAuth } from '@redwoodjs/auth'
+import { Flash, useFlash, useMutation } from '@redwoodjs/web'
 
 import AppLayout from 'src/layouts/AppLayout'
 import TweetCell from 'src/components/TweetCell'
@@ -19,7 +19,7 @@ const TweetPage = ({ id }) => {
   const { addMessage } = useFlash()
 
   const RefreshTweet = () => {
-    const [refreshTweet, { loading, error, data }] = useMutation(
+    const [refreshTweet, { _loading, _error, _data }] = useMutation(
       REFRESH_TWEET,
       {
         onCompleted: ({ refreshTweet }) => {

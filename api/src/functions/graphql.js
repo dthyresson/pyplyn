@@ -64,6 +64,7 @@ const permissions = shield(
       '*': deny,
       refreshArticle: allow,
       refreshTweet: allow,
+      deleteCompletedRepeaterJobs: allow,
     },
   },
   {

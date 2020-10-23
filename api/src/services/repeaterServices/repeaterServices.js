@@ -27,6 +27,45 @@ export const repeaterJobs = async ({ status = 'active' }) => {
   }
 }
 
+export const deleteCompletedRepeaterJobs = async () => {
+  requireAuth()
+
+  try {
+    logger.info('Deleting repeater jobs')
+    logger.debug('Fetching repeater jobs')
+
+    const jobs = await repeater.jobs()
+
+    const deletedJobs = jobs
+      .map(async (job) => {
+        logger.debug({ job }, `Checking repeater job ${job.name}`)
+
+        if (!(job.enabled && (job.runEvery || job.nextRunAt))) {
+          logger.debug({ job }, `Deleting repeater job ${job.name}`)
+
+          const deletedJob = await job.delete()
+          return deletedJob
+        }
+
+        return
+      })
+      .filter((x) => x)
+
+    logger.debug(
+      {
+        total: deletedJobs?.length,
+      },
+      `Deleted repeater jobs: ${deletedJobs?.length}`
+    )
+
+    return deletedJobs
+  } catch (e) {
+    console.log(e)
+    logger.error({ e }, 'Error deleting completed Repeater jobs')
+    return []
+  }
+}
+
 export const repeaterJob = async ({ name }) => {
   requireAuth()
 
