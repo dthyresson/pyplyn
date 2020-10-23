@@ -43,6 +43,16 @@ export const createTweetFromEntry = async (entry) => {
     include: { entry: true },
   })
 
+  let resultEnrichTweet = await enrichTweetScheduler({
+    tweetId: tweet.id,
+    seconds: 20,
+  })
+
+  logger.debug(
+    { resultEnrichTweet, tweet: { id: tweet.id, title: tweet.title } },
+    `Successfully enrichTweet: ${tweet.id}`
+  )
+
   const notification = await createNotification({
     documentType: DocumentType.TWEET,
     action: NotificationAction.CREATE,
@@ -53,16 +63,6 @@ export const createTweetFromEntry = async (entry) => {
   logger.debug(
     { notification, tweet: { id: tweet.id, title: tweet.title } },
     `Successfully added Tweet notification: ${tweet.id}`
-  )
-
-  let resultEnrichTweet = await enrichTweetScheduler({
-    tweetId: tweet.id,
-    seconds: 20,
-  })
-
-  logger.debug(
-    { resultEnrichTweet, tweet: { id: tweet.id, title: tweet.title } },
-    `Successfully enrichTweet: ${tweet.id}`
   )
 
   return tweet

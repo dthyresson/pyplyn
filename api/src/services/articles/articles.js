@@ -37,6 +37,11 @@ export const createArticleFromEntry = async (entry) => {
     include: { entry: true },
   })
 
+  logger.debug(
+    { resultEnrichArticle, article: { id: article.id, title: article.title } },
+    `Successfully enrichArticle: ${article.id}`
+  )
+
   const notification = await createNotification({
     documentType: DocumentType.ARTICLE,
     action: NotificationAction.CREATE,
@@ -52,11 +57,6 @@ export const createArticleFromEntry = async (entry) => {
     articleId: article.id,
     seconds: 40,
   })
-
-  logger.debug(
-    { resultEnrichArticle, article: { id: article.id, title: article.title } },
-    `Successfully enrichArticle: ${article.id}`
-  )
 }
 
 export const createArticleLinkedArticle = async (linkedArticle) => {

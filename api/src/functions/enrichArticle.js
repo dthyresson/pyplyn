@@ -18,7 +18,7 @@ export const handler = async (event, _context) => {
 
     const result = await enrichArticleId({ id: articleId })
 
-    logger.info(
+    logger.debug(
       { articleId, result },
       'Completed enrichArticle function with articleId'
     )
