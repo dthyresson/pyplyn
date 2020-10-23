@@ -236,7 +236,7 @@ export const enrichArticle = async (article) => {
     let summaries = await createArticleSummaries(article)
     logger.debug({ summaries }, 'createArticleSummaries')
 
-    return db.article.findOne({
+    return await db.article.findOne({
       where: { id: article.id },
       include: { articleContext: true, tags: true },
     })
@@ -344,11 +344,6 @@ export const enrichTweet = async (tweet) => {
         { error: { e, message: e.message }, tweetId: tweet.id },
         'Could not save Tweet context. Could be that it already exists.'
       )
-
-      const result = await enrichTweetContext({
-        tweetContextId: tweet.tweetContext.id,
-      })
-      logger.debug(result, 'enrichTweetContext')
     }
   }
 
