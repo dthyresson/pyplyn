@@ -38,8 +38,18 @@ export const createArticleFromEntry = async (entry) => {
   })
 
   logger.debug(
-    { resultEnrichArticle, article: { id: article.id, title: article.title } },
-    `Successfully enrichArticle: ${article.id}`
+    { article: { id: article.id, title: article.title } },
+    `Successfully createArticleFromEntry: ${article.id}`
+  )
+
+  const _resultEnrichArticle = await enrichArticleScheduler({
+    articleId: article.id,
+    seconds: 40,
+  })
+
+  logger.debug(
+    { article: { id: article.id, title: article.title } },
+    `Scheduling article enrichment: ${article.id}`
   )
 
   try {
@@ -63,14 +73,16 @@ export const createArticleFromEntry = async (entry) => {
     )
   }
 
-  const resultEnrichArticle = await enrichArticleScheduler({
-    articleId: article.id,
-    seconds: 40,
-  })
+  return article
 }
 
 export const createArticleLinkedArticle = async (linkedArticle) => {
-  return await db.article.create({
+  logger.debug(
+    { uid: linkedArticle.id, documentType: DocumentType.ARTICLE },
+    `Invoking createArticleLinkedArticle: ${linkedArticle.id}`
+  )
+
+  const article = await db.article.create({
     data: {
       entry: {
         create: {
@@ -87,6 +99,44 @@ export const createArticleLinkedArticle = async (linkedArticle) => {
       tagLabels: { set: [''] },
     },
   })
+
+  logger.debug(
+    { article: { id: article.id, title: article.title } },
+    `Successfully createArticleFromEntry: ${article.id}`
+  )
+
+  const _resultEnrichArticle = await enrichArticleScheduler({
+    articleId: article.id,
+    seconds: 40,
+  })
+
+  logger.debug(
+    { article: { id: article.id, title: article.title } },
+    `Scheduling article enrichment: ${article.id}`
+  )
+
+  try {
+    const notification = await createNotification({
+      input: {
+        documentType: DocumentType.ARTICLE,
+        action: NotificationAction.CREATE,
+        message: article.title,
+        article: { connect: { id: article.id } },
+      },
+    })
+
+    logger.debug(
+      { notification, article: { id: article.id, title: article.title } },
+      `Successfully added Article notification: ${article.id}`
+    )
+  } catch (e) {
+    logger.debug(
+      { e, article: { id: article.id, title: article.title } },
+      `Error adding Article notification: ${article.id}`
+    )
+  }
+
+  return article
 }
 
 export const Article = {
