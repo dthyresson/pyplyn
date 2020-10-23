@@ -26,7 +26,10 @@ export const handler = async (event, _context) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: result,
+        data: {
+          articleId,
+          message: 'Completed enrichArticle function with articleId',
+        },
       }),
     }
   } catch (e) {

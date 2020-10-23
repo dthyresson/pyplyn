@@ -18,7 +18,7 @@ export const handler = async (event, _context) => {
 
     const result = await enrichTweetId({ id: tweetId })
 
-    logger.info(
+    logger.debug(
       { tweetId, result },
       'Completed enrichTweet function with tweetId'
     )
@@ -26,7 +26,10 @@ export const handler = async (event, _context) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: result,
+        data: {
+          tweetId,
+          message: 'Completed enrichTweet function with tweetId',
+        },
       }),
     }
   } catch (e) {

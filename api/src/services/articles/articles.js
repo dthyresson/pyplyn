@@ -42,17 +42,27 @@ export const createArticleFromEntry = async (entry) => {
     `Successfully enrichArticle: ${article.id}`
   )
 
-  const notification = await createNotification({
-    documentType: DocumentType.ARTICLE,
-    action: NotificationAction.CREATE,
-    message: article.title,
-    articleId: article.id,
-  })
+  try {
+    const notification = await createNotification({
+      input: {
+        documentType: DocumentType.ARTICLE,
+        action: NotificationAction.CREATE,
+        message: article.title,
+        article: { connect: { id: article.id } },
+      },
+    })
 
-  logger.debug(
-    { notification, article: { id: article.id, title: article.title } },
-    `Successfully added Article notification: ${article.id}`
-  )
+    logger.debug(
+      { notification, article: { id: article.id, title: article.title } },
+      `Successfully added Article notification: ${article.id}`
+    )
+  } catch (e) {
+    logger.debug(
+      { e, article: { id: article.id, title: article.title } },
+      `Error adding Article notification: ${article.id}`
+    )
+  }
+
   const resultEnrichArticle = await enrichArticleScheduler({
     articleId: article.id,
     seconds: 40,

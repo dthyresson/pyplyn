@@ -46,7 +46,7 @@ export const enrichArticleId = async ({ id }) => {
 
     return result
   } catch (e) {
-    logger.error({ article: id }, 'Error in enrichArticleId')
+    logger.error({ e, article: id }, 'Error in enrichArticleId')
   }
 }
 
@@ -88,17 +88,29 @@ export const enrichArticle = async (article) => {
       `Enriching article articleContext`
     )
 
-    const notification = await createNotification({
-      documentType: DocumentType.ARTICLE,
-      action: NotificationAction.UPDATE,
-      message: article.title,
-      articleId: article.id,
-    })
+    try {
+      const notification = await createNotification({
+        input: {
+          documentType: DocumentType.ARTICLE,
+          action: NotificationAction.UPDATE,
+          message: article.title,
+          article: { connect: { id: article.id } },
+        },
+      })
 
-    logger.debug(
-      { notification, article: { id: article.id, title: article.title } },
-      `Successfully added Article notification: ${article.id}`
-    )
+      logger.debug(
+        { notification, article: { id: article.id, title: article.title } },
+        `Successfully added Article notification: ${article.id}`
+      )
+    } catch (e) {
+      console.log(e)
+      logger.error(
+        {
+          e,
+          article: { id: article.id, title: article.title },
+        }`Error adding Article notification: ${article.id}`
+      )
+    }
 
     try {
       let result = await db.articleContext.create({
@@ -284,17 +296,27 @@ export const enrichTweet = async (tweet) => {
 
     logger.debug({ tweetUpdate }, 'tweetUpdate')
 
-    const notification = await createNotification({
-      documentType: DocumentType.TWEET,
-      action: NotificationAction.UPDATE,
-      message: tweet.title,
-      tweetId: tweet.id,
-    })
+    try {
+      const notification = await createNotification({
+        input: {
+          documentType: DocumentType.TWEET,
+          action: NotificationAction.UPDATE,
+          message: tweet.title,
+          tweet: { connect: { id: tweet.id } },
+        },
+      })
 
-    logger.debug(
-      { notification, tweet: { id: tweet.id, title: tweet.title } },
-      `Successfully added Tweet notification: ${tweet.id}`
-    )
+      logger.debug(
+        { notification, tweet: { id: tweet.id, title: tweet.title } },
+        `Successfully added Tweet notification: ${tweet.id}`
+      )
+    } catch (e) {
+      console.log(e)
+      logger.error(
+        { e, tweet: { id: tweet.id, title: tweet.title } },
+        `Error adding Tweet notification: ${tweet.id}`
+      )
+    }
 
     try {
       const tweetContext = await db.tweetContext.create({

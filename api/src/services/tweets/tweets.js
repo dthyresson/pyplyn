@@ -53,17 +53,26 @@ export const createTweetFromEntry = async (entry) => {
     `Successfully enrichTweet: ${tweet.id}`
   )
 
-  const notification = await createNotification({
-    documentType: DocumentType.TWEET,
-    action: NotificationAction.CREATE,
-    message: tweet.title,
-    tweetId: tweet.id,
-  })
+  try {
+    const notification = await createNotification({
+      input: {
+        documentType: DocumentType.TWEET,
+        action: NotificationAction.CREATE,
+        message: tweet.title,
+        tweet: { connect: { id: tweet.id } },
+      },
+    })
 
-  logger.debug(
-    { notification, tweet: { id: tweet.id, title: tweet.title } },
-    `Successfully added Tweet notification: ${tweet.id}`
-  )
+    logger.debug(
+      { notification, tweet: { id: tweet.id, title: tweet.title } },
+      `Successfully added Tweet notification: ${tweet.id}`
+    )
+  } catch (e) {
+    logger.debug(
+      { tweet: { id: tweet.id, title: tweet.title } },
+      `Successfully added Tweet notification: ${tweet.id}`
+    )
+  }
 
   return tweet
 }
