@@ -1,3 +1,5 @@
+import { toDate } from 'date-fns'
+
 import { DocumentType, NotificationAction } from '@prisma/client'
 
 import { db } from 'src/lib/db'
@@ -30,8 +32,9 @@ export const createTweetFromEntry = async (entry) => {
 
   logger.debug({ uid: parsedEntry.uid }, `parsedEntry entry: ${entry.id}`)
 
-  const tweet = await db.tweet.create({
-    data: {
+  const tweet = await db.tweet.upsert({
+    where: { url: parsedTweet.url },
+    create: {
       entry: {
         connectOrCreate: {
           where: { uid: parsedEntry.uid },
@@ -40,6 +43,7 @@ export const createTweetFromEntry = async (entry) => {
       },
       ...parsedTweet,
     },
+    update: { updatedAt: toDate(Date.now()) },
     include: { entry: true },
   })
 

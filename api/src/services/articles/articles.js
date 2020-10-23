@@ -1,3 +1,5 @@
+import { toDate } from 'date-fns'
+
 import { DocumentType, NotificationAction } from '@prisma/client'
 
 import { db } from 'src/lib/db'
@@ -19,8 +21,9 @@ export const createArticleFromEntry = async (entry) => {
   logger.debug({ uid: parsedEntry.uid }, `parsedEntry entry: ${entry.id}`)
   logger.debug({ parsedArticle }, `parsedArticle for entry: ${entry.id}`)
 
-  const article = await db.article.create({
-    data: {
+  const article = await db.article.upsert({
+    where: { url: parsedArticle.articleUrl },
+    create: {
       entry: {
         connectOrCreate: {
           where: { uid: parsedEntry.uid },
@@ -34,6 +37,7 @@ export const createArticleFromEntry = async (entry) => {
       url: parsedArticle.articleUrl,
       tagLabels: { set: [''] },
     },
+    update: { updatedAt: toDate(Date.now()) },
     include: { entry: true },
   })
 
