@@ -2,7 +2,7 @@ import { toDate } from 'date-fns'
 import { logger } from 'src/lib/logger'
 
 import { db } from 'src/lib/db'
-import { DocumentType } from '@prisma/client'
+import { DocumentType, NotificationAction } from '@prisma/client'
 
 import { articleById } from 'src/services/articleQueries'
 
@@ -12,6 +12,8 @@ import { extractArticle, extractText } from 'src/lib/apiClients/diffbot'
 
 import { articleDataBuilder } from 'src/lib/parsers/articleParser'
 import { tweetContextDataBuilder } from 'src/lib/parsers/tweetParser'
+
+import { createNotification } from 'src/services/notifications'
 
 export const enrichArticleId = async ({ id }) => {
   logger.info(
@@ -85,6 +87,18 @@ export const enrichArticle = async (article) => {
         content,
       },
       `Enriching article articleContext`
+    )
+
+    const notification = await createNotification({
+      documentType: DocumentType.ARTICLE,
+      action: NotificationAction.UPDATE,
+      message: article.title,
+      articleId: article.id,
+    })
+
+    logger.debug(
+      { notification, article: { id: article.id, title: article.title } },
+      `Successfully added Article notification: ${article.id}`
     )
 
     try {
@@ -271,6 +285,18 @@ export const enrichTweet = async (tweet) => {
     })
 
     logger.debug({ tweetUpdate }, 'tweetUpdate')
+
+    const notification = await createNotification({
+      documentType: DocumentType.TWEET,
+      action: NotificationAction.UPDATE,
+      message: tweet.title,
+      tweetId: tweet.id,
+    })
+
+    logger.debug(
+      { notification, tweet: { id: tweet.id, title: tweet.title } },
+      `Successfully added Tweet notification: ${tweet.id}`
+    )
 
     try {
       const tweetContext = await db.tweetContext.create({

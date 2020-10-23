@@ -1,23 +1,23 @@
 import { db } from 'src/lib/db'
 
-export const notifications = () => {
-  return db.notification.findMany()
+export const notifications = async () => {
+  return await db.notification.findMany()
 }
 
-export const notification = ({ id }) => {
-  return db.notification.findOne({
+export const notification = async ({ id }) => {
+  return await db.notification.findOne({
     where: { id },
   })
 }
 
-export const createNotification = ({ input }) => {
-  return db.notification.create({
+export const createNotification = async ({ input }) => {
+  return await db.notification.create({
     data: input,
   })
 }
 
-export const updateNotification = ({ id, input }) => {
-  return db.notification.update({
+export const updateNotification = async ({ id, input }) => {
+  return await db.notification.update({
     data: input,
     where: { id },
   })
