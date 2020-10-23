@@ -73,9 +73,8 @@ export const enrichArticle = async (article) => {
       {
         articleId: article.id,
         articleUrl: article.url,
-        content,
       },
-      'Missing extracted text for tweet to create tweetContext'
+      'Missing extracted text for article to create articleContext'
     )
   }
 
@@ -272,7 +271,6 @@ export const enrichTweet = async (tweet) => {
       {
         tweetId: tweet.id,
         tweetContent: tweet.content,
-        content,
       },
       'Missing extracted text for tweet to create tweetContext'
     )

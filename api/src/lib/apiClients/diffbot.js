@@ -35,7 +35,7 @@ export const extractArticle = async ({
       throw new Error(response.error)
     }
 
-    logger.debug({ endpoint, url, response }, 'Success extractArticle')
+    logger.debug({ endpoint, url }, 'Success extractArticle')
 
     const result = response.objects?.[0] || null
 
@@ -71,7 +71,7 @@ export const extractText = async ({ content, lang }) => {
       })
       .json()
 
-    logger.debug({ endpoint, content, response }, 'Success extractText')
+    logger.debug({ endpoint, content }, 'Success extractText')
 
     if (response === undefined) {
       logger.warn(
