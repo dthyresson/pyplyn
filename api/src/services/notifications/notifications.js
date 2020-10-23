@@ -2,7 +2,7 @@ import { toDate, subMinutes } from 'date-fns'
 
 import { db } from 'src/lib/db'
 
-const recently = toDate(subMinutes(Date.now(), 60))
+const recently = toDate(subMinutes(Date.now(), 7))
 const recent = toDate(subMinutes(Date.now(), 60))
 
 export const notifications = async () => {
