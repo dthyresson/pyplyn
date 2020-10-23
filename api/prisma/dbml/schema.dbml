@@ -53,7 +53,7 @@ Table ArticleContext {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
   article Article [not null]
-  articleId String [not null]
+  articleId String [unique, not null]
   content Json [not null]
 }
 
@@ -175,7 +175,7 @@ Table TweetContext {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
   tweet Tweet [not null]
-  tweetId String [not null]
+  tweetId String [unique, not null]
   content Json [not null]
 }
 

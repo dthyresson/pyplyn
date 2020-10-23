@@ -1,0 +1,112 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "ArticleContext",
+          "field": "articleId"
+        },
+        "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "TweetCategory",
+          "arguments": [
+            {
+              "name": "",
+              "value": "[tweetId, uid, label]"
+            }
+          ]
+        },
+        "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "TweetPriority",
+          "arguments": [
+            {
+              "name": "",
+              "value": "[tweetId, uid, label]"
+            }
+          ]
+        },
+        "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "TweetPriorityTerm",
+          "arguments": [
+            {
+              "name": "",
+              "value": "[tweetPriorityId, uid, label]"
+            }
+          ]
+        },
+        "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "ArticleCategory",
+          "arguments": [
+            {
+              "name": "",
+              "value": "[articleId, uid, label]"
+            }
+          ]
+        },
+        "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "ArticlePriority",
+          "arguments": [
+            {
+              "name": "",
+              "value": "[articleId, uid, label]"
+            }
+          ]
+        },
+        "directive": "unique"
+      }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "ArticlePriorityTerm",
+          "arguments": [
+            {
+              "name": "",
+              "value": "[articlePriorityId, uid, label]"
+            }
+          ]
+        },
+        "directive": "unique"
+      }
+    }
+  ]
+}

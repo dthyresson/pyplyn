@@ -2,7 +2,7 @@ datasource DS {
   // optionally set multiple providers
   // example: provider = ["sqlite", "postgresql"]
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 generator client {
@@ -118,8 +118,6 @@ model ArticleSummary {
   sentenceText     String
   sentenceScore    Float    @default(0)
   sentencePosition Int      @default(0)
-
-  @@unique([articleId, sentenceText])
 }
 
 enum StreamSource {
@@ -245,6 +243,7 @@ model TweetPriorityTerm {
   tweetPriorityId String?
   uid             String
   label           String
+
 
   @@unique([tweetPriorityId, uid, label])
 }

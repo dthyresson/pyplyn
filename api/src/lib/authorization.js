@@ -5,6 +5,12 @@ import jwt from 'jsonwebtoken'
 import { logger } from 'src/lib/logger'
 
 export const isAuthorized = (event) => {
+  const isDevEnv = process.env.DOPPLER_ENVIRONMENT !== 'prd'
+  if (isDevEnv) {
+    logger.warn({ isAuthorized: true }, 'isAuthorized bypassed')
+    return true
+  }
+
   try {
     const result = requireAuthorization(event)
     logger.debug({ requireAuthorization: result }, 'isAuthorized passed')

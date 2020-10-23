@@ -1,3 +1,5 @@
+import { toDate } from 'date-fns'
+
 import { logger } from 'src/lib/logger'
 import { db } from 'src/lib/db'
 
@@ -144,14 +146,16 @@ export const createArticleCategories = async (article) => {
 
 export const createArticleCategory = async ({ articleId, uid, label }) => {
   try {
-    const articleCategory = await db.articleCategory.create({
-      data: {
+    const articleCategory = await db.articleCategory.upsert({
+      where: { articleId_uid_label: { articleId, uid, label } },
+      create: {
         article: {
           connect: { id: articleId },
         },
         uid,
         label,
       },
+      update: { uid, label, updatedAt: toDate(Date.now()) },
       include: { article: true },
     })
 
@@ -220,13 +224,27 @@ export const createArticlePriorities = async (article) => {
       priority.searchTerms?.parts?.forEach(async (term) => {
         const label = term.label || term.text || term.id?.split('/').pop()
 
-        result = await db.articlePriorityTerm.create({
-          data: {
+        result = await db.articlePriorityTerm.upsert({
+          where: {
+            articlePriorityId_uid_label: {
+              articlePriorityId: articlePriority.id,
+              uid: term.id || 'nlp/f/entity/unknown',
+              label: label,
+            },
+          },
+
+          create: {
             articlePriority: {
               connect: { id: articlePriority.id },
             },
             uid: term.id || 'nlp/f/entity/unknown',
             label: label,
+          },
+
+          update: {
+            uid: term.id || 'nlp/f/entity/unknown',
+            label: label,
+            updatedAt: toDate(Date.now()),
           },
           include: { articlePriority: true },
         })
@@ -244,14 +262,16 @@ export const createArticlePriorities = async (article) => {
 
 export const createArticlePriority = async ({ articleId, uid, label }) => {
   try {
-    const articlePriority = await db.articlePriority.create({
-      data: {
+    const articlePriority = await db.articlePriority.upsert({
+      where: { articleId_uid_label: { articleId, uid, label } },
+      create: {
         article: {
           connect: { id: articleId },
         },
         uid,
         label,
       },
+      update: { uid, label, updatedAt: toDate(Date.now()) },
       include: { article: true },
     })
 

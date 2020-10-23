@@ -113,13 +113,15 @@ export const enrichArticle = async (article) => {
     }
 
     try {
-      let result = await db.articleContext.create({
-        data: {
+      let result = await db.articleContext.upsert({
+        where: { articleId: article.id },
+        create: {
           article: {
             connect: { id: article.id },
           },
           content,
         },
+        update: { updatedAt: toDate(Date.now()) },
       })
 
       logger.debug(
@@ -159,7 +161,7 @@ export const enrichArticle = async (article) => {
         sentiment: data.sentiment,
         siteName: data.siteName,
         tagLabels: { set: data.tagLabels },
-        updatedAt: toDate(Date.now()),
+        updatedAt: toDate(toDate(Date.now())),
       },
     })
     logger.debug(
@@ -291,7 +293,10 @@ export const enrichTweet = async (tweet) => {
   if (content !== undefined) {
     const tweetUpdate = await db.tweet.update({
       where: { id: tweet.id },
-      data: { sentiment: content?.sentiment, updatedAt: toDate(Date.now()) },
+      data: {
+        sentiment: content?.sentiment,
+        updatedAt: toDate(toDate(Date.now())),
+      },
     })
 
     logger.debug({ tweetUpdate }, 'tweetUpdate')
@@ -319,13 +324,15 @@ export const enrichTweet = async (tweet) => {
     }
 
     try {
-      const tweetContext = await db.tweetContext.create({
-        data: {
+      const tweetContext = await db.tweetContext.upsert({
+        where: { tweetId: tweet.id },
+        create: {
           tweet: {
             connect: { id: tweet.id },
           },
           content,
         },
+        update: { updatedAt: toDate(Date.now()) },
       })
 
       const result = await enrichTweetContext({
@@ -434,13 +441,20 @@ export const createArticleSummaries = async (article) => {
     logger.debug(summary, 'createArticleSummaries summary details')
 
     try {
-      let result = await db.articleSummary.create({
-        data: {
+      let result = await db.articleSummary.upsert({
+        where: {
+          articleId_sentenceText: {
+            articleId: article.id,
+            sentenceText: summary.text,
+          },
+        },
+        create: {
           article: { connect: { id: article.id } },
           sentenceText: summary.text,
           sentenceScore: summary.score || 0,
           sentencePosition: summary.position || 0,
         },
+        update: { updatedAt: toDate(Date.now()) },
       })
 
       logger.debug(
@@ -448,6 +462,7 @@ export const createArticleSummaries = async (article) => {
         'Completed createArticleSummaries summary details'
       )
     } catch (e) {
+      console.log(e)
       logger.error({ e, summary }, 'createArticleSummaries error')
     }
   })

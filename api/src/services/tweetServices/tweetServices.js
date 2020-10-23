@@ -1,3 +1,4 @@
+import { toDate } from 'date-fns'
 import { createArticleLinkedArticle } from 'src/services/articles'
 
 import {
@@ -17,14 +18,16 @@ import { db } from 'src/lib/db'
 
 export const createTweetCategory = async ({ tweetId, uid, label }) => {
   try {
-    const tweetCategory = await db.tweetCategory.create({
-      data: {
+    const tweetCategory = await db.tweetCategory.upsert({
+      where: { tweetId_uid_label: { tweetId, uid, label } },
+      create: {
         tweet: {
           connect: { id: tweetId },
         },
         uid,
         label,
       },
+      update: { uid, label, updatedAt: toDate(Date.now()) },
       include: { tweet: true },
     })
 
@@ -136,18 +139,30 @@ export const createTweetPriorities = async (tweet) => {
       priority.searchTerms?.parts?.forEach(async (term) => {
         const label = term.label || term.text || term.id?.split('/').pop()
 
-        result = await db.tweetPriorityTerm.create({
-          data: {
+        result = await db.tweetPriorityTerm.upsert({
+          where: {
+            tweetPriorityId_uid_label: {
+              tweetPriorityId: tweetPriority.id,
+              uid: term.id || 'nlp/f/entity/unknown',
+              label: label,
+            },
+          },
+          create: {
             tweetPriority: {
               connect: { id: tweetPriority.id },
             },
             uid: term.id || 'nlp/f/entity/unknown',
             label: label,
           },
+          update: {
+            uid: term.id || 'nlp/f/entity/unknown',
+            label: label,
+            updatedAt: toDate(Date.now()),
+          },
           include: { tweetPriority: true },
         })
 
-        logger.warn(
+        logger.debug(
           { result: result, id: tweetPriority.id, label: label },
           'Added tweetPriorityTerm'
         )
@@ -163,14 +178,16 @@ export const createTweetPriorities = async (tweet) => {
 
 export const createTweetPriority = async ({ tweetId, uid, label }) => {
   try {
-    const tweetPriority = await db.tweetPriority.create({
-      data: {
+    const tweetPriority = await db.tweetPriority.upsert({
+      where: { tweetId_uid_label: { tweetId, uid, label } },
+      create: {
         tweet: {
           connect: { id: tweetId },
         },
         uid,
         label,
       },
+      update: { uid, label, updatedAt: toDate(Date.now()) },
       include: { tweet: true },
     })
 
