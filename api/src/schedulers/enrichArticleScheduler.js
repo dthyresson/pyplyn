@@ -52,7 +52,7 @@ export const enrichArticleScheduler = async ({ articleId, seconds = 10 }) => {
 
   const updateArticleTags = await updateArticleTagsScheduler({
     articleId: articleId,
-    seconds: 60,
+    seconds: 30,
   })
 
   logger.debug(

@@ -45,14 +45,14 @@ export const handler = async (event, _context) => {
     })
 
     return {
-      statusCode: 200,
+      statusCode: 202,
       body: JSON.stringify({ data: { name: entryStream.name, count } }),
     }
   } catch (e) {
     console.log(e)
     logger.error({ e, functionName: 'entryStream' }, 'Function Handler Error')
     return {
-      statusCode: 400,
+      statusCode: 500,
       body: JSON.stringify({
         error: e,
       }),

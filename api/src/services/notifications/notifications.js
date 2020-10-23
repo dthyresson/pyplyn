@@ -2,7 +2,8 @@ import { toDate, subMinutes } from 'date-fns'
 
 import { db } from 'src/lib/db'
 
-const recently = toDate(subMinutes(Date.now(), 31))
+const recently = toDate(subMinutes(Date.now(), 60))
+const recent = toDate(subMinutes(Date.now(), 60))
 
 export const notifications = async () => {
   return await db.notification.findMany({ orderBy: { updatedAt: 'desc' } })
@@ -10,7 +11,7 @@ export const notifications = async () => {
 
 export const recentNotifications = async () => {
   return await db.notification.findMany({
-    where: { updatedAt: { gte: recently } },
+    where: { updatedAt: { gte: recent } },
     orderBy: { updatedAt: 'desc' },
   })
 }

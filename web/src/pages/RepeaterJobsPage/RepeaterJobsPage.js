@@ -5,7 +5,7 @@ import RepeaterJobsCell from 'src/components/RepeaterJobsCell'
 const RepeaterJobsPage = () => {
   return (
     <AppLayout>
-      <div className="mt-2 mb-2 flex flex-wrap items-baseline">
+      <div className="mb-2 flex flex-wrap items-baseline">
         <h3 className="capitalize ml-2 mt-2 text-lg leading-6 font-medium text-gray-900">
           Background Jobs
         </h3>

@@ -53,7 +53,7 @@ export const enrichTweetScheduler = async ({ tweetId, seconds = 10 }) => {
 
   const updateTweetTags = await updateTweetTagsScheduler({
     tweetId: tweetId,
-    seconds: 30,
+    seconds: 20,
   })
 
   logger.debug(

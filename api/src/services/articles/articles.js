@@ -48,7 +48,7 @@ export const createArticleFromEntry = async (entry) => {
 
   const _resultEnrichArticle = await enrichArticleScheduler({
     articleId: article.id,
-    seconds: 40,
+    seconds: 10,
   })
 
   logger.debug(

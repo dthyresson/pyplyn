@@ -24,7 +24,7 @@ export const handler = async (event, _context) => {
     )
 
     return {
-      statusCode: 200,
+      statusCode: 202,
       body: JSON.stringify({
         data: {
           tweetId,
@@ -35,7 +35,7 @@ export const handler = async (event, _context) => {
   } catch (e) {
     logger.error({ e, functionName: 'enrichTweet' }, 'Function Handler Error')
     return {
-      statusCode: 400,
+      statusCode: 500,
       body: JSON.stringify({
         error: e,
       }),
