@@ -6,7 +6,13 @@ import { extractArticle } from 'src/lib/apiClients/diffbot'
 export const handler = async (event, _context) => {
   try {
     isAuthorized(event)
+  } catch {
+    return {
+      statusCode: 401,
+    }
+  }
 
+  try {
     const { url } = event.queryStringParameters
 
     const data = await extractArticle({ url })

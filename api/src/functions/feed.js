@@ -6,11 +6,17 @@ import { logger } from 'src/lib/logger'
 import { traverseFeedlyEntryStream } from 'src/services/entryStreamServices'
 
 export const handler = async (event, _context) => {
+  try {
+    isAuthorized(event)
+  } catch {
+    return {
+      statusCode: 401,
+    }
+  }
+
   let { streamId, count, continuation, newerThan } = JSON.parse(event.body)
 
   try {
-    isAuthorized(event)
-
     await db.$connect
 
     const { response } = await traverseFeedlyEntryStream({

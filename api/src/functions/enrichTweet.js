@@ -6,9 +6,15 @@ import { logger } from 'src/lib/logger'
 
 export const handler = async (event, _context) => {
   try {
-    logger.info('Invoked enrichTweet function')
-
     isAuthorized(event)
+  } catch {
+    return {
+      statusCode: 401,
+    }
+  }
+
+  try {
+    logger.info('Invoked enrichTweet function')
 
     await db.$connect
 

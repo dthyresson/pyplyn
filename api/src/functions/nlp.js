@@ -6,7 +6,13 @@ import { extractText } from 'src/lib/apiClients/diffbot'
 export const handler = async (event, _context) => {
   try {
     isAuthorized(event)
+  } catch {
+    return {
+      statusCode: 401,
+    }
+  }
 
+  try {
     const body = JSON.parse(event.body)
     const { content, lang } = body
     const data = await extractText({ content, lang })

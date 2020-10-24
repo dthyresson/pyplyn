@@ -1,5 +1,5 @@
 import DateDistance from 'src/components/DateDistance'
-import DateDisplay from 'src/components/DateDistance'
+import DateDisplay from 'src/components/DateDisplay'
 
 import EmptyMessage from 'src/components/EmptyMessage'
 import FailureMessage from 'src/components/FailureMessage'
@@ -89,7 +89,7 @@ export const Success = ({ repeaterJob }) => {
               Run At
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900">
-              <DateDisplay date={repeaterJob.runAt} />
+              <DateDisplay date={repeaterJob.runAt} relative={true} />
             </dd>
           </div>
           <div className="sm:col-span-1">

@@ -6,12 +6,19 @@ import {
 
 const DateDistance = ({ className = '', date, ago = false }) => {
   try {
-    return (
-      <time className={className}>
-        {!ago && formatDistanceStrict(parseISO(date), Date.now())}
-        {ago && formatDistanceToNowStrict(parseISO(date))}
-      </time>
-    )
+    if (ago) {
+      return (
+        <time className={className}>
+          {formatDistanceToNowStrict(parseISO(date))} ago
+        </time>
+      )
+    } else {
+      return (
+        <time className={className}>
+          {formatDistanceStrict(parseISO(date), Date.now())}
+        </time>
+      )
+    }
   } catch (e) {
     return <time></time>
   }

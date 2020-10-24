@@ -6,7 +6,13 @@ import { entries } from 'src/lib/apiClients/feedly'
 export const handler = async (event, _context) => {
   try {
     isAuthorized(event)
+  } catch {
+    return {
+      statusCode: 401,
+    }
+  }
 
+  try {
     const ids = JSON.parse(event.body)
     const data = await entries({ ids })
 

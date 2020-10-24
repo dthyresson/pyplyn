@@ -7,9 +7,16 @@ import { traverseFeedlyEntryStream } from 'src/services/entryStreamServices'
 import { entryStreamByName } from 'src/services/entryStreamQueries'
 
 export const handler = async (event, _context) => {
-  logger.info('Invoked entryStream')
   try {
     isAuthorized(event)
+  } catch {
+    return {
+      statusCode: 401,
+    }
+  }
+
+  try {
+    logger.info('Invoked entryStream')
 
     await db.$connect
 

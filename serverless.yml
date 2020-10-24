@@ -45,6 +45,24 @@ package:
   individually: true
 
 functions:
+  deleteCompletedRepeaterJobs:
+    description: deleteCompletedRepeaterJobs function deployed on AWS Lambda
+    package:
+      artifact: api/dist/zipball/deleteCompletedRepeaterJobs.zip # This is the default location of the zip file generated during the deploy command.
+    memorySize: 1024 # mb
+    timeout: 29 # seconds (max: 29)
+    tags: # Tags for this specific lambda function
+      endpoint: /.netlify/functions/deleteCompletedRepeaterJobs
+    # Uncomment this section to add environment variables either from the serverless dotenv plugin or using serverless params
+    # environment:
+    handler: deleteCompletedRepeaterJobs.handler
+    events:
+      - httpApi:
+          path: /.netlify/functions/deleteCompletedRepeaterJobs
+          method: GET
+      - httpApi:
+          path: /.netlify/functions/deleteCompletedRepeaterJobs
+          method: POST
   enrichArticle:
     description: enrichArticle function deployed on AWS Lambda
     package:

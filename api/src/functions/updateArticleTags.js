@@ -10,9 +10,14 @@ import { logger } from 'src/lib/logger'
 
 export const handler = async (event, _context) => {
   try {
-    logger.info('Invoked updateArticleTags function')
-
     isAuthorized(event)
+  } catch {
+    return {
+      statusCode: 401,
+    }
+  }
+  try {
+    logger.info('Invoked updateArticleTags function')
 
     await db.$connect
 
