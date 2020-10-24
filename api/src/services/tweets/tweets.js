@@ -49,7 +49,7 @@ export const createTweetFromEntry = async (entry) => {
 
   let _resultEnrichTweet = await enrichTweetScheduler({
     tweetId: tweet.id,
-    seconds: 20,
+    seconds: 10,
   })
 
   logger.debug(

@@ -91,7 +91,9 @@ export const Success = ({ repeaterJobs }) => {
                             formatISO9075(parseISO(job.nextRunAt))}
                           <time className="mx-1 text-xs text-gray-500">
                             in{' '}
-                            {job.nextRunAt &&
+                            {job.nextRunAt !== undefined &&
+                              job.nextRunAt !== null &&
+                              !isNaN(job.nextRunAt) &&
                               formatDistanceStrict(
                                 parseISO(job.nextRunAt),
                                 Date.now()

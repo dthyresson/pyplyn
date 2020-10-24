@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useAuth } from '@redwoodjs/auth'
 import { Link, navigate, routes } from '@redwoodjs/router'
 
-const SignUp = () => {
+const SignUpPage = () => {
   const { isAuthenticated, signUp } = useAuth()
 
   const [email, setEmail] = useState('')
@@ -27,7 +27,7 @@ const SignUp = () => {
           Or
           <Link
             className="pl-1 font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
-            to={routes.login()}
+            to={routes.signIn()}
           >
             Sign In
           </Link>
@@ -109,4 +109,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp
+export default SignUpPage

@@ -5,6 +5,7 @@ import { Transition } from '@tailwindui/react'
 import { useAuth } from '@redwoodjs/auth'
 import { NavLink, routes } from '@redwoodjs/router'
 
+import Footer from 'src/components/Footer'
 import NotificationIndicatorCell from 'src/components/NotificationIndicatorCell'
 
 const AppLayout = ({ children }) => {
@@ -196,7 +197,7 @@ const AppLayout = ({ children }) => {
                             await logOut()
                           }}
                         >
-                          Sign out
+                          Sign Out
                         </a>
                       </div>
                     )}
@@ -249,6 +250,7 @@ const AppLayout = ({ children }) => {
       <div className="py-2 px-2 max-w-7xl mx-auto sm:px-6 lg:px-8 sm:py-2 lg:py-4">
         {children}
       </div>
+      <Footer />
     </div>
   )
 }

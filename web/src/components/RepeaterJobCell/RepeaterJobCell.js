@@ -117,7 +117,9 @@ export const Success = ({ repeaterJob }) => {
               Next Run
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900">
-              {repeaterJob.nextRunAt &&
+              {repeaterJob.nextRunAt !== undefined &&
+                repeaterJob.nextRunAt !== null &&
+                !isNaN(repeaterJob.nextRunAt) &&
                 formatDistanceStrict(
                   parseISO(repeaterJob.nextRunAt),
                   Date.now()

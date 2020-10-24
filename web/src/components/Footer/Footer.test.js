@@ -1,11 +1,11 @@
 import { render } from '@redwoodjs/testing'
 
-import LoginPage from './LoginPage'
+import Footer from './Footer'
 
-describe('LoginPage', () => {
+describe('Footer', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<LoginPage />)
+      render(<Footer />)
     }).not.toThrow()
   })
 })

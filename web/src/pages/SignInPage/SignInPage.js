@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useAuth } from '@redwoodjs/auth'
 import { Link, navigate, routes } from '@redwoodjs/router'
 
-const LoginPage = () => {
+const SignInPage = () => {
   const { isAuthenticated, logIn } = useAuth()
 
   const [email, setEmail] = useState('')
@@ -27,7 +27,7 @@ const LoginPage = () => {
           Or
           <Link
             className="pl-1 font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
-            to={routes.signup()}
+            to={routes.signUp()}
           >
             start your 14-day free trial
           </Link>
@@ -99,6 +99,7 @@ const LoginPage = () => {
                       navigate(routes.home())
                     } else if (email.length && password.length) {
                       try {
+                        event.target.disabled = true
                         event.preventDefault()
                         const _res = await logIn({ email, password })
                         navigate(routes.home())
@@ -138,4 +139,4 @@ const LoginPage = () => {
   )
 }
 
-export default LoginPage
+export default SignInPage
