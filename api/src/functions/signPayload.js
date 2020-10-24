@@ -1,8 +1,18 @@
+import { isAuthorized } from 'src/lib/authorization'
+
 import { logger } from 'src/lib/logger'
 
 import { signPayload } from 'src/lib/authorization'
 
 export const handler = async (_event, _context) => {
+  try {
+    isAuthorized(event)
+  } catch {
+    return {
+      statusCode: 401,
+    }
+  }
+
   const payload = { streamId: 'process-entry-stream-job' }
 
   const token = signPayload({ payload, expiresIn: '1y' })

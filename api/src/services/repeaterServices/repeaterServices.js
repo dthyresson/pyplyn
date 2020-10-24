@@ -1,118 +1,37 @@
-import { Repeater } from 'repeaterdev-js'
 import { requireAuth } from 'src/lib/auth'
-import { logger } from 'src/lib/logger'
 
-const repeater = new Repeater(process.env.REPEATER_API_KEY)
+import {
+  jobByName,
+  jobResults,
+  filteredJobs,
+  purgeRepeaterJobs,
+  repeaterJobChartData,
+} from 'src/lib/repeater'
 
 export const repeaterJobs = async ({ status = 'active' }) => {
   requireAuth()
-
-  const jobs = await repeater.jobs()
-
-  logger.debug({ status }, 'Fetching repeater jobs')
-
-  if (status === 'active') {
-    const activeJobs = jobs
-      .map((job) => {
-        if (job.enabled && (job.runEvery || job.nextRunAt)) {
-          return job
-        }
-      })
-      .filter((x) => x)
-
-    logger.debug({ jobsCount: activeJobs.count }, 'Fetched repeater jobs')
-    return activeJobs
-  } else {
-    return jobs
-  }
+  return filteredJobs({ status })
 }
 
 export const deleteCompletedRepeaterJobs = async () => {
   requireAuth()
 
-  try {
-    logger.info('Deleting repeater jobs')
-    logger.debug('Fetching repeater jobs')
-
-    const jobs = await repeater.jobs()
-
-    const deletedJobs = jobs
-      .map(async (job) => {
-        logger.debug({ job }, `Checking repeater job ${job.name}`)
-
-        if (!(job.enabled && (job.runEvery || job.nextRunAt))) {
-          logger.debug({ job }, `Deleting repeater job ${job.name}`)
-
-          const deletedJob = await job.delete()
-          return deletedJob
-        }
-
-        return
-      })
-      .filter((x) => x)
-
-    logger.debug(
-      {
-        total: deletedJobs?.length,
-      },
-      `Deleted repeater jobs: ${deletedJobs?.length}`
-    )
-
-    return deletedJobs
-  } catch (e) {
-    console.log(e)
-    logger.error({ e }, 'Error deleting completed Repeater jobs')
-    return []
-  }
+  return await purgeRepeaterJobs()
 }
 
 export const repeaterJob = async ({ name }) => {
   requireAuth()
-
-  const job = await repeater.job(name)
-
-  logger.debug({ job: job, jobName: job.name }, 'Fetched repeater job')
-  return job
+  return jobByName({ name })
 }
 
 export const repeaterJobResults = async ({ name }) => {
   requireAuth()
 
-  const job = await repeaterJob({ name })
-  const results = await job.results()
-
-  return results
+  return jobResults({ name })
 }
 
 export const repeaterJobChart = async ({ name }) => {
   requireAuth()
 
-  const job = await repeaterJob({ name })
-  const results = await job.results()
-
-  let chartSeries = {}
-
-  results.forEach((result) => {
-    if (chartSeries[result.status] === undefined)
-      chartSeries[result.status] = { data: [] }
-    else {
-      const x = result.runAt.toISOString()
-      const y = result.duration / 1000
-
-      const point = {
-        x,
-        y,
-      }
-      chartSeries[result.status].data.push(point)
-    }
-  })
-
-  const chart = Object.keys(chartSeries).map((id) => {
-    return {
-      id: id,
-      ...chartSeries[id],
-    }
-  })
-
-  return { chart }
+  return repeaterJobChartData({ name })
 }
