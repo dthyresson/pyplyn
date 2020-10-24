@@ -1,6 +1,6 @@
-import { formatRelative, parseISO } from 'date-fns'
-
 import { Link, routes } from '@redwoodjs/router'
+
+import DateDisplay from 'src/components/DateDisplay'
 
 import EmptyMessage from 'src/components/EmptyMessage'
 import FailureMessage from 'src/components/FailureMessage'
@@ -157,10 +157,10 @@ export const Success = ({ notifications }) => {
                       </svg>
                       <span>
                         <time dateTime="2020-01-07">
-                          {formatRelative(
-                            parseISO(notification.updatedAt),
-                            Date.now()
-                          )}
+                          <DateDisplay
+                            date={notification.updatedAt}
+                            relative={true}
+                          />
                         </time>
                       </span>
                     </div>

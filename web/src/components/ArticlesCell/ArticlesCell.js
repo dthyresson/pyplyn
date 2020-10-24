@@ -1,4 +1,4 @@
-import { formatRelative, parseISO } from 'date-fns'
+import DateDisplay from 'src/components/DateDisplay'
 
 import { Link, routes } from '@redwoodjs/router'
 
@@ -155,10 +155,10 @@ export const Success = ({ results }) => {
                               clipRule="evenodd"
                             />
                           </svg>
-                          {formatRelative(
-                            parseISO(article.publishedAt),
-                            Date.now()
-                          )}
+                          <DateDisplay
+                            date={article.publishedAt}
+                            relative={true}
+                          />
                         </div>
                         {labels.length > 0 && (
                           <div className="mt-2 mr-2 flex flex-wrap items-center text-sm leading-5 text-gray-500 sm:mt-0">

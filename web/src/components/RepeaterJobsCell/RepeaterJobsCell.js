@@ -1,5 +1,7 @@
-import { formatDistanceStrict, formatISO9075, parseISO } from 'date-fns'
 import { Link, routes } from '@redwoodjs/router'
+
+import DateDistance from 'src/components/DateDistance'
+import DateDisplay from 'src/components/DateDisplay'
 
 import EmptyMessage from 'src/components/EmptyMessage'
 import FailureMessage from 'src/components/FailureMessage'
@@ -77,28 +79,23 @@ export const Success = ({ repeaterJobs }) => {
                           </Link>
                         </td>
                         <td className="text px-6 py-4 whitespace-normal text-sm leading-5 text-gray-500">
-                          {job.runAt && formatISO9075(parseISO(job.runAt))}
+                          <DateDisplay date={job.runAt} />
                         </td>
                         <td className="text px-6 py-4 whitespace-normal text-sm leading-5 text-gray-500">
                           {job.runEvery}
                         </td>
                         <td className="text px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                          {job.lastRunAt &&
-                            formatISO9075(parseISO(job.lastRunAt))}
+                          <DateDisplay date={job.lastRunAt} />
                         </td>
                         <td className="text px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                          {job.nextRunAt &&
-                            formatISO9075(parseISO(job.nextRunAt))}
-                          <time className="mx-1 text-xs text-gray-500">
-                            in{' '}
-                            {job.nextRunAt !== undefined &&
-                              job.nextRunAt !== null &&
-                              !isNaN(job.nextRunAt) &&
-                              formatDistanceStrict(
-                                parseISO(job.nextRunAt),
-                                Date.now()
-                              )}
-                          </time>
+                          <DateDisplay date={job.nextRunAt} />
+                          <span className="mx-1 text-xs text-gray-500">
+                            in
+                            <DateDistance
+                              className="ml-1"
+                              date={job.nextRunAt}
+                            />
+                          </span>
                         </td>
                         <td className="text px-6 py-4 text-sm leading-5 font-medium text-gray-900">
                           <span

@@ -1,4 +1,5 @@
-import { formatDistanceToNowStrict, formatISO9075, parseISO } from 'date-fns'
+import DateDisplay from 'src/components/DateDisplay'
+import DateDistance from 'src/components/DateDistance'
 
 import EmptyMessage from 'src/components/EmptyMessage'
 import FailureMessage from 'src/components/FailureMessage'
@@ -97,13 +98,13 @@ export const Success = ({ repeaterJobResults }) => {
                         className={rowColor}
                       >
                         <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                          {formatISO9075(parseISO(result.runAt))}
+                          <DateDisplay date={result.runAt} />
                         </td>
                         <td className="text-right px-6 py-4 whitespace-normal text-sm leading-5 text-gray-500">
                           {result.run}
                         </td>
                         <td className="text-right px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                          {formatDistanceToNowStrict(parseISO(result.runAt))}
+                          <DateDistance date={result.runAt} />
                         </td>
                         <td className="text-right px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
                           {(result.duration / 1000).toFixed(3)}

@@ -1,6 +1,6 @@
-import { formatRelative, parseISO } from 'date-fns'
-
 import { Link, routes } from '@redwoodjs/router'
+
+import DateDisplay from 'src/components/DateDisplay'
 
 const TweetListItem = ({ tweet, index }) => {
   const sortUnique = (array) => {
@@ -76,7 +76,7 @@ const TweetListItem = ({ tweet, index }) => {
                     clipRule="evenodd"
                   />
                 </svg>
-                {formatRelative(parseISO(tweet.publishedAt), Date.now())}
+                <DateDisplay date={tweet.publishedAt} relative={true} />
               </div>
               {labels.length > 0 && (
                 <div className="mt-2 mr-2 flex flex-wrapitems-center text-sm leading-5 text-gray-500 sm:mt-0">

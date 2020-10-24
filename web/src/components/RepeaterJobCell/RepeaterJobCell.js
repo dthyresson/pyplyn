@@ -1,9 +1,5 @@
-import {
-  formatDistanceStrict,
-  formatDistanceToNowStrict,
-  formatISO9075,
-  parseISO,
-} from 'date-fns'
+import DateDistance from 'src/components/DateDistance'
+import DateDisplay from 'src/components/DateDistance'
 
 import EmptyMessage from 'src/components/EmptyMessage'
 import FailureMessage from 'src/components/FailureMessage'
@@ -93,7 +89,7 @@ export const Success = ({ repeaterJob }) => {
               Run At
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900">
-              {formatISO9075(parseISO(repeaterJob.runAt))}
+              <DateDisplay date={repeaterJob.runAt} />
             </dd>
           </div>
           <div className="sm:col-span-1">
@@ -109,7 +105,7 @@ export const Success = ({ repeaterJob }) => {
               Last Run
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900">
-              {formatDistanceToNowStrict(parseISO(repeaterJob.lastRunAt))} ago
+              <DateDistance date={repeaterJob.lastRunAt} ago={true} />
             </dd>
           </div>
           <div className="sm:col-span-1">
@@ -117,13 +113,7 @@ export const Success = ({ repeaterJob }) => {
               Next Run
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900">
-              {repeaterJob.nextRunAt !== undefined &&
-                repeaterJob.nextRunAt !== null &&
-                !isNaN(repeaterJob.nextRunAt) &&
-                formatDistanceStrict(
-                  parseISO(repeaterJob.nextRunAt),
-                  Date.now()
-                )}
+              <DateDistance date={repeaterJob.nextRunAt} />
             </dd>
           </div>
           <div className="sm:col-span-1">

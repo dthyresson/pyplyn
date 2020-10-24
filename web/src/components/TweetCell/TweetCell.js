@@ -1,6 +1,6 @@
-import { formatISO9075, parseISO } from 'date-fns'
-
 import { Link, routes } from '@redwoodjs/router'
+
+import DateDisplay from 'src/components/DateDisplay'
 
 import EmptyMessage from 'src/components/EmptyMessage'
 import FailureMessage from 'src/components/FailureMessage'
@@ -273,7 +273,7 @@ export const Success = ({ tweet }) => {
               Published At
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {formatISO9075(parseISO(tweet.publishedAt))}
+              <DateDisplay date={tweet.publishedAt} />
             </dd>
           </div>
           <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
@@ -296,7 +296,7 @@ export const Success = ({ tweet }) => {
               Created At
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {formatISO9075(parseISO(tweet.createdAt))}
+              <DateDisplay date={tweet.createdAt} />
             </dd>
           </div>
           <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
@@ -304,7 +304,7 @@ export const Success = ({ tweet }) => {
               Updated At
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {formatISO9075(parseISO(tweet.updatedAt))}
+              <DateDisplay date={tweet.updatedAt} />
             </dd>
           </div>
         </dl>

@@ -1,6 +1,6 @@
-import { formatISO9075, parseISO } from 'date-fns'
-
 import { Link, routes } from '@redwoodjs/router'
+
+import DateDisplay from 'src/components/DateDisplay'
 
 import EmptyMessage from 'src/components/EmptyMessage'
 import FailureMessage from 'src/components/FailureMessage'
@@ -237,8 +237,7 @@ export const Success = ({ article }) => {
               Published At
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {article.publishedAt &&
-                formatISO9075(parseISO(article.publishedAt))}
+              <DateDisplay date={article.publishedAt} />
             </dd>
           </div>
           <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
@@ -261,7 +260,7 @@ export const Success = ({ article }) => {
               Created At
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {formatISO9075(parseISO(article.createdAt))}
+              <DateDisplay date={article.createdAt} />
             </dd>
           </div>
           <div className="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
@@ -269,7 +268,7 @@ export const Success = ({ article }) => {
               Updated At
             </dt>
             <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {formatISO9075(parseISO(article.updatedAt))}
+              <DateDisplay date={article.updatedAt} />
             </dd>
           </div>
         </dl>

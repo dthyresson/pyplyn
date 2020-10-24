@@ -1,6 +1,6 @@
-import { formatRelative, parseISO } from 'date-fns'
-
 import { Link, routes } from '@redwoodjs/router'
+
+import DateDisplay from 'src/components/DateDisplay'
 
 import EmptyMessage from 'src/components/EmptyMessage'
 import FailureMessage from 'src/components/FailureMessage'
@@ -126,10 +126,7 @@ export const Success = ({ tweets }) => {
                               clipRule="evenodd"
                             />
                           </svg>
-                          {formatRelative(
-                            parseISO(tweet.publishedAt),
-                            Date.now()
-                          )}
+                          <DateDisplay date={tweet.publishedAt} />
                         </div>
                         {labels.length > 0 && (
                           <div className="mt-2 mr-2 flex flex-wrapitems-center text-sm leading-5 text-gray-500 sm:mt-0">

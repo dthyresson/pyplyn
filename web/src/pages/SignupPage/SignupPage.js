@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
-import { useAuth } from '@redwoodjs/auth'
 import { Link, navigate, routes } from '@redwoodjs/router'
+
+import { useAuth } from '@redwoodjs/auth'
 
 const SignUpPage = () => {
   const { isAuthenticated, signUp } = useAuth()
