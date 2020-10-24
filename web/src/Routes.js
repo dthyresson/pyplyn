@@ -14,6 +14,9 @@ const Routes = () => {
     <Router>
       <Route path="/" page={HomePage} name="home" />
 
+      <Route path="/signup" page={SignUpPage} name="signUp" />
+      <Route path="/login" page={SignInPage} name="signIn" />
+
       <Route path="/about" page={AboutPage} name="about" />
 
       <Route path="/article/{id}" page={ArticlePage} name="article" />
@@ -24,9 +27,6 @@ const Routes = () => {
 
       <Route path="/tag/{label}" page={TagPage} name="tag" />
       <Route path="/tags" page={TagsPage} name="tags" />
-
-      <Route path="/signup" page={SignUpPage} name="signUp" />
-      <Route path="/login" page={SignInPage} name="signIn" />
 
       <Private unauthenticated="login">
         <Route path="/jobs" page={RepeaterJobsPage} name="jobs" />
