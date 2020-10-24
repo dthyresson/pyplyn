@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Transition } from '@tailwindui/react'
 
 import { useAuth } from '@redwoodjs/auth'
-import { NavLink, routes } from '@redwoodjs/router'
+import { Link, NavLink, routes } from '@redwoodjs/router'
 
 import Footer from 'src/components/Footer'
 import NotificationIndicatorCell from 'src/components/NotificationIndicatorCell'
@@ -203,6 +203,32 @@ const AppLayout = ({ children }) => {
                     )}
                   </Transition>
                 </div>
+              </div>
+            )}
+            {!isAuthenticated && (
+              <div className="flex-shrink-0">
+                <span className="rounded-md shadow-sm">
+                  <Link
+                    to={routes.signIn()}
+                    className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-teal-500 hover:bg-teal-400 focus:outline-none focus:shadow-outline-teal focus:border-teal-600 active:bg-teal-600 transition duration-150 ease-in-out"
+                  >
+                    <svg
+                      className="-ml-1 mr-2 h-5 w-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                      ></path>
+                    </svg>
+                    <span>Sign In</span>
+                  </Link>
+                </span>
               </div>
             )}
           </div>
