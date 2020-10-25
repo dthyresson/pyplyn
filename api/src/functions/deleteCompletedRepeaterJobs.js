@@ -20,15 +20,15 @@ export const handler = async (event, _context) => {
 
     const deletedJobs = await purgeRepeaterJobs()
 
-    logger.debug(
+    logger.info(
       { count: deletedJobs.length },
-      'Deleted Completed Repeater Jobs'
+      'Finished Deleted Completed Repeater Jobs'
     )
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        data: { message: `Deleted ${deletedJobs.length} jobs` },
+        data: { message: `Finished Delete Completed Repeater Jobs function` },
       }),
     }
   } catch (e) {

@@ -166,7 +166,7 @@ const AppLayout = ({ children }) => {
                     leave="transition ease-in duration-75"
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
-                    className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg"
+                    className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg z-50"
                   >
                     {isAuthenticated && (
                       <div
@@ -175,20 +175,20 @@ const AppLayout = ({ children }) => {
                         aria-orientation="vertical"
                         aria-labelledby="user-menu"
                       >
-                        <a
-                          href="#"
+                        <Link
+                          to={routes.profile()}
                           className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                           role="menuitem"
                         >
                           Your Profile
-                        </a>
-                        <a
-                          href="#"
+                        </Link>
+                        <Link
+                          to={routes.settings()}
                           className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                           role="menuitem"
                         >
                           Settings
-                        </a>
+                        </Link>
                         <a
                           href="#"
                           className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"

@@ -1,5 +1,3 @@
-import { formatISO } from 'date-fns'
-
 import jwt from 'jsonwebtoken'
 import { Repeater } from 'repeaterdev-js'
 import { backOff } from 'exponential-backoff'
@@ -43,6 +41,21 @@ export const filteredJobs = async ({ status = 'active' }) => {
   }
 }
 
+const deleteJob = async (job) => {
+  try {
+    const deletedJob = await backOff(() => job.delete(), {
+      delayFirstAttempt: true,
+      numOfAttempts: 3,
+      startingDelay: 250,
+    })
+    logger.debug({ job }, `Deleted repeater job ${job.name}`)
+
+    return deletedJob
+  } catch (e) {
+    logger.warn({ e, job }, 'Unable to delete completed Repeater job')
+  }
+}
+
 export const purgeRepeaterJobs = async () => {
   try {
     logger.info('Deleting repeater jobs')
@@ -57,29 +70,20 @@ export const purgeRepeaterJobs = async () => {
         logger.debug({ job }, `Checking repeater job ${job.name}`)
 
         if (!(job.enabled && (job.runEvery || job.nextRunAt))) {
-          logger.debug({ job }, `Deleting repeater job ${job.name}`)
+          logger.info({ job }, `Deleting repeater job ${job.name}`)
 
-          try {
-            const deletedJob = await backOff(() => job.delete(), {
-              delayFirstAttempt: true,
-              numOfAttempts: 3,
-              startingDelay: 250,
-            })
-            return deletedJob
-          } catch (e) {
-            logger.warn({ e, job }, 'Unable to delete completed Repeater job')
-          }
+          return await deleteJob(job)
         }
 
         return null
       })
       .filter((x) => x === {})
 
-    logger.debug(
+    logger.info(
       {
         total: deletedJobs?.length,
       },
-      `Deleted repeater jobs: ${deletedJobs?.length}`
+      'Deleted repeater jobs'
     )
 
     return deletedJobs
