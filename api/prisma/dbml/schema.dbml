@@ -200,6 +200,13 @@ Table TweetPriorityTerm {
   label String [not null]
 }
 
+Table RW_DataMigration {
+  version String [pk]
+  name String [not null]
+  startedAt DateTime [not null]
+  finishedAt DateTime [not null]
+}
+
 Table ArticleToTweet {
   tweetsId String [ref: > Tweet.id]
   articlesId String [ref: > Article.id]

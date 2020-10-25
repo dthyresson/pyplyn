@@ -65,11 +65,16 @@ export const createTweetCategories = async (tweet) => {
   )
 
   if (tweet.entry?.document?.categories === undefined) {
+    console.log(
+      `createTweetCategories missing categories for tweet: ${tweet.id}`
+    )
     logger.warn(
       { tweetId: tweet.id },
       `createTweetCategories missing categories for tweet: ${tweet.id}`
     )
   }
+
+  logger.info('About to createTweetCategories ...')
 
   tweet.entry?.document?.categories?.map(async (category) => {
     try {

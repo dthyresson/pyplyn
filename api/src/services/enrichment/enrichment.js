@@ -208,18 +208,38 @@ export const enrichArticle = async (article) => {
         `Enriching tag ${tag.label} to article ${article.id}`
       )
 
-      const t = await db.tag.create({
-        data: {
+      const t = await db.tag.upsert({
+        where: {
+          documentType_articleId_tweetId_uri: {
+            documentType: DocumentType.ARTICLE,
+            articleId: article.id,
+            tweetId: '',
+            uri: tag.uri || tag.label,
+          },
+        },
+        create: {
           article: { connect: { id: article.id } },
           documentType: DocumentType.ARTICLE,
+
           label: tag.label,
           uri: tag.uri || tag.label,
-          mentions: tag.count,
-          confidence: tag.score,
-          dbpediaUris: { set: tag.rdfTypes || [] },
+          diffbotUris: { set: tag.diffbotUris || [] },
+          dbpediaUris: { set: tag.dbpediaUris || [] },
           rdfTypes: { set: tag.rdfTypes || [] },
           entityTypes: { set: entityTypes || [] },
+          mentions: tag.mentions,
+          confidence: tag.confidence,
+          salience: tag.salience,
           sentiment: tag.sentiment,
+          hasLocation: tag.hasLocation,
+          latitude: tag.latitude,
+          longitude: tag.longitude,
+          precision: tag.precision,
+        },
+        update: {
+          rdfTypes: { set: tag.rdfTypes || [] },
+          entityTypes: { set: entityTypes || [] },
+          mentions: tag.mentions,
         },
       })
 
@@ -377,8 +397,16 @@ export const enrichTweetContext = async ({ tweetContextId }) => {
     )
 
     try {
-      const t = await db.tag.create({
-        data: {
+      const t = await db.tag.upsert({
+        where: {
+          documentType_articleId_tweetId_uri: {
+            documentType: DocumentType.TWEET,
+            tweetId: tweetContext.tweetId,
+            articleId: '',
+            uri: tag.uri,
+          },
+        },
+        create: {
           tweet: { connect: { id: tweetContext.tweetId } },
           documentType: DocumentType.TWEET,
 
@@ -397,6 +425,7 @@ export const enrichTweetContext = async ({ tweetContextId }) => {
           longitude: tag.longitude,
           precision: tag.precision,
         },
+        update: { mentions: tag.mentions },
       })
 
       logger.debug(

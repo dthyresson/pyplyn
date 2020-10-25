@@ -22,7 +22,11 @@ export const logger = pino(
     nestedKey: 'logPayload',
     redact: ['logPayload.token', 'logPayload.decoded', 'token', 'decoded'],
   },
-  isDevEnv ? pino.destination('../logs/api-dev.log') : logflareStream
+  isDevEnv
+    ? pino.destination(
+        '/Users/dthyresson/Dropbox (Personal)/projects/redwoodjs/pyplyn/logs/api-dev.log'
+      )
+    : logflareStream
 )
 
 const setupPrismaLoggingEvents = () => {
