@@ -28,6 +28,7 @@ const TweetPage = ({ id }) => {
               'animate-bounce my-4 rounded-md bg-green-50 p-4 text-sm leading-5 font-medium text-green-800 flex justify-between',
           })
         },
+        awaitRefetchQueries: false,
       }
     )
 

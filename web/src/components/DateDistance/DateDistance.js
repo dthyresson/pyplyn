@@ -14,8 +14,8 @@ const DateDistance = ({ className = '', date, ago = false }) => {
       )
     } else {
       return (
-        <time className={className}>
-          {formatDistanceStrict(parseISO(date), Date.now())}
+        <time className={`${className} ml-1`}>
+          in {formatDistanceStrict(parseISO(date), Date.now())}
         </time>
       )
     }

@@ -53,7 +53,6 @@ export const enrichArticleScheduler = async ({ articleId, seconds = 10 }) => {
   logger.debug(
     {
       articleId,
-      updateArticleTags,
     },
     `Scheduling updateArticleTagsScheduler: ${articleId}`
   )

@@ -54,7 +54,6 @@ export const enrichTweetScheduler = async ({ tweetId, seconds = 10 }) => {
   logger.debug(
     {
       tweetId,
-      updateTweetTags,
     },
     `About to call updateTweetTagsScheduler: ${tweetId}`
   )
