@@ -46,13 +46,13 @@ export const createArticleFromEntry = async (entry) => {
     `Successfully createArticleFromEntry: ${article.id}`
   )
 
-  const _resultEnrichArticle = await enrichArticleScheduler({
+  const resultEnrichArticle = await enrichArticleScheduler({
     articleId: article.id,
     seconds: 13,
   })
 
   logger.debug(
-    { article: { id: article.id, title: article.title } },
+    { article: { id: resultEnrichArticle, title: article.title } },
     `Scheduling article enrichment: ${article.id}`
   )
 

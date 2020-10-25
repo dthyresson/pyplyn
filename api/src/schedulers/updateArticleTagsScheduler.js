@@ -49,5 +49,5 @@ export const updateArticleTagsScheduler = async ({ articleId, seconds }) => {
     )
   }
 
-  return
+  return articleId
 }

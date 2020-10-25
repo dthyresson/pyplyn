@@ -23,7 +23,7 @@ export const enrichTweetScheduler = async ({ tweetId, seconds = 10 }) => {
     tweetId,
   }
 
-  logger.info({ payload }, 'Scheduled Enrich Tweet Job payload')
+  logger.info({ tweetId }, 'Invoked enrichTweetScheduler')
 
   const token = signPayload({ payload })
 
@@ -64,5 +64,5 @@ export const enrichTweetScheduler = async ({ tweetId, seconds = 10 }) => {
     `Successfully scheduled updateTweetTags: ${tweetId}`
   )
 
-  return
+  return tweetId
 }

@@ -47,14 +47,19 @@ export const createTweetFromEntry = async (entry) => {
     include: { entry: true },
   })
 
-  let _resultEnrichTweet = await enrichTweetScheduler({
+  logger.debug(
+    { tweet: { id: tweet.id, title: tweet.title } },
+    `Scheduling tweet enrichment: ${tweet.id}`
+  )
+
+  let resultEnrichTweet = await enrichTweetScheduler({
     tweetId: tweet.id,
     seconds: 10,
   })
 
   logger.debug(
-    { tweet: { id: tweet.id, title: tweet.title } },
-    `Scheduling tweet enrichment: ${tweet.id}`
+    { tweet: { id: resultEnrichTweet, title: tweet.title } },
+    `Scheduled tweet enrichment: ${tweet.id}`
   )
 
   try {

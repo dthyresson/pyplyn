@@ -50,5 +50,5 @@ export const updateTweetTagsScheduler = async ({ tweetId, seconds }) => {
     )
   }
 
-  return
+  return tweetId
 }

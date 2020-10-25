@@ -63,5 +63,5 @@ export const enrichArticleScheduler = async ({ articleId, seconds = 10 }) => {
     `Successfully scheduled updateArticleTags: ${articleId}`
   )
 
-  return
+  return articleId
 }
