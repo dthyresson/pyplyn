@@ -46,6 +46,11 @@ export const createArticleFromEntry = async (entry) => {
     `Successfully createArticleFromEntry: ${article.id}`
   )
 
+  logger.debug(
+    { article: { id: resultEnrichArticle, title: article.title } },
+    `Scheduling article enrichment: ${article.id}`
+  )
+
   const resultEnrichArticle = await enrichArticleScheduler({
     articleId: article.id,
     seconds: 13,
@@ -53,7 +58,7 @@ export const createArticleFromEntry = async (entry) => {
 
   logger.debug(
     { article: { id: resultEnrichArticle, title: article.title } },
-    `Scheduling article enrichment: ${article.id}`
+    `Scheduled article enrichment: ${article.id}`
   )
 
   try {
@@ -109,6 +114,11 @@ export const createArticleLinkedArticle = async (linkedArticle) => {
     `Successfully createArticleFromEntry: ${article.id}`
   )
 
+  logger.debug(
+    { article: { id: article.id, title: article.title } },
+    `Scheduling article enrichment: ${article.id}`
+  )
+
   const _resultEnrichArticle = await enrichArticleScheduler({
     articleId: article.id,
     seconds: 40,
@@ -116,7 +126,7 @@ export const createArticleLinkedArticle = async (linkedArticle) => {
 
   logger.debug(
     { article: { id: article.id, title: article.title } },
-    `Scheduling article enrichment: ${article.id}`
+    `Scheduled article enrichment: ${article.id}`
   )
 
   try {

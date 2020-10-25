@@ -23,7 +23,7 @@ export const enrichTweetScheduler = async ({ tweetId, seconds = 10 }) => {
     tweetId,
   }
 
-  logger.info({ tweetId }, 'Invoked enrichTweetScheduler')
+  logger.info({ tweetId }, `Invoked enrichTweetScheduler: ${tweetId}`)
 
   const token = signPayload({ payload })
 
@@ -39,17 +39,25 @@ export const enrichTweetScheduler = async ({ tweetId, seconds = 10 }) => {
   }
 
   try {
-    logger.debug({ jobOptions }, 'Scheduling Enrich Tweet Job')
+    logger.debug({ jobOptions }, `Scheduling Enrich Tweet Job: ${tweetId}`)
 
     const job = await repeater.enqueueOrUpdate({ ...jobOptions })
 
-    logger.info(job, 'Scheduled Enrich Tweet Job')
+    logger.info(job, `Scheduled Enrich Tweet Job: ${tweetId}`)
   } catch (e) {
     logger.error(
       { error: e, message: e.message, ...payload, ...jobOptions },
-      'Failed to Schedule Enrich Tweet Job'
+      `Failed to Schedule Enrich Tweet Job: ${tweetId}`
     )
   }
+
+  logger.debug(
+    {
+      tweetId,
+      updateTweetTags,
+    },
+    `About to call updateTweetTagsScheduler: ${tweetId}`
+  )
 
   const updateTweetTags = await updateTweetTagsScheduler({
     tweetId: tweetId,

@@ -21,7 +21,10 @@ export const updateArticleTagsScheduler = async ({ articleId, seconds }) => {
     articleId,
   }
 
-  logger.info({ payload }, 'Scheduled Update Article Tags Job payload')
+  logger.info(
+    { payload },
+    `Building Update Article Tags Job payload: ${articleId}`
+  )
 
   const token = signPayload({ payload })
 
@@ -37,15 +40,18 @@ export const updateArticleTagsScheduler = async ({ articleId, seconds }) => {
   }
 
   try {
-    logger.debug({ jobOptions }, 'Scheduling Update Article Tags Job')
+    logger.debug(
+      { jobOptions },
+      `Scheduling Update Article Tags Job: ${articleId}`
+    )
 
     const job = await repeater.enqueueOrUpdate({ ...jobOptions })
 
-    logger.info(job, 'Scheduled Update Article Tags Job')
+    logger.info(job, `Scheduled Update Article Tags Job: ${articleId}`)
   } catch (e) {
     logger.error(
       { e, ...payload, ...jobOptions },
-      `Failed to Schedule Update Article Tags Job`
+      `Failed to Schedule Update Article Tags Job: ${articleId}`
     )
   }
 

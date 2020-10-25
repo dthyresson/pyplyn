@@ -22,7 +22,7 @@ export const updateTweetTagsScheduler = async ({ tweetId, seconds }) => {
     tweetId,
   }
 
-  logger.info({ payload }, 'Scheduled Update Tweet Tags Job payload')
+  logger.info({ payload }, `Building Update Tweet Tags Job Payload: ${tweetId}`)
 
   const token = signPayload({ payload })
 
@@ -38,15 +38,15 @@ export const updateTweetTagsScheduler = async ({ tweetId, seconds }) => {
   }
 
   try {
-    logger.debug({ jobOptions }, 'Scheduling Update Tweet Tags Job')
+    logger.debug({ jobOptions }, `Scheduling Update Tweet Tags Job: ${tweetId}`)
 
     const job = await repeater.enqueueOrUpdate({ ...jobOptions })
 
-    logger.info(job, 'Scheduled Update Tweet Tags Job')
+    logger.info(job, `Scheduled Update Tweet Tags Job: ${tweetId}`)
   } catch (e) {
     logger.error(
       { e, ...payload, ...jobOptions },
-      'Failed to Schedule Update Tweet Tags Job'
+      `Failed to Schedule Update Tweet Tags Job: ${tweetId}`
     )
   }
 

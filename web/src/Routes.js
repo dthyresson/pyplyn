@@ -28,7 +28,7 @@ const Routes = () => {
       <Route path="/tag/{label}" page={TagPage} name="tag" />
       <Route path="/tags" page={TagsPage} name="tags" />
 
-      <Private unauthenticated="login">
+      <Private unauthenticated="signIn">
         <Route path="/settings" page={SettingsPage} name="settings" />
         <Route path="/profile" page={ProfilePage} name="profile" />
         <Route path="/jobs" page={RepeaterJobsPage} name="jobs" />

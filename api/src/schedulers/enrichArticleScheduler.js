@@ -23,7 +23,7 @@ export const enrichArticleScheduler = async ({ articleId, seconds = 10 }) => {
     articleId,
   }
 
-  logger.info({ payload }, 'Scheduled Enrich Article Job payload')
+  logger.info({ payload }, `Building Enrich Article Job payload: ${articleId}`)
 
   const token = signPayload({ payload })
   const jobOptions = {
@@ -38,17 +38,25 @@ export const enrichArticleScheduler = async ({ articleId, seconds = 10 }) => {
   }
 
   try {
-    logger.debug({ jobOptions }, 'Scheduling Enrich Article Job')
+    logger.debug({ jobOptions }, `Scheduling Enrich Article Job: ${articleId}`)
 
     const job = await repeater.enqueueOrUpdate({ ...jobOptions })
 
-    logger.info(job, 'Scheduled Enrich Article Job')
+    logger.info(job, `Scheduled Enrich Article Job: ${articleId}`)
   } catch (e) {
     logger.error(
       { e, ...payload, ...jobOptions },
       `Failed to Schedule Enrich Article Job`
     )
   }
+
+  logger.debug(
+    {
+      articleId,
+      updateArticleTags,
+    },
+    `Scheduling updateArticleTagsScheduler: ${articleId}`
+  )
 
   const updateArticleTags = await updateArticleTagsScheduler({
     articleId: articleId,
