@@ -6,6 +6,7 @@ import {
   filteredJobs,
   purgeRepeaterJobs,
   repeaterJobChartData,
+  decodeRepeaterJobHeaders,
 } from 'src/lib/repeater'
 
 export const repeaterJobs = async ({ status = 'active' }) => {
@@ -21,6 +22,7 @@ export const deleteCompletedRepeaterJobs = async () => {
 
 export const repeaterJob = async ({ name }) => {
   requireAuth()
+
   return jobByName({ name })
 }
 
@@ -34,4 +36,14 @@ export const repeaterJobChart = async ({ name }) => {
   requireAuth()
 
   return repeaterJobChartData({ name })
+}
+
+export const repeaterJobDecodedHeader = async ({ name }) => {
+  requireAuth()
+
+  const job = await jobByName({ name })
+
+  const decodedHeadrs = await decodeRepeaterJobHeaders(job)
+
+  return { name: job.name, ...decodedHeadrs }
 }

@@ -1,3 +1,6 @@
+import { formatISO } from 'date-fns'
+
+import jwt from 'jsonwebtoken'
 import { Repeater } from 'repeaterdev-js'
 import { backOff } from 'exponential-backoff'
 
@@ -123,4 +126,18 @@ export const repeaterJobChartData = async ({ name }) => {
   logger.info('Calculated Repeater Job Chart Data')
 
   return { chart }
+}
+
+export const decodeRepeaterJobHeaders = async (job) => {
+  const [_schema, token] = job.headers?.authorization?.split(' ')
+
+  const decodedToken = jwt.decode(token)
+  const issuedAt = new Date(decodedToken.iat * 1000)
+  const expiresIn = new Date(decodedToken.exp * 1000)
+  const subject = decodedToken.sub
+  const decodedHeaders = { decodedToken, issuedAt, expiresIn, subject }
+
+  console.log(decodedHeaders)
+
+  return decodedHeaders
 }

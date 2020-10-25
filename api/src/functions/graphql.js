@@ -50,6 +50,7 @@ const queryPermissions = {
   repeaterJob: allow,
   repeaterJobResults: allow,
   repeaterJobChart: allow,
+  repeaterJobDecodedHeader: allow,
   periodTotalStats: allow,
   popularTags: allow,
   lastDurationPeriodTotalStats: allow,

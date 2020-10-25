@@ -4,7 +4,7 @@ import { logger } from 'src/lib/logger'
 
 import { signPayload } from 'src/lib/authorization'
 
-export const handler = async (_event, _context) => {
+export const handler = async (event, _context) => {
   try {
     isAuthorized(event)
   } catch {

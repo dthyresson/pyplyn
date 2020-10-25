@@ -36,14 +36,8 @@ export const Success = ({ repeaterJobChart }) => {
           useUTC: true,
           precision: 'second',
         }}
+        yScale={{ type: 'linear', max: 10 }}
         xFormat="time:%Y-%m-%d %H:%M:%S"
-        yScale={{
-          type: 'linear',
-          min: '0',
-          max: '10',
-          // stacked: true,
-          reverse: false,
-        }}
         axisTop={null}
         axisRight={null}
         axisBottom={{

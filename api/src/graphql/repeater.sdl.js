@@ -1,5 +1,7 @@
 export const schema = gql`
   type RepeaterJob {
+    createdAt: DateTime!
+    updatedAt: DateTime!
     name: String!
     enabled: Boolean
     endpoint: String!
@@ -9,8 +11,6 @@ export const schema = gql`
     retryable: Boolean
     runAt: DateTime
     runEvery: String
-    createdAt: DateTime!
-    updatedAt: DateTime!
     lastRunAt: DateTime
     nextRunAt: DateTime
   }
@@ -26,11 +26,20 @@ export const schema = gql`
     updatedAt: DateTime!
   }
 
+  type RepeaterJobDecodedHeader {
+    name: String!
+    decodedToken: JSON
+    issuedAt: DateTime
+    expiresIn: DateTime
+    subject: String
+  }
+
   type Query {
     repeaterJobs(status: String): [RepeaterJob!]!
     repeaterJob(name: String!): RepeaterJob
     repeaterJobResults(name: String!): [RepeaterJobResult!]
     repeaterJobChart(name: String!): LineChart!
+    repeaterJobDecodedHeader(name: String!): RepeaterJobDecodedHeader!
   }
 
   type Mutation {

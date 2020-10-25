@@ -5,6 +5,8 @@ import EmptyMessage from 'src/components/EmptyMessage'
 import FailureMessage from 'src/components/FailureMessage'
 import LoadingMessage from 'src/components/LoadingMessage'
 
+import RepeaterJobDecodedHeaderCell from 'src/components/RepeaterJobDecodedHeaderCell'
+
 export const QUERY = gql`
   query RepeaterJobQuery($name: String!) {
     repeaterJob(name: $name) {
@@ -60,7 +62,7 @@ export const Failure = ({ error }) => <FailureMessage message={error.message} />
 export const Success = ({ repeaterJob }) => {
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-      <div className="border-b border-gray-200 sm:px-6">
+      <div className="p-2 border-b border-gray-200 sm:px-6">
         <h3 className="text-lg leading-6 font-medium text-gray-900">
           {repeaterJob.name} Job
         </h3>
@@ -83,7 +85,6 @@ export const Success = ({ repeaterJob }) => {
               {repeaterJob.enabled ? 'Yes' : 'No'}
             </dd>
           </div>
-
           <div className="sm:col-span-1">
             <dt className="text-sm leading-5 font-medium text-gray-500">
               Run At
@@ -118,6 +119,22 @@ export const Success = ({ repeaterJob }) => {
           </div>
           <div className="sm:col-span-1">
             <dt className="text-sm leading-5 font-medium text-gray-500">
+              Endpoint
+            </dt>
+            <dd className="mt-1 text-xs leading-5 text-gray-700">
+              {repeaterJob.endpoint}
+            </dd>
+          </div>
+          <div className="sm:col-span-1">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
+              Updated At
+            </dt>
+            <dd className="mt-1 text-sm leading-5 text-gray-900">
+              <DateDisplay date={repeaterJob.updatedAt} relative={true} />
+            </dd>
+          </div>
+          <div className="sm:col-span-1">
+            <dt className="text-sm leading-5 font-medium text-gray-500">
               Body
             </dt>
             <dd className="mt-1 text-xs leading-5 text-gray-700">
@@ -132,6 +149,7 @@ export const Success = ({ repeaterJob }) => {
               {<RepeaterJobHeaders job={repeaterJob} />}
             </dd>
           </div>
+          <RepeaterJobDecodedHeaderCell name={repeaterJob.name} />
         </dl>
       </div>
     </div>
