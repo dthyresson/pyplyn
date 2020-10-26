@@ -28,7 +28,7 @@ export const enrichTweetScheduler = async ({ tweetId, seconds = 10 }) => {
   const token = signPayload({ payload })
 
   const jobOptions = {
-    name: `enrich-tweet-${tweetId}-job`,
+    name: `enrich-tweet-${tweetId}-${seconds}-job`,
     runAt: runAt({ seconds }),
     endpoint: process.env.ENRICH_TWEET_JOB_ENDPOINT,
     verb: 'POST',
@@ -60,7 +60,7 @@ export const enrichTweetScheduler = async ({ tweetId, seconds = 10 }) => {
 
   const updateTweetTags = await updateTweetTagsScheduler({
     tweetId: tweetId,
-    seconds: 60,
+    seconds: seconds + 60,
   })
 
   logger.debug(

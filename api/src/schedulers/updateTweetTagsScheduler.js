@@ -27,7 +27,7 @@ export const updateTweetTagsScheduler = async ({ tweetId, seconds }) => {
   const token = signPayload({ payload })
 
   const jobOptions = {
-    name: `update-tweet-tags-${tweetId}-job`,
+    name: `update-tweet-tags-${tweetId}-${seconds}-job`,
     runAt: runAt({ seconds }),
     endpoint: process.env.UPDATE_TWEET_TAGS_JOB_ENDPOINT,
     verb: 'POST',

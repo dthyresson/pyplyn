@@ -18,7 +18,7 @@ export default async ({ db }) => {
     const tweets = await db.tweet.findMany({
       skip,
       take,
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'desc' },
       include: {
         tweetContext: true,
         tags: true,

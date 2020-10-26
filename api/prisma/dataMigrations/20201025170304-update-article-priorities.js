@@ -14,7 +14,7 @@ export default async ({ db }) => {
     const articles = await db.article.findMany({
       skip,
       take,
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'desc' },
       include: {
         articlePriorities: true,
         entry: true,

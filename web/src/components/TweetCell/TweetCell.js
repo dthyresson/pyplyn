@@ -226,12 +226,13 @@ export const Success = ({ tweet }) => {
                       key={`${tweet.id}-p-${label}-${index}-li`}
                       className="py-1 flex items-center justify-between text-sm leading-5"
                     >
-                      <span
+                      <Link
+                        to={routes.priority({ label })}
                         key={`${tweet.id}-${label}-${index}`}
                         className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-blue-100 text-blue-800"
                       >
                         {label}
-                      </span>
+                      </Link>
                     </li>
                   )
                 })}

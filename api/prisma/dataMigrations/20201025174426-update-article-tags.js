@@ -1,7 +1,10 @@
 // import { backOff } from 'exponential-backoff'
 import delay from 'delay'
+import { toDate } from 'date-fns'
 
 import { DocumentType } from '@prisma/client'
+
+import { extractArticle } from '../../dist/lib/apiClients/diffbot'
 
 import { articleDataBuilder } from '../../dist/lib/parsers/articleParser'
 
@@ -41,7 +44,42 @@ export default async ({ db }) => {
           try {
             await delay(3500)
 
-            const data = articleDataBuilder(article.articleContext?.content)
+            let content = article.articleContext?.content
+
+            if (content === undefined) {
+              await delay(1000)
+
+              content = await extractArticle({
+                url: article.url,
+              })
+
+              if (content === undefined && content !== null) {
+                logger.warn(
+                  { articleId: article.id },
+                  `Unable to extract content for ${article.id}`
+                )
+              } else {
+                await delay(1500)
+
+                const _result = await db.articleContext.upsert({
+                  where: { articleId: article.id },
+                  create: {
+                    article: {
+                      connect: { id: article.id },
+                    },
+                    content,
+                  },
+                  update: { updatedAt: toDate(Date.now()) },
+                })
+
+                logger.debug(
+                  { articleId: article.id },
+                  `Saved context content for ${article.id}`
+                )
+              }
+            }
+
+            const data = articleDataBuilder(content)
 
             data?.tags?.forEach(async (tag) => {
               await delay(500)
@@ -52,6 +90,8 @@ export default async ({ db }) => {
                   return t.split('/').pop().toLowerCase()
                 })
                 .filter((x) => x !== undefined)
+
+              await delay(1000)
 
               const t = await db.tag.upsert({
                 where: {

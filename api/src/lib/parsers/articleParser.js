@@ -1,6 +1,11 @@
 import { logger } from 'src/lib/logger'
 
 export const articleDataBuilder = (extractedArticle) => {
+  if (extractedArticle === undefined) {
+    logger.warn('Missing extractedArticle in articleDataBuilder')
+    return undefined
+  }
+
   try {
     const description =
       extractedArticle.meta?.description ||
@@ -29,7 +34,11 @@ export const articleDataBuilder = (extractedArticle) => {
 
     return data
   } catch (e) {
-    logger.error(e, 'Error in articleDataBuilder')
+    console.log(e)
+    logger.error(
+      { error: e, url: extractedArticle.pageUrl },
+      `Error in articleDataBuilder ${extractedArticle.pageUrl}`
+    )
     return null
   }
 }

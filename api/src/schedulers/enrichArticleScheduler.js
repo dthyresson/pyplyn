@@ -27,7 +27,7 @@ export const enrichArticleScheduler = async ({ articleId, seconds = 10 }) => {
 
   const token = signPayload({ payload })
   const jobOptions = {
-    name: `enrich-article-${articleId}-job`,
+    name: `enrich-article-${articleId}-${seconds}-job`,
     runAt: runAt({ seconds }),
     endpoint: process.env.ENRICH_ARTICLE_JOB_ENDPOINT,
     verb: 'POST',
@@ -59,7 +59,7 @@ export const enrichArticleScheduler = async ({ articleId, seconds = 10 }) => {
 
   const updateArticleTags = await updateArticleTagsScheduler({
     articleId: articleId,
-    seconds: 63,
+    seconds: seconds + 63,
   })
 
   logger.debug(

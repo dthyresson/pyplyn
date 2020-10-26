@@ -29,7 +29,7 @@ export const updateArticleTagsScheduler = async ({ articleId, seconds }) => {
   const token = signPayload({ payload })
 
   const jobOptions = {
-    name: `update-article-tags-${articleId}-job`,
+    name: `update-article-tags-${articleId}-${seconds}-job`,
     runAt: runAt({ seconds }),
     endpoint: process.env.UPDATE_ARTICLE_TAGS_JOB_ENDPOINT,
     verb: 'POST',
