@@ -10,7 +10,7 @@ export const beforeQuery = ({ label }) => {
 
 export const QUERY = gql`
   query PriorityCalendarQuery($label: String!) {
-    priorityCalendar(label: $label) {
+    priorityTermCalendars(label: $label) {
       label
       calendar {
         day
@@ -26,6 +26,8 @@ export const Empty = () => <EmptyMessage />
 
 export const Failure = ({ error }) => <FailureMessage message={error.message} />
 
-export const Success = ({ priorityCalendar }) => (
-  <CalendarChart calendar={priorityCalendar} />
-)
+export const Success = ({ priorityTermCalendars }) => {
+  return priorityTermCalendars.map((calendar) => {
+    return <CalendarChart key={calendar.label} calendar={calendar} />
+  })
+}

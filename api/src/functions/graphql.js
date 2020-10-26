@@ -55,6 +55,7 @@ const queryPermissions = {
   popularTags: allow,
   priorityTermCalendar: allow,
   priorityTermCalendars: allow,
+  priorityTermsCalendars: allow,
   priorityCalendar: allow,
   priorityCalendars: allow,
   lastDurationPeriodTotalStats: allow,

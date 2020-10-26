@@ -18,6 +18,7 @@ export const schema = gql`
     priorityCalendar(label: String!): PriorityCalendar!
     priorityCalendars: [PriorityCalendar!]!
     priorityTermCalendar(label: String!): PriorityTermCalendar!
-    priorityTermCalendars: [PriorityTermCalendar!]!
+    priorityTermCalendars(label: String!): [PriorityTermCalendar!]!
+    priorityTermsCalendars: [PriorityTermCalendar!]!
   }
 `
