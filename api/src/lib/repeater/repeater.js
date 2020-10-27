@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { Repeater } from 'repeaterdev-js'
+import delay from 'delay'
 import { backOff } from 'exponential-backoff'
 
 import { logger } from 'src/lib/logger'
@@ -45,9 +46,10 @@ const deleteJob = async (job) => {
   try {
     const deletedJob = await backOff(() => job.delete(), {
       delayFirstAttempt: true,
-      numOfAttempts: 3,
+      numOfAttempts: 20,
       startingDelay: 250,
     })
+
     logger.debug({ job }, `Deleted repeater job ${job.name}`)
 
     return deletedJob
@@ -66,11 +68,15 @@ export const purgeRepeaterJobs = async () => {
     const jobs = await repeater.jobs()
 
     const deletedJobs = jobs
-      .map(async (job) => {
+      .map(async (job, index) => {
+        if (index > 200) return null
+
         logger.debug({ job }, `Checking repeater job ${job.name}`)
 
         if (!(job.enabled && (job.runEvery || job.nextRunAt))) {
           logger.info({ job }, `Deleting repeater job ${job.name}`)
+
+          await delay(250)
 
           return await deleteJob(job)
         }

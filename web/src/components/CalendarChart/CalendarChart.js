@@ -5,8 +5,12 @@ const CalendarChart = ({ calendar }) => {
   const lastDay = calendar.calendar.slice(-1).pop().day
 
   return (
-    <div className="h-64">
-      <h1>{calendar.label}</h1>
+    <div className="h-32 md:h-48 lg:h-64 xl:h-64 mb-4 mt-4">
+      <div className="pb-2 border-b border-gray-200">
+        <h3 className="text-md leading-6 font-medium text-gray-900">
+          {calendar.label}
+        </h3>
+      </div>
       <ResponsiveCalendar
         data={calendar.calendar}
         from={firstDay}
