@@ -43,7 +43,7 @@ export const repeaterJobDecodedHeader = async ({ name }) => {
 
   const job = await jobByName({ name })
 
-  const decodedHeadrs = await decodeRepeaterJobHeaders(job)
+  const decodedHeaders = await decodeRepeaterJobHeaders(job)
 
-  return { name: job.name, ...decodedHeadrs }
+  return { name: job.name, ...decodedHeaders }
 }

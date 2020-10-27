@@ -132,16 +132,25 @@ export const repeaterJobChartData = async ({ name }) => {
   return { chart }
 }
 
+const decodeTs = (timestamp) => {
+  try {
+    return new Date(timestamp * 1000)
+  } catch (e) {
+    logger.warn(e, 'Unable to decode timestamp')
+    return undefined
+  }
+}
+
 export const decodeRepeaterJobHeaders = async (job) => {
-  const [_schema, token] = job.headers?.authorization?.split(' ')
+  const [_schema, token] =
+    job.headers?.authorization?.split(' ') ||
+    job.headers?.Authorization?.split(' ')
 
   const decodedToken = jwt.decode(token)
-  const issuedAt = new Date(decodedToken.iat * 1000)
-  const expiresIn = new Date(decodedToken.exp * 1000)
+  const issuedAt = decodeTs(decodedToken.iat)
+  const expiresIn = decodeTs(decodedToken.exp)
   const subject = decodedToken.sub
   const decodedHeaders = { decodedToken, issuedAt, expiresIn, subject }
-
-  console.log(decodedHeaders)
 
   return decodedHeaders
 }

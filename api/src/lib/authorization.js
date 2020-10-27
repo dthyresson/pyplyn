@@ -6,6 +6,7 @@ import { logger } from 'src/lib/logger'
 
 export const isAuthorized = (event) => {
   const isDevEnv = process.env.DOPPLER_ENVIRONMENT !== 'prd'
+
   if (isDevEnv) {
     logger.warn({ isAuthorized: true }, 'isAuthorized bypassed')
     return true
@@ -49,7 +50,7 @@ export const requireAuthorization = (event) => {
   return verifyToken(token)
 }
 
-export const signPayload = ({ payload, expiresIn = '1h' }) => {
+export const signPayload = ({ payload, expiresIn = '1d' }) => {
   logger.debug(payload, 'signPayload init payload')
 
   const digest = createHash('md5')
