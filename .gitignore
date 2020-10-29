@@ -3,7 +3,7 @@
 .env
 .netlify
 .redwood
-dev.db
+
 dist
 dist-babel
 node_modules
@@ -23,3 +23,7 @@ api/logs/**/*
 
 # Deployment
 .serverless
+
+# Database
+dev.db
+*.dump
