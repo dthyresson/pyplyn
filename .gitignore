@@ -11,7 +11,7 @@ yarn-error.log
 web/public/mockServiceWorker.js
 
 # Docs
-docs/**/*
+#docs/**/*
 
 # Logs
 /logs/**/*
