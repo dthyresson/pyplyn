@@ -1,3 +1,5 @@
+import { Link, routes, navigate } from '@redwoodjs/router'
+
 import { useAuth } from '@redwoodjs/auth'
 import { Flash, useFlash, useMutation } from '@redwoodjs/web'
 
@@ -12,7 +14,7 @@ const DELETE_COMPLETED_REPEATER_JOBS = gql`
   }
 `
 
-const RepeaterJobsPage = () => {
+const RepeaterJobsPage = ({ status }) => {
   const { isAuthenticated } = useAuth()
 
   const { addMessage } = useFlash()
@@ -59,10 +61,23 @@ const RepeaterJobsPage = () => {
       </span>
     )
   }
+
+  const activeClassName =
+    'whitespace-no-wrap pb-4 px-1 border-b-2 border-indigo-500 font-medium text-sm leading-5 text-indigo-600 focus:outline-none focus:text-indigo-800 focus:border-indigo-700'
+
+  const inactiveClassName =
+    'whitespace-no-wrap pb-4 px-1 border-b-2 border-transparent font-medium text-sm leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300'
+
+  const showActiveClassName =
+    status === 'active' ? activeClassName : inactiveClassName
+  const showAllClassName =
+    status === 'all' || status === undefined
+      ? activeClassName
+      : inactiveClassName
+
   return (
     <AppLayout>
       <Flash timeout={2000} />
-
       <div className="mb-2 flex flex-wrap items-baseline">
         <h3 className="capitalize ml-2 mt-2 text-lg leading-6 font-medium text-gray-900">
           Background Jobs
@@ -79,9 +94,49 @@ const RepeaterJobsPage = () => {
           </a>
         </p>
       </div>
-      <RepeaterJobsCell />
+
+      <div className="ml-2">
+        <div className="sm:hidden">
+          <select
+            aria-label="Selected tab"
+            className="form-select block w-full pl-3 pr-10 py-2 text-base leading-6 border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5 transition ease-in-out duration-150"
+            onChange={(e) =>
+              navigate(
+                routes.jobs({
+                  status: e.target.value.toLowerCase(),
+                })
+              )
+            }
+          >
+            <option defaultValue={status === 'active'}>Active</option>
+
+            <option defaultValue={status === 'all'}>All</option>
+          </select>
+        </div>
+        <div className="hidden sm:block">
+          <nav className="-mb-px flex space-x-8 ">
+            <Link
+              to={routes.jobs({ status: 'all' })}
+              className={showAllClassName}
+              aria-current="page"
+            >
+              All
+            </Link>
+            <Link
+              to={routes.jobs({ status: 'active' })}
+              className={showActiveClassName}
+            >
+              Active
+            </Link>
+          </nav>
+        </div>
+      </div>
+
+      <RepeaterJobsCell status={status} />
       <div className="p-6 text-center">
-        {isAuthenticated && <DeleteCompletedRepeaterJobs />}
+        {isAuthenticated && status !== 'active' && (
+          <DeleteCompletedRepeaterJobs />
+        )}
       </div>
     </AppLayout>
   )

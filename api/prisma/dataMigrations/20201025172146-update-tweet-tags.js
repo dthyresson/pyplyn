@@ -9,12 +9,12 @@ import { logger } from '../../dist/lib/logger'
 
 export default async ({ db }) => {
   let skip = 0
-  const take = 50
+  const take = 25
 
   let nextBatch = true
 
   while (nextBatch) {
-    console.log(skip)
+    //console.log(skip)
     const tweets = await db.tweet.findMany({
       skip,
       take,
@@ -26,24 +26,24 @@ export default async ({ db }) => {
       },
     })
 
-    console.log(tweets.length)
+    //console.log(tweets.length)
 
     if (tweets && tweets.length > 0) {
-      console.log(tweets.length)
-      await delay(5000)
+      //console.log(tweets.length)
+      await delay(1000)
       tweets.forEach(async (tweet) => {
         if (tweet.tags.length === 0) {
-          console.log(tweet.id)
+          //console.log(tweet.id)
 
           logger.info(tweet.id)
 
           try {
-            await delay(3500)
+            await delay(2500)
 
             const data = tweetContextDataBuilder(tweet.tweetContext.content)
 
             data.tags?.forEach(async (tag) => {
-              await delay(500)
+              await delay(3000)
 
               const t = await db.tag.upsert({
                 where: {

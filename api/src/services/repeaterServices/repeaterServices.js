@@ -9,8 +9,9 @@ import {
   decodeRepeaterJobHeaders,
 } from 'src/lib/repeater'
 
-export const repeaterJobs = async ({ status = 'active' }) => {
+export const repeaterJobs = async ({ status }) => {
   requireAuth()
+  console.log(status)
   return filteredJobs({ status })
 }
 

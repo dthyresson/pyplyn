@@ -12,12 +12,12 @@ import { logger } from '../../dist/lib/logger'
 
 export default async ({ db }) => {
   let skip = 0
-  const take = 50
+  const take = 20
 
   let nextBatch = true
 
   while (nextBatch) {
-    console.log(skip)
+    //console.log(skip)
     const articles = await db.article.findMany({
       skip,
       take,
@@ -29,25 +29,25 @@ export default async ({ db }) => {
       },
     })
 
-    console.log(articles.length)
+    //console.log(articles.length)
 
     if (articles && articles.length > 0) {
-      console.log(articles.length)
-      await delay(5000)
+      //console.log(articles.length)
+      await delay(2000)
       articles.forEach(async (article) => {
         if (article.tags.length === 0) {
-          // console.log(article.id)
-          // console.log(article.articleContext?.content)
+          //// console.log(article.id)
+          //// console.log(article.articleContext?.content)
 
           logger.info(article.id)
 
           try {
-            await delay(3500)
+            await delay(3000)
 
             let content = article.articleContext?.content
 
             if (content === undefined) {
-              await delay(1000)
+              await delay(5000)
 
               content = await extractArticle({
                 url: article.url,
@@ -82,8 +82,8 @@ export default async ({ db }) => {
             const data = articleDataBuilder(content)
 
             data?.tags?.forEach(async (tag) => {
-              await delay(500)
-              console.log(`upsert ${article.id}`)
+              await delay(2500)
+              //console.log(`upsert ${article.id}`)
 
               const entityTypes = tag.rdfTypes
                 ?.map((t) => {

@@ -1,4 +1,8 @@
 import jwt from 'jsonwebtoken'
+
+import pmap from 'p-map'
+import pRetry from 'p-retry'
+
 import { Repeater } from 'repeaterdev-js'
 import delay from 'delay'
 import { backOff } from 'exponential-backoff'
@@ -19,7 +23,7 @@ export const jobResults = async ({ name }) => {
   return await job.results()
 }
 
-export const filteredJobs = async ({ status = 'active' }) => {
+export const filteredJobs = async ({ status }) => {
   const repeater = new Repeater(process.env.REPEATER_API_KEY)
 
   const jobs = await repeater.jobs()
@@ -67,23 +71,9 @@ export const purgeRepeaterJobs = async () => {
 
     const jobs = await repeater.jobs()
 
-    const deletedJobs = jobs
-      .map(async (job, index) => {
-        if (index > 200) return null
-
-        logger.debug({ job }, `Checking repeater job ${job.name}`)
-
-        if (!(job.enabled && (job.runEvery || job.nextRunAt))) {
-          logger.info({ job }, `Deleting repeater job ${job.name}`)
-
-          await delay(250)
-
-          return await deleteJob(job)
-        }
-
-        return null
-      })
-      .filter((x) => x === {})
+    const deletedJobs = await pmap(jobs, deleteCompletedJob, {
+      concurrency: 10,
+    })
 
     logger.info(
       {
@@ -92,12 +82,35 @@ export const purgeRepeaterJobs = async () => {
       'Deleted repeater jobs'
     )
 
-    return deletedJobs
+    return deletedJobs?.filter((x) => x)
   } catch (e) {
     console.log(e)
     logger.error({ e }, 'Error deleting completed Repeater jobs')
     return []
   }
+}
+
+export const deleteCompletedJob = async (job) => {
+  logger.debug({ job }, `Checking repeater job ${job.name}`)
+
+  if (!(job.enabled && (job.runEvery || job.nextRunAt))) {
+    logger.info({ job }, `Deleting repeater job ${job.name}`)
+
+    const deletedJob = await pRetry(() => deleteJob(job), {
+      onFailedAttempt: async (error) => {
+        logger.error(error)
+        logger.warn(
+          `Attempt ${error.attemptNumber} failed. There are ${error.retriesLeft} retries left for '${job.name}'.`
+        )
+        logger.info('Waiting for 3 seconds before retrying')
+        await delay(3000)
+      },
+      retries: 5,
+    })
+    return deletedJob
+  }
+
+  return
 }
 
 export const repeaterJobChartData = async ({ name }) => {

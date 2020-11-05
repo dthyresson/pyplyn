@@ -10,7 +10,7 @@ export default async ({ db }) => {
   let nextBatch = true
 
   while (nextBatch) {
-    console.log(skip)
+    //console.log(skip)
     const articles = await db.article.findMany({
       skip,
       take,
@@ -21,14 +21,14 @@ export default async ({ db }) => {
       },
     })
 
-    console.log(articles.length)
+    //console.log(articles.length)
 
     if (articles && articles.length > 0) {
-      console.log(articles.length)
+      //console.log(articles.length)
       await delay(500)
       articles.forEach(async (article) => {
         if (article.articlePriorities.length === 0) {
-          console.log(article.id)
+          //console.log(article.id)
           logger.info(article.id)
 
           try {

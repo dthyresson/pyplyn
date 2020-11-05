@@ -10,7 +10,7 @@ export default async ({ db }) => {
   let nextBatch = true
 
   while (nextBatch) {
-    console.log(skip)
+    // console.log(skip)
     const articles = await db.article.findMany({
       skip,
       take,

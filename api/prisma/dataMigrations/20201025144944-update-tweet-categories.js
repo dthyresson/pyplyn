@@ -10,7 +10,7 @@ export default async ({ db }) => {
   let nextBatch = true
 
   while (nextBatch) {
-    console.log(skip)
+    // console.log(skip)
     const tweets = await db.tweet.findMany({
       skip,
       take,
@@ -21,15 +21,15 @@ export default async ({ db }) => {
       },
     })
 
-    console.log(tweets.length)
+    // console.log(tweets.length)
 
     if (tweets && tweets.length > 0) {
-      console.log(tweets.length)
+      // console.log(tweets.length)
       await delay(3500)
 
       tweets.forEach(async (tweet) => {
         if (tweet.tweetCategories.length === 0) {
-          console.log(tweet.id)
+          // console.log(tweet.id)
 
           logger.info(tweet.id)
           try {
