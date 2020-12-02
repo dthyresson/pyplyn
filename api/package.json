@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@redwoodjs/api": "^0.20.0",
+    "@redwoodjs/api": "^0.21.1-canary.11",
     "@sindresorhus/slugify": "^1.1.0",
     "date-fns": "^2.16.1",
     "delay": "^4.4.0",
