@@ -19,8 +19,7 @@ const AppLayout = ({ children }) => {
     <div>
       <Helmet>
         <meta charSet="utf-8" />
-        <title>My Title</title>
-        <link rel="canonical" href="http://mysite.com/example" />
+        <title>pyplyn</title>
       </Helmet>
       <nav className="bg-gray-800">
         <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
